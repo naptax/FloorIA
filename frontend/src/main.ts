@@ -7,6 +7,7 @@ import { Toolbar } from '@/components/Toolbar';
 import { Canvas } from '@/components/Canvas';
 import { DetectionPanel } from '@/components/DetectionPanel';
 import { ProgressGauge } from '@/components/ProgressGauge';
+import { ScaleCalibratorComponent } from '@/components/ScaleCalibrator';
 import { apiClient } from '@/utils/api';
 import '@/styles/main.css';
 
@@ -20,6 +21,7 @@ class FloorIAApp {
   private canvas!: Canvas;
   private detectionPanel!: DetectionPanel;
   private progressGauge!: ProgressGauge;
+  private scaleCalibrator!: ScaleCalibratorComponent;
 
   constructor() {
     this.initializeApp();
@@ -63,6 +65,14 @@ class FloorIAApp {
 
     // Initialize progress gauge
     this.progressGauge = new ProgressGauge(appContainer);
+
+    // Initialize scale calibrator
+    this.scaleCalibrator = new ScaleCalibratorComponent(appContainer, () => {
+      // Refresh detection panel when scale changes
+      if (this.detectionPanel) {
+        this.detectionPanel.refreshDisplay();
+      }
+    });
 
     // Setup drag and drop
     this.setupDragAndDrop();
@@ -151,6 +161,11 @@ class FloorIAApp {
     toolbarElement.addEventListener('fit-to-window', () => {
       this.canvas.fitToWindow();
     });
+
+    // Listen for scale calibrator events
+    toolbarElement.addEventListener('open-scale-calibrator', () => {
+      this.scaleCalibrator.show();
+    });
   }
 
   /**
@@ -206,6 +221,7 @@ class FloorIAApp {
     this.canvas.destroy();
     this.detectionPanel.destroy();
     this.progressGauge.destroy();
+    this.scaleCalibrator.destroy();
   }
 }
 

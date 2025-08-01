@@ -25,6 +25,8 @@ export class Toolbar {
       <button class="toolbar-btn" id="zoomOutBtn">🔍-</button>
       <button class="toolbar-btn" id="fitBtn">📐 Ajuster</button>
       <div class="toolbar-separator"></div>
+      <button class="toolbar-btn" id="scaleBtn" title="Calibration d'échelle">📏 Échelle</button>
+      <div class="toolbar-separator"></div>
       <label style="color: #cccccc; font-size: 0.8rem;">Opacité:</label>
       <input type="range" id="opacitySlider" class="slider" min="0" max="100" value="70" style="width: 100px;">
       <span id="opacityValue" style="color: #cccccc; font-size: 0.8rem;">70%</span>
@@ -40,6 +42,7 @@ export class Toolbar {
     const zoomInBtn = this.element.querySelector('#zoomInBtn') as HTMLButtonElement;
     const zoomOutBtn = this.element.querySelector('#zoomOutBtn') as HTMLButtonElement;
     const fitBtn = this.element.querySelector('#fitBtn') as HTMLButtonElement;
+    const scaleBtn = this.element.querySelector('#scaleBtn') as HTMLButtonElement;
     const opacitySlider = this.element.querySelector('#opacitySlider') as HTMLInputElement;
     const opacityValue = this.element.querySelector('#opacityValue') as HTMLSpanElement;
     const resetBtn = this.element.querySelector('#resetBtn') as HTMLButtonElement;
@@ -78,6 +81,13 @@ export class Toolbar {
     if (fitBtn) {
       fitBtn.addEventListener('click', () => {
         this.element.dispatchEvent(new CustomEvent('fit-to-window'));
+      });
+    }
+
+    // Scale calibrator button
+    if (scaleBtn) {
+      scaleBtn.addEventListener('click', () => {
+        this.element.dispatchEvent(new CustomEvent('open-scale-calibrator'));
       });
     }
 

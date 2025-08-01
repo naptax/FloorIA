@@ -2,6 +2,7 @@
 
 import type { Detection, SortKey, ComponentEventHandlers } from '@/types';
 import { enhanceDetections, getElementTypeColor } from '@/utils/detection';
+import { formatMeasurement, formatArea, formatDimensions } from '@/utils/scale';
 
 export class DetectionPanel {
   private element: HTMLElement;
@@ -153,19 +154,19 @@ export class DetectionPanel {
         </div>
         <div class="detail-item">
           <div class="detail-label">Position</div>
-          <div class="detail-value">${Math.round(bbox.x)}, ${Math.round(bbox.y)}</div>
+          <div class="detail-value">${formatMeasurement(bbox.x)}, ${formatMeasurement(bbox.y)}</div>
         </div>
         <div class="detail-item">
-          <div class="detail-label">Taille</div>
-          <div class="detail-value">${Math.round(bbox.width)}×${Math.round(bbox.height)}</div>
+          <div class="detail-label">Dimensions</div>
+          <div class="detail-value">${formatDimensions(bbox.width, bbox.height)}</div>
         </div>
         <div class="detail-item">
           <div class="detail-label">Surface</div>
-          <div class="detail-value">${geometry ? Math.round(geometry.area) : 'N/A'}</div>
+          <div class="detail-value">${geometry ? formatArea(geometry.area) : 'N/A'}</div>
         </div>
         <div class="detail-item">
           <div class="detail-label">Périmètre</div>
-          <div class="detail-value">${geometry ? Math.round(geometry.perimeter) : 'N/A'}</div>
+          <div class="detail-value">${geometry ? formatMeasurement(geometry.perimeter) : 'N/A'}</div>
         </div>
       </div>
     `;
@@ -330,6 +331,13 @@ export class DetectionPanel {
     }
     
     this.hideError();
+  }
+
+  /**
+   * Refresh display (useful when scale changes)
+   */
+  refreshDisplay(): void {
+    this.populateDetectionList();
   }
 
   /**
