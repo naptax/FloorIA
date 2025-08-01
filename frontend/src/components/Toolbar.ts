@@ -19,7 +19,7 @@ export class Toolbar {
     
     toolbar.innerHTML = `
       <input type="file" id="fileInput" class="file-input" accept="image/*">
-      <button class="toolbar-btn" id="importBtn">📁 Importer</button>
+      <button class="toolbar-btn toolbar-btn-primary" id="importBtn">🏗️ Analyser un plan</button>
       <div class="toolbar-separator"></div>
       <button class="toolbar-btn" id="zoomInBtn">🔍+</button>
       <button class="toolbar-btn" id="zoomOutBtn">🔍-</button>

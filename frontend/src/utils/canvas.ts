@@ -1,6 +1,7 @@
 // FloorIA Canvas Utilities
 
 import type { BoundingBox, Detection, CanvasTransform } from '@/types';
+import { getElementTypeColor } from '@/utils/detection';
 
 export class CanvasUtils {
   /**
@@ -29,6 +30,18 @@ export class CanvasUtils {
   }
 
   /**
+   * Convert hex color to RGB
+   */
+  static hexToRgb(hex: string): { r: number; g: number; b: number } {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16)
+    } : { r: 255, g: 0, b: 0 }; // Default to red if parsing fails
+  }
+
+  /**
    * Draw bounding boxes for detections
    */
   static drawBoundingBoxes(
@@ -40,15 +53,19 @@ export class CanvasUtils {
       const { bbox, label, confidence } = detection;
       const isSelected = index === selectedIndex;
       
-      // Set colors based on selection
+      // Get element type color
+      const elementColor = getElementTypeColor(label);
+      const elementColorRgb = CanvasUtils.hexToRgb(elementColor);
+      
+      // Set colors based on selection and element type
       if (isSelected) {
-        ctx.strokeStyle = '#667eea';
+        ctx.strokeStyle = '#667eea'; // Keep selection highlight color
         ctx.lineWidth = 4;
         ctx.fillStyle = 'rgba(102, 126, 234, 0.3)';
       } else {
-        ctx.strokeStyle = '#ff0000';
-        ctx.lineWidth = 2;
-        ctx.fillStyle = 'rgba(255, 0, 0, 0.2)';
+        ctx.strokeStyle = elementColor;
+        ctx.lineWidth = 3;
+        ctx.fillStyle = `rgba(${elementColorRgb.r}, ${elementColorRgb.g}, ${elementColorRgb.b}, 0.25)`;
       }
       
       const { x, y, width, height } = bbox;
@@ -63,7 +80,7 @@ export class CanvasUtils {
       const textHeight = 18;
       
       // Background for text
-      ctx.fillStyle = isSelected ? 'rgba(102, 126, 234, 0.9)' : 'rgba(255, 0, 0, 0.8)';
+      ctx.fillStyle = isSelected ? 'rgba(102, 126, 234, 0.9)' : `rgba(${elementColorRgb.r}, ${elementColorRgb.g}, ${elementColorRgb.b}, 0.9)`;
       ctx.fillRect(x, y - textHeight, textMetrics.width + 10, textHeight);
       
       // Text
