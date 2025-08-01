@@ -309,8 +309,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 <div align="center">
 
-**Made with ❤️ for architectural analysis and AI-powered image processing**
+**Made with ❤️ from Paris**
 
-[![GitHub](https://img.shields.io/badge/GitHub-dean/vectorizator-181717?style=for-the-badge&logo=github)](https://github.com/dean/vectorizator)
+
 
 </div>
