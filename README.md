@@ -7,6 +7,7 @@
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-00a393.svg?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
 [![Node.js](https://img.shields.io/badge/Node.js-18+-339933.svg?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.2+-3178C6.svg?style=for-the-badge&logo=typescript&logoColor=white)](https://typescriptlang.org)
 [![Vite](https://img.shields.io/badge/Vite-5.0+-646CFF.svg?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev)
 [![Roboflow](https://img.shields.io/badge/Roboflow-AI-6366f1.svg?style=for-the-badge&logo=roboflow&logoColor=white)](https://roboflow.com)
 
@@ -15,7 +16,7 @@
 [![GitHub issues](https://img.shields.io/github/issues/dean/vectorizator?style=for-the-badge)](https://github.com/dean/vectorizator/issues)
 [![GitHub stars](https://img.shields.io/github/stars/dean/vectorizator?style=for-the-badge)](https://github.com/dean/vectorizator/stargazers)
 
-*Une application d'analyse d'images avec IA composée d'un frontend Node.js/Vite et d'un backend Python utilisant Shapely pour le traitement géométrique et l'API Roboflow pour la détection d'objets.*
+*Une application d'analyse d'images avec IA composée d'un frontend TypeScript/Vite moderne avec architecture à composants et d'un backend Python utilisant Shapely pour le traitement géométrique et l'API Roboflow pour la détection d'objets.*
 
 [🚀 Demo](#demo) • [📖 Documentation](#documentation) • [⚡ Quick Start](#quick-start) • [🤝 Contributing](#contributing)
 
@@ -29,7 +30,9 @@
 <tr>
 <td width="50%">
 
-### 🎨 **Professional VSCode-Inspired UI**
+### 🎨 **Modern TypeScript Architecture**
+- 🏗️ **Component-Based Design** - Modular Header, Footer, Toolbar, Canvas, DetectionPanel
+- 📘 **TypeScript Integration** - Full type safety and modern development experience
 - 🎨 **Visual Studio Code Theme** - Authentic dark theme with VSCode colors
 - 🖼️ **Maximized Canvas Area** - Full workspace without left sidebar
 - 🔧 **Integrated Toolbar** - All controls in compact header
@@ -74,10 +77,25 @@ graph TB
 ```
 🏗️ FloorIA/
 ├── 🌐 frontend/
-│   ├── 📄 index.html          # Modern UI with advanced controls
-│   ├── ⚡ main.js             # Interactive zoom, pan & table logic
-│   ├── 📦 package.json        # Node.js dependencies
-│   └── ⚙️ vite.config.js      # Vite configuration
+│   ├── 📄 index.html          # Minimal HTML entry point
+│   ├── 📦 package.json        # TypeScript + Vite dependencies
+│   ├── ⚙️ vite.config.js      # Vite configuration with TS support
+│   ├── 📘 tsconfig.json       # TypeScript configuration
+│   └── 📂 src/
+│       ├── 🚀 main.ts         # Application entry point
+│       ├── 📂 components/
+│       │   ├── 🏠 Header.ts   # Header component with logo & status
+│       │   ├── 🦶 Footer.ts   # Footer with branding & model info
+│       │   ├── 🔧 Toolbar.ts  # Toolbar with controls
+│       │   ├── 🖼️ Canvas.ts   # Canvas component with interactions
+│       │   └── 📋 DetectionPanel.ts # Detection list panel
+│       ├── 📂 types/
+│       │   └── 📘 index.ts    # TypeScript type definitions
+│       ├── 📂 utils/
+│       │   ├── 🌐 api.ts      # API client utilities
+│       │   └── 🖼️ canvas.ts   # Canvas drawing utilities
+│       └── 📂 styles/
+│           └── 🎨 main.css    # Global styles
 ├── 🐍 backend/
 │   ├── 🚀 main.py             # FastAPI server with CORS
 │   ├── 🤖 roboflow_client.py  # Roboflow API integration
@@ -89,6 +107,27 @@ graph TB
 ```
 
 ## 🆕 Recent Updates
+
+### v3.0.0 - TypeScript Component Architecture Migration (January 2025)
+
+#### 🏗️ **Complete Frontend Refactoring**
+- ✅ **TypeScript Migration** - Full conversion from JavaScript to TypeScript with strict type checking
+- ✅ **Component-Based Architecture** - Modular design with Header, Footer, Toolbar, Canvas, and DetectionPanel components
+- ✅ **Modern Development Experience** - Vite with TypeScript support, path aliases, and hot module replacement
+- ✅ **Type Safety** - Comprehensive type definitions for all data structures and component interfaces
+- ✅ **Maintainable Code** - Clear separation of concerns with utils, types, and components folders
+
+#### 📦 **New Project Structure**
+- ✅ **Modular Components** - Each UI component is a separate TypeScript class with clear responsibilities
+- ✅ **Utility Modules** - API client and canvas utilities extracted into reusable modules
+- ✅ **Type Definitions** - Centralized TypeScript interfaces for better code documentation
+- ✅ **Build System** - Updated Vite configuration with TypeScript compilation and path resolution
+
+#### 🔧 **Technical Improvements**
+- ✅ **Event-Driven Architecture** - Components communicate through custom events and handlers
+- ✅ **Error Handling** - Robust error management with TypeScript strict null checks
+- ✅ **Code Organization** - Clean folder structure following modern frontend best practices
+- ✅ **Development Workflow** - Type checking, linting, and modern build pipeline
 
 ### v2.0.0 - Visual Studio Code Interface Redesign (January 2025)
 

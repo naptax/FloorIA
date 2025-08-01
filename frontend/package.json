@@ -1,17 +1,21 @@
 {
   "name": "flooria-frontend",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "type-check": "tsc --noEmit",
+    "lint": "tsc --noEmit"
   },
   "dependencies": {
     "axios": "^1.6.0"
   },
   "devDependencies": {
-    "vite": "^5.0.0"
+    "typescript": "^5.2.2",
+    "vite": "^5.4.10",
+    "@types/node": "^20.8.0"
   }
 }
