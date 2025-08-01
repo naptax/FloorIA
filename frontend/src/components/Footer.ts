@@ -18,7 +18,7 @@ export class Footer {
     
     footer.innerHTML = `
       <div class="footer-left">
-        <span><strong>FloorIA</strong> - Analyse Architecturale IA</span>
+        <span><strong>FloorIA</strong> - Analyse Architecturale par IA</span>
       </div>
       <div class="footer-center">
         <div class="model-info">
@@ -31,9 +31,11 @@ export class Footer {
         </div>
       </div>
       <div class="footer-right">
-        <span>Deep-5 et BTP Consultants</span>
+        <a href="#" onclick="window.open('https://www.deep-5.com', '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes'); return false;" style="color: #ffffff; text-decoration: none; transition: color 0.2s ease; cursor: pointer;">Deep-5</a>
         <span>|</span>
         <span>60 rue François 1er, 75008 PARIS</span>
+        <span>|</span>
+        <span>From Paris with ❤️</span>
       </div>
     `;
 

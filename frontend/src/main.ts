@@ -23,6 +23,7 @@ class FloorIAApp {
   private detectionPanel!: DetectionPanel;
   private progressGauge!: ProgressGauge;
   private scaleCalibrator!: ScaleCalibratorComponent;
+  private currentImageFilename: string = '';
 
   constructor() {
     this.initializeApp();
@@ -86,6 +87,10 @@ class FloorIAApp {
    */
   private async handleFileUpload(file: File): Promise<void> {
     try {
+      // Store the original filename for later use in export
+      this.currentImageFilename = file.name;
+      console.log('📁 Image filename stored:', this.currentImageFilename);
+      
       this.header.updateStatus('Analyse en cours...');
       this.detectionPanel.hideError();
       
@@ -185,8 +190,17 @@ class FloorIAApp {
       console.log('📊 Current detections:', detections.length, 'items');
       
       if (detections.length > 0) {
-        console.log('✅ Calling exportDetectionsToJSON with detections');
-        exportDetectionsToJSON(detections);
+        // Generate JSON filename based on original image filename
+        let jsonFilename = 'flooria-analysis.json';
+        if (this.currentImageFilename) {
+          // Remove extension from image filename and add .json
+          const nameWithoutExt = this.currentImageFilename.replace(/\.[^/.]+$/, '');
+          jsonFilename = `${nameWithoutExt}-analysis.json`;
+          console.log('📁 Generated JSON filename from image:', jsonFilename);
+        }
+        
+        console.log('✅ Calling exportDetectionsToJSON with detections and filename');
+        exportDetectionsToJSON(detections, jsonFilename);
       } else {
         console.log('⚠️ No detections to export');
         alert('Aucune détection à exporter. Veuillez d\'abord analyser une image.');

@@ -76,6 +76,9 @@ export class Canvas {
     this.element.addEventListener('zoom-in', () => this.zoomIn());
     this.element.addEventListener('zoom-out', () => this.zoomOut());
     this.element.addEventListener('fit-to-window', () => this.fitToWindow());
+    
+    // Window resize listener for responsive centering
+    window.addEventListener('resize', () => this.handleWindowResize());
   }
 
   /**
@@ -156,6 +159,17 @@ export class Canvas {
    */
   private centerCanvas(): void {
     CanvasUtils.centerCanvas(this.canvas, this.element, this.transform);
+  }
+
+  /**
+   * Handle window resize to recenter canvas responsively
+   */
+  private handleWindowResize(): void {
+    if (this.originalImage) {
+      // Recenter the canvas when window is resized
+      this.centerCanvas();
+      this.redrawCanvas();
+    }
   }
 
   /**
