@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FloorIA - Image Analysis</title>
-    <style>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>FloorIA - Analyse Architecturale IA</title>
+        <style>
         * {
             margin: 0;
             padding: 0;
@@ -12,118 +12,283 @@
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Consolas', 'Courier New', monospace;
+            background: #1e1e1e;
+            color: #cccccc;
             min-height: 100vh;
-            padding: 20px;
+            overflow: hidden;
+        }
+
+        /* Professional Architecture Tool Layout */
+        .app-container {
+            display: flex;
+            height: 100vh;
+            background: #1e1e1e;
         }
         
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        /* Top Header Bar */
+        .header-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 35px;
+            background: #3c3c3c;
+            border-bottom: 1px solid #464647;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            z-index: 1000;
+        }
+        
+        .header-bar .logo {
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: #cccccc;
+        }
+        
+        .header-bar .project-info {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 0.8rem;
+            color: #969696;
+        }
+
+        /* Main Canvas Area - No Left Sidebar */
+        .main-workspace {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            margin-top: 35px;
+            margin-bottom: 22px;
+            background: #1e1e1e;
+        }
+        
+        /* Toolbar */
+        .toolbar {
+            height: 35px;
+            background: #2d2d30;
+            border-bottom: 1px solid #464647;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            gap: 8px;
+        }
+        
+        /* Canvas Container - Much Larger */
+        .canvas-workspace {
+            flex: 1;
+            position: relative;
+            background: #1e1e1e;
             overflow: hidden;
         }
         
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
+        /* Right Properties Panel */
+        .sidebar-right {
+            width: 350px;
+            background: #252526;
+            border-left: 1px solid #464647;
+            margin-top: 35px;
+            margin-bottom: 22px;
+            overflow-y: auto;
         }
         
-        .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+        /* Footer */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 22px;
+            background: #007acc;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 15px;
+            font-size: 0.75rem;
+            z-index: 1000;
         }
         
-        .header p {
-            opacity: 0.9;
-            font-size: 1.1rem;
+        .footer-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
         
-        .main-content {
-            padding: 30px;
+        .footer-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.7rem;
         }
-        
+
+        /* Professional Upload Area */
         .upload-section {
-            border: 2px dashed #ddd;
-            border-radius: 12px;
-            padding: 40px;
             text-align: center;
-            margin-bottom: 30px;
+            padding: 30px;
+            border: 2px dashed #464647;
+            border-radius: 8px;
+            background: #2d2d30;
+            margin-bottom: 20px;
             transition: all 0.3s ease;
         }
         
         .upload-section:hover {
-            border-color: #667eea;
-            background: #f8f9ff;
+            border-color: #007acc;
+            background: #333337;
         }
         
         .upload-section.dragover {
-            border-color: #667eea;
-            background: #f0f4ff;
+            border-color: #007acc;
+            background: #333337;
+        }
+        
+        .upload-section h3 {
+            color: #cccccc;
+            margin-bottom: 10px;
+            font-size: 1rem;
+            font-weight: 400;
+        }
+        
+        .upload-section p {
+            color: #969696;
+            margin-bottom: 15px;
+            font-size: 0.8rem;
         }
         
         .file-input {
             display: none;
         }
-        
-        .upload-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 8px;
-            font-size: 1.1rem;
+
+        /* Professional Buttons */
+        .btn {
+            background: #0e639c;
+            color: #ffffff;
+            border: 1px solid #0e639c;
+            padding: 6px 12px;
+            border-radius: 2px;
+            font-size: 0.8rem;
+            font-weight: 400;
             cursor: pointer;
-            transition: transform 0.2s ease;
+            transition: all 0.2s ease;
         }
         
-        .upload-btn:hover {
-            transform: translateY(-2px);
+        .btn:hover {
+            background: #1177bb;
+            border-color: #1177bb;
         }
         
-        .controls {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-            margin-bottom: 30px;
-            padding: 20px;
-            background: #f8f9fa;
-            border-radius: 12px;
+        .btn-secondary {
+            background: #3c3c3c;
+            color: #cccccc;
+            border: 1px solid #464647;
         }
         
-        .opacity-control {
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .btn-secondary:hover {
+            background: #464647;
         }
         
-        .opacity-slider {
-            width: 200px;
+        /* Toolbar Buttons */
+        .toolbar-btn {
+            background: transparent;
+            border: 1px solid #464647;
+            color: #cccccc;
+            padding: 4px 8px;
+            border-radius: 2px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
         }
         
-        .visualization-section {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            margin-bottom: 30px;
+        .toolbar-btn:hover {
+            background: #3c3c3c;
+            border-color: #007acc;
+            color: #ffffff;
         }
         
-        .canvas-container {
-            position: relative;
+        .toolbar-btn.active {
+            background: #0e639c;
+            border-color: #0e639c;
+            color: #ffffff;
+        }
+        
+        .toolbar-separator {
+            width: 1px;
+            height: 20px;
+            background: #464647;
+            margin: 0 8px;
+        }
+
+        /* Professional Panels */
+        .panel {
+            border-bottom: 1px solid #464647;
+        }
+        
+        .panel-header {
+            background: #2d2d30;
+            padding: 8px 15px;
+            border-bottom: 1px solid #464647;
+        }
+        
+        .panel-header h3 {
+            font-size: 0.8rem;
+            font-weight: 400;
+            color: #cccccc;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .panel-content {
+            padding: 15px;
+        }
+
+        /* Control Groups */
+        .control-group {
+            margin-bottom: 15px;
+        }
+        
+        .control-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.8rem;
+            color: #969696;
+        }
+        
+        .slider {
             width: 100%;
-            height: 600px;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            background: #f8f9fa;
-            border: 2px solid #e9ecef;
+            height: 4px;
+            border-radius: 2px;
+            background: #464647;
+            outline: none;
+            -webkit-appearance: none;
         }
         
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #007acc;
+            cursor: pointer;
+        }
+        
+        .slider::-moz-range-thumb {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #007acc;
+            cursor: pointer;
+            border: none;
+        }
+
+        /* Canvas Styles */
         #imageCanvas {
             display: block;
             cursor: grab;
@@ -133,123 +298,173 @@
         #imageCanvas:active {
             cursor: grabbing;
         }
-        
-        .zoom-controls {
-            position: absolute;
-            top: 15px;
-            right: 15px;
+
+        /* Detection Cards */
+        .detection-list {
             display: flex;
+            flex-direction: column;
             gap: 8px;
-            z-index: 10;
+            max-height: calc(100vh - 200px);
+            overflow-y: auto;
         }
         
-        .zoom-btn {
-            background: rgba(255, 255, 255, 0.9);
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 18px;
-            font-weight: bold;
-            transition: all 0.2s ease;
-            backdrop-filter: blur(5px);
-        }
-        
-        .zoom-btn:hover {
-            background: white;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-        
-        .data-table-section {
-            background: white;
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        }
-        
-        .data-table-section h3 {
-            margin: 0 0 20px 0;
-            color: #333;
-            font-size: 1.3rem;
-        }
-        
-        .detection-table {
-            width: 100%;
-            border-collapse: collapse;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-        
-        .detection-table th {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 15px 12px;
-            text-align: left;
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-        
-        .detection-table td {
+        .detection-card {
+            background: #2d2d30;
+            border: 1px solid #464647;
+            border-radius: 4px;
             padding: 12px;
-            border-bottom: 1px solid #eee;
-            transition: background-color 0.2s ease;
-        }
-        
-        .detection-table tr:hover {
-            background-color: #f8f9ff;
             cursor: pointer;
+            transition: all 0.2s ease;
         }
         
-        .detection-table tr.selected {
-            background-color: #e3f2fd;
-            border-left: 4px solid #667eea;
+        .detection-card:hover {
+            background: #3c3c3c;
+            border-color: #007acc;
+        }
+        
+        .detection-card.selected {
+            background: #0e639c;
+            border-color: #007acc;
+            color: #ffffff;
+        }
+        
+        .detection-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .detection-index {
+            font-weight: 600;
+            color: #007acc;
+        }
+        
+        .detection-card.selected .detection-index {
+            color: #ffffff;
+        }
+        
+        .detection-type {
+            background: #464647;
+            color: #cccccc;
+            padding: 2px 6px;
+            border-radius: 2px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+        }
+        
+        .detection-card.selected .detection-type {
+            background: rgba(255,255,255,0.2);
+            color: #ffffff;
+        }
+        
+        .confidence-section {
+            margin-bottom: 8px;
         }
         
         .confidence-bar {
-            width: 100px;
-            height: 8px;
-            background: #eee;
-            border-radius: 4px;
+            width: 100%;
+            height: 4px;
+            background: #464647;
+            border-radius: 2px;
             overflow: hidden;
+            margin-bottom: 4px;
         }
         
         .confidence-fill {
             height: 100%;
-            background: linear-gradient(90deg, #ff6b6b, #feca57, #48dbfb, #0abde3);
-            border-radius: 4px;
+            background: #007acc;
+            border-radius: 2px;
             transition: width 0.3s ease;
         }
         
-        .label-badge {
-            display: inline-block;
-            padding: 4px 8px;
-            background: #667eea;
-            color: white;
-            border-radius: 4px;
-            font-size: 0.8rem;
+        .confidence-text {
+            font-size: 0.7rem;
+            color: #969696;
+        }
+        
+        .detection-card.selected .confidence-text {
+            color: rgba(255,255,255,0.8);
+        }
+        
+        .detection-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            font-size: 0.7rem;
+        }
+        
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .detail-label {
+            color: #969696;
+            margin-bottom: 2px;
+        }
+        
+        .detection-card.selected .detail-label {
+            color: rgba(255,255,255,0.7);
+        }
+        
+        .detail-value {
+            color: #cccccc;
             font-weight: 500;
         }
         
+        .detection-card.selected .detail-value {
+            color: #ffffff;
+        }
+
+        /* Sorting Controls */
+        .sort-controls {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+        
+        .sort-select {
+            flex: 1;
+            background: #2d2d30;
+            border: 1px solid #464647;
+            color: #cccccc;
+            padding: 4px 8px;
+            border-radius: 2px;
+            font-size: 0.8rem;
+        }
+        
+        .sort-direction {
+            background: #2d2d30;
+            border: 1px solid #464647;
+            color: #cccccc;
+            padding: 4px 8px;
+            border-radius: 2px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        
+        .sort-direction:hover {
+            background: #3c3c3c;
+        }
+
+        /* Loading and Error States */
         .loading {
             display: none;
             text-align: center;
             padding: 40px;
+            color: #cccccc;
         }
         
         .spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #667eea;
+            border: 3px solid #464647;
+            border-top: 3px solid #007acc;
             border-radius: 50%;
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 40px;
             animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
+            margin: 0 auto 15px;
         }
         
         @keyframes spin {
@@ -258,82 +473,120 @@
         }
         
         .error {
-            background: #fee;
-            color: #c33;
+            background: #3c1e1e;
+            color: #ff6b6b;
+            border: 1px solid #664647;
             padding: 15px;
-            border-radius: 8px;
-            margin: 20px 0;
+            border-radius: 4px;
+            margin: 15px;
             display: none;
+            font-size: 0.8rem;
         }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>🏗️ FloorIA</h1>
-            <p>Upload an image for AI-powered object detection and analysis</p>
-        </div>
+
+        /* Highlight Animation */
+        .detection-highlight {
+            position: absolute;
+            background: rgba(0, 122, 204, 0.3);
+            border: 2px solid #007acc;
+            pointer-events: none;
+            animation: pulse 2s ease-in-out;
+        }
         
-        <div class="main-content">
-            <div class="upload-section" id="uploadSection">
-                <input type="file" id="fileInput" class="file-input" accept="image/*">
-                <div>
-                    <h3>📁 Upload Image</h3>
-                    <p>Drag and drop an image here or click to select</p>
-                    <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
-                        Choose Image
-                    </button>
+        @keyframes pulse {
+            0%, 100% { opacity: 0; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+        }
+        </style>
+    </head>
+    <body>
+        <!-- Professional Architecture Tool Layout -->
+        <div class="app-container">
+            <!-- Top Header Bar -->
+            <div class="header-bar">
+                <div class="logo">FloorIA</div>
+                <div class="project-info">
+                    <span>Analyse Architecturale IA</span>
+                    <span>|</span>
+                    <span id="projectStatus">Prêt</span>
                 </div>
             </div>
             
+            <!-- Upload and Controls -->
+            <input type="file" id="fileInput" class="file-input" accept="image/*">
             <div class="error" id="errorMessage"></div>
-            
             <div class="loading" id="loading">
                 <div class="spinner"></div>
-                <p>Analyzing image with AI...</p>
+                <p>Analyse IA en cours...</p>
             </div>
             
-            <div class="controls" id="controls" style="display: none;">
-                <div class="opacity-control">
-                    <label for="opacitySlider">Background Opacity:</label>
-                    <input type="range" id="opacitySlider" class="opacity-slider" min="0" max="100" value="70">
-                    <span id="opacityValue">70%</span>
+            <!-- Main Workspace - Large Canvas Area -->
+            <div class="main-workspace">
+                <!-- Toolbar with Canvas Controls -->
+                <div class="toolbar">
+                    <button class="btn" onclick="document.getElementById('fileInput').click()">📁 Importer Plan</button>
+                    <div class="toolbar-separator"></div>
+                    <button class="toolbar-btn" id="zoomInBtn">🔍+</button>
+                    <button class="toolbar-btn" id="zoomOutBtn">🔍-</button>
+                    <button class="toolbar-btn" id="fitBtn">📐 Ajuster</button>
+                    <div class="toolbar-separator"></div>
+                    <button class="toolbar-btn active" id="selectBtn">👆 Sélection</button>
+                    <button class="toolbar-btn" id="panBtn">✋ Déplacement</button>
+                    <div class="toolbar-separator"></div>
+                    <label style="color: #cccccc; font-size: 0.8rem;">Opacité:</label>
+                    <input type="range" id="opacitySlider" class="slider" min="0" max="100" value="70" style="width: 100px;">
+                    <span id="opacityValue" style="color: #cccccc; font-size: 0.8rem;">70%</span>
+                    <button id="resetBtn" class="btn btn-secondary">Réinitialiser</button>
                 </div>
-                <button id="resetBtn" class="upload-btn">Reset</button>
-            </div>
-            
-            <div class="visualization-section" id="visualizationSection" style="display: none;">
-                <div class="canvas-container" id="canvasContainer">
+                
+                <!-- Large Canvas Workspace -->
+                <div class="canvas-workspace" id="canvasContainer">
                     <canvas id="imageCanvas"></canvas>
-                    <div class="zoom-controls">
-                        <div class="zoom-btn" id="zoomInBtn" title="Zoom In">+</div>
-                        <div class="zoom-btn" id="zoomOutBtn" title="Zoom Out">−</div>
-                        <div class="zoom-btn" id="fitToWindowBtn" title="Fit to Window">⌂</div>
+                    <div class="canvas-overlay" id="visualizationSection" style="display: none;">
+                        <!-- Canvas content will be here -->
                     </div>
                 </div>
             </div>
             
-            <div class="data-table-section" id="dataTableSection" style="display: none;">
-                <h3>🔍 Détections d'objets</h3>
-                <table class="detection-table" id="detectionTable">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Label</th>
-                            <th>Confiance</th>
-                            <th>Position (x, y)</th>
-                            <th>Dimensions</th>
-                            <th>Surface</th>
-                            <th>Périmètre</th>
-                        </tr>
-                    </thead>
-                    <tbody id="detectionTableBody">
-                    </tbody>
-                </table>
+            <!-- Right Sidebar - Properties & Data -->
+            <div class="sidebar-right">
+                <div class="panel">
+                    <div class="panel-header">
+                        <h3>Détections</h3>
+                    </div>
+                    <div class="panel-content">
+                        <!-- Sorting Controls -->
+                        <div class="sort-controls">
+                            <select id="sortSelect" class="sort-select">
+                                <option value="index">Index</option>
+                                <option value="type">Type</option>
+                                <option value="confidence">Confiance</option>
+                                <option value="area">Surface</option>
+                                <option value="perimeter">Périmètre</option>
+                            </select>
+                            <button id="sortDirection" class="sort-direction" title="Ordre de tri">↑</button>
+                        </div>
+                        
+                        <!-- Detection Cards List -->
+                        <div id="detectionList" class="detection-list">
+                            <!-- Detection cards will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Professional Footer -->
+            <div class="footer">
+                <div class="footer-left">
+                    <span><strong>FloorIA</strong> - Analyse Architecturale IA</span>
+                </div>
+                <div class="footer-right">
+                    <span>Deep-5 et BTP Consultants</span>
+                    <span>|</span>
+                    <span>60 rue François 1er, 75008 PARIS</span>
+                </div>
             </div>
         </div>
-    </div>
-    
-    <script type="module" src="/main.js"></script>
-</body>
+        
+        <script src="main.js"></script>
+    </body>
 </html>

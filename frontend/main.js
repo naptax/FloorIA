@@ -25,19 +25,23 @@ class ImageAnalyzer {
         // Selected detection
         this.selectedDetectionIndex = -1;
         
+        // Sorting properties
+        this.sortColumn = null;
+        this.sortDirection = 'asc'; // 'asc' or 'desc'
+        this.originalDetections = null;
+        
         this.initializeEventListeners();
     }
     
     initializeEventListeners() {
         const fileInput = document.getElementById('fileInput');
-        const uploadSection = document.getElementById('uploadSection');
         const opacitySlider = document.getElementById('opacitySlider');
         const resetBtn = document.getElementById('resetBtn');
         
         // Zoom controls
         const zoomInBtn = document.getElementById('zoomInBtn');
         const zoomOutBtn = document.getElementById('zoomOutBtn');
-        const fitToWindowBtn = document.getElementById('fitToWindowBtn');
+        const fitBtn = document.getElementById('fitBtn');
         
         // File input change
         fileInput.addEventListener('change', (e) => {
@@ -46,50 +50,66 @@ class ImageAnalyzer {
             }
         });
         
-        // Drag and drop
-        uploadSection.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            uploadSection.classList.add('dragover');
-        });
-        
-        uploadSection.addEventListener('dragleave', () => {
-            uploadSection.classList.remove('dragover');
-        });
-        
-        uploadSection.addEventListener('drop', (e) => {
-            e.preventDefault();
-            uploadSection.classList.remove('dragover');
+        // Drag and drop on canvas container
+        const canvasContainer = document.getElementById('canvasContainer');
+        if (canvasContainer) {
+            canvasContainer.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                canvasContainer.style.background = '#333337';
+            });
             
-            const files = e.dataTransfer.files;
-            if (files.length > 0 && files[0].type.startsWith('image/')) {
-                this.handleFileUpload(files[0]);
-            }
-        });
+            canvasContainer.addEventListener('dragleave', () => {
+                canvasContainer.style.background = '#1e1e1e';
+            });
+            
+            canvasContainer.addEventListener('drop', (e) => {
+                e.preventDefault();
+                canvasContainer.style.background = '#1e1e1e';
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0 && files[0].type.startsWith('image/')) {
+                    this.handleFileUpload(files[0]);
+                }
+            });
+        }
         
         // Opacity slider
-        opacitySlider.addEventListener('input', (e) => {
-            this.backgroundOpacity = e.target.value / 100;
-            document.getElementById('opacityValue').textContent = e.target.value + '%';
-            this.redrawCanvas();
-        });
+        if (opacitySlider) {
+            opacitySlider.addEventListener('input', (e) => {
+                this.backgroundOpacity = e.target.value / 100;
+                const opacityValue = document.getElementById('opacityValue');
+                if (opacityValue) {
+                    opacityValue.textContent = e.target.value + '%';
+                }
+                this.redrawCanvas();
+            });
+        }
         
         // Reset button
-        resetBtn.addEventListener('click', () => {
-            this.reset();
-        });
+        if (resetBtn) {
+            resetBtn.addEventListener('click', () => {
+                this.reset();
+            });
+        }
         
         // Zoom controls
-        zoomInBtn.addEventListener('click', () => {
-            this.zoomIn();
-        });
+        if (zoomInBtn) {
+            zoomInBtn.addEventListener('click', () => {
+                this.zoomIn();
+            });
+        }
         
-        zoomOutBtn.addEventListener('click', () => {
-            this.zoomOut();
-        });
+        if (zoomOutBtn) {
+            zoomOutBtn.addEventListener('click', () => {
+                this.zoomOut();
+            });
+        }
         
-        fitToWindowBtn.addEventListener('click', () => {
-            this.fitToWindow();
-        });
+        if (fitBtn) {
+            fitBtn.addEventListener('click', () => {
+                this.fitToWindow();
+            });
+        }
         
         // Canvas mouse events for panning
         this.canvas.addEventListener('mousedown', (e) => {
@@ -113,6 +133,35 @@ class ImageAnalyzer {
             e.preventDefault();
             this.handleWheel(e);
         });
+        
+        // Table header sorting
+        this.initializeTableSorting();
+    }
+    
+    initializeTableSorting() {
+        // Initialize sort controls
+        const sortSelect = document.getElementById('sortSelect');
+        const sortDirectionBtn = document.getElementById('sortDirection');
+        
+        if (sortSelect) {
+            sortSelect.addEventListener('change', (e) => {
+                this.sortTable(e.target.value);
+            });
+        }
+        
+        if (sortDirectionBtn) {
+            sortDirectionBtn.addEventListener('click', () => {
+                // Toggle direction and re-sort
+                this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+                this.updateSortIndicators();
+                
+                if (this.sortColumn) {
+                    const sortedDetections = this.getSortedDetections(this.sortColumn, this.sortDirection);
+                    this.analysisData.detections = sortedDetections;
+                    this.populateDataTable();
+                }
+            });
+        }
     }
     
     async handleFileUpload(file) {
@@ -127,13 +176,17 @@ class ImageAnalyzer {
             const analysisResult = await this.analyzeImage(file);
             this.analysisData = analysisResult;
             
+            // Store original detections for sorting
+            this.originalDetections = analysisResult.detections.slice();
+            
             // Draw the results
             this.drawAnalysis();
             
-            // Show controls and visualization sections
-            document.getElementById('controls').style.display = 'flex';
-            document.getElementById('visualizationSection').style.display = 'block';
-            document.getElementById('dataTableSection').style.display = 'block';
+            // Show visualization section
+            const visualizationSection = document.getElementById('visualizationSection');
+            if (visualizationSection) {
+                visualizationSection.style.display = 'block';
+            }
             
             // Populate the data table
             this.populateDataTable();
@@ -147,6 +200,95 @@ class ImageAnalyzer {
         } finally {
             this.showLoading(false);
         }
+    }
+    
+    sortTable(sortKey) {
+        if (!this.analysisData || !this.analysisData.detections) return;
+        
+        // Toggle sort direction if clicking the same column
+        if (this.sortColumn === sortKey) {
+            this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            this.sortColumn = sortKey;
+            this.sortDirection = 'asc';
+        }
+        
+        // Update header visual indicators
+        this.updateSortIndicators();
+        
+        // Sort the detections
+        const sortedDetections = this.getSortedDetections(sortKey, this.sortDirection);
+        
+        // Update the analysis data with sorted detections
+        this.analysisData.detections = sortedDetections;
+        
+        // Repopulate the table
+        this.populateDataTable();
+    }
+    
+    updateSortIndicators() {
+        // Update sort direction button
+        const sortDirectionBtn = document.getElementById('sortDirection');
+        if (sortDirectionBtn) {
+            sortDirectionBtn.textContent = this.sortDirection === 'asc' ? '↑' : '↓';
+            sortDirectionBtn.classList.toggle('desc', this.sortDirection === 'desc');
+        }
+        
+        // Update sort select to current column
+        const sortSelect = document.getElementById('sortSelect');
+        if (sortSelect && this.sortColumn) {
+            sortSelect.value = this.sortColumn;
+        }
+    }
+    
+    getSortedDetections(sortKey, direction) {
+        const detections = this.originalDetections.slice(); // Work with original data
+        
+        return detections.sort((a, b) => {
+            let valueA, valueB;
+            
+            switch (sortKey) {
+                case 'index':
+                    valueA = this.originalDetections.indexOf(a);
+                    valueB = this.originalDetections.indexOf(b);
+                    break;
+                case 'label':
+                    valueA = a.label.toLowerCase();
+                    valueB = b.label.toLowerCase();
+                    break;
+                case 'confidence':
+                    valueA = a.confidence;
+                    valueB = b.confidence;
+                    break;
+                case 'position':
+                    valueA = a.bbox.x + a.bbox.y; // Sort by combined position
+                    valueB = b.bbox.x + b.bbox.y;
+                    break;
+                case 'dimensions':
+                    valueA = a.bbox.width * a.bbox.height; // Sort by area
+                    valueB = b.bbox.width * b.bbox.height;
+                    break;
+                case 'area':
+                    valueA = a.geometry ? a.geometry.area : 0;
+                    valueB = b.geometry ? b.geometry.area : 0;
+                    break;
+                case 'perimeter':
+                    valueA = a.geometry ? a.geometry.perimeter : 0;
+                    valueB = b.geometry ? b.geometry.perimeter : 0;
+                    break;
+                default:
+                    return 0;
+            }
+            
+            // Handle string vs number comparison
+            if (typeof valueA === 'string' && typeof valueB === 'string') {
+                const comparison = valueA.localeCompare(valueB);
+                return direction === 'asc' ? comparison : -comparison;
+            } else {
+                const comparison = valueA - valueB;
+                return direction === 'asc' ? comparison : -comparison;
+            }
+        });
     }
     
     loadImage(file) {
@@ -277,29 +419,59 @@ class ImageAnalyzer {
     }
     
     showLoading(show) {
-        document.getElementById('loading').style.display = show ? 'block' : 'none';
+        const loadingElement = document.getElementById('loading');
+        if (loadingElement) {
+            loadingElement.style.display = show ? 'block' : 'none';
+        }
     }
     
     showError(message) {
         const errorElement = document.getElementById('errorMessage');
-        errorElement.textContent = message;
-        errorElement.style.display = 'block';
+        if (errorElement) {
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+        }
     }
     
     hideError() {
-        document.getElementById('errorMessage').style.display = 'none';
+        const errorElement = document.getElementById('errorMessage');
+        if (errorElement) {
+            errorElement.style.display = 'none';
+        }
     }
     
     reset() {
         this.originalImage = null;
         this.analysisData = null;
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        document.getElementById('controls').style.display = 'none';
-        document.getElementById('visualizationSection').style.display = 'none';
-        document.getElementById('dataTableSection').style.display = 'none';
-        document.getElementById('fileInput').value = '';
-        document.getElementById('opacitySlider').value = 70;
-        document.getElementById('opacityValue').textContent = '70%';
+        
+        // Hide visualization section if it exists
+        const visualizationSection = document.getElementById('visualizationSection');
+        if (visualizationSection) {
+            visualizationSection.style.display = 'none';
+        }
+        
+        // Clear detection list
+        const detectionList = document.getElementById('detectionList');
+        if (detectionList) {
+            detectionList.innerHTML = '';
+        }
+        
+        // Reset form elements
+        const fileInput = document.getElementById('fileInput');
+        if (fileInput) {
+            fileInput.value = '';
+        }
+        
+        const opacitySlider = document.getElementById('opacitySlider');
+        const opacityValue = document.getElementById('opacityValue');
+        if (opacitySlider) {
+            opacitySlider.value = 70;
+        }
+        if (opacityValue) {
+            opacityValue.textContent = '70%';
+        }
+        
         this.backgroundOpacity = 0.7;
         this.scale = 1;
         this.translateX = 0;
@@ -403,61 +575,167 @@ class ImageAnalyzer {
         }
     }
     
-    // Data Table Methods
+    // Data Cards Methods
     populateDataTable() {
         if (!this.analysisData || !this.analysisData.detections) return;
         
-        const tbody = document.getElementById('detectionTableBody');
-        tbody.innerHTML = '';
+        const container = document.getElementById('detectionList');
+        if (!container) return;
+        
+        container.innerHTML = '';
         
         this.analysisData.detections.forEach((detection, index) => {
-            const row = document.createElement('tr');
-            row.dataset.index = index;
-            
-            // Add click event for row selection
-            row.addEventListener('click', () => {
-                this.selectDetection(index);
-            });
-            
-            const { bbox, label, confidence, geometry } = detection;
-            
-            row.innerHTML = `
-                <td><strong>${index + 1}</strong></td>
-                <td><span class="label-badge">${label}</span></td>
-                <td>
-                    <div class="confidence-bar">
-                        <div class="confidence-fill" style="width: ${confidence * 100}%"></div>
-                    </div>
-                    <small>${(confidence * 100).toFixed(1)}%</small>
-                </td>
-                <td>${Math.round(bbox.x)}, ${Math.round(bbox.y)}</td>
-                <td>${Math.round(bbox.width)} × ${Math.round(bbox.height)}</td>
-                <td>${geometry ? Math.round(geometry.area) : 'N/A'}</td>
-                <td>${geometry ? Math.round(geometry.perimeter) : 'N/A'}</td>
-            `;
-            
-            tbody.appendChild(row);
+            const card = this.createDetectionCard(detection, index);
+            container.appendChild(card);
         });
+    }
+    
+    createDetectionCard(detection, index) {
+        const { bbox, label, confidence, geometry } = detection;
+        
+        const card = document.createElement('div');
+        card.className = 'detection-card';
+        card.dataset.index = index;
+        
+        // Add click event for card selection
+        card.addEventListener('click', () => {
+            this.selectDetection(index);
+        });
+        
+        card.innerHTML = `
+            <div class="detection-card-header">
+                <div class="detection-index">${index + 1}</div>
+                <div class="detection-label">${label}</div>
+            </div>
+            
+            <div class="detection-confidence">
+                <div class="confidence-bar">
+                    <div class="confidence-fill" style="width: ${confidence * 100}%"></div>
+                </div>
+                <div class="confidence-text">${(confidence * 100).toFixed(1)}%</div>
+            </div>
+            
+            <div class="detection-details">
+                <div class="detail-item">
+                    <div class="detail-label">Position</div>
+                    <div class="detail-value">${Math.round(bbox.x)}, ${Math.round(bbox.y)}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Dimensions</div>
+                    <div class="detail-value">${Math.round(bbox.width)}×${Math.round(bbox.height)}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Surface</div>
+                    <div class="detail-value">${geometry ? Math.round(geometry.area) : 'N/A'}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Périmètre</div>
+                    <div class="detail-value">${geometry ? Math.round(geometry.perimeter) : 'N/A'}</div>
+                </div>
+            </div>
+        `;
+        
+        return card;
     }
     
     selectDetection(index) {
         // Remove previous selection
-        const previousSelected = document.querySelector('.detection-table tr.selected');
+        const previousSelected = document.querySelector('.detection-card.selected');
         if (previousSelected) {
             previousSelected.classList.remove('selected');
         }
         
         // Add new selection
-        const newSelected = document.querySelector(`[data-index="${index}"]`);
+        const newSelected = document.querySelector(`.detection-card[data-index="${index}"]`);
         if (newSelected) {
             newSelected.classList.add('selected');
+            // Scroll the card into view
+            newSelected.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
         
         this.selectedDetectionIndex = index;
-        this.redrawCanvas();
         
-        // Optionally zoom to the selected detection
-        this.zoomToDetection(index);
+        // Trigger highlight animation instead of zoom
+        this.highlightDetection(index);
+        
+        this.redrawCanvas();
+    }
+    
+    highlightDetection(index) {
+        if (!this.analysisData || !this.analysisData.detections[index]) return;
+        
+        const detection = this.analysisData.detections[index];
+        const { bbox } = detection;
+        
+        // Create a temporary highlight overlay
+        const highlightCanvas = document.createElement('canvas');
+        highlightCanvas.width = this.canvas.width;
+        highlightCanvas.height = this.canvas.height;
+        highlightCanvas.style.position = 'absolute';
+        highlightCanvas.style.top = this.canvas.style.top || '0px';
+        highlightCanvas.style.left = this.canvas.style.left || '0px';
+        highlightCanvas.style.transform = this.canvas.style.transform || 'scale(1)';
+        highlightCanvas.style.transformOrigin = this.canvas.style.transformOrigin || 'top left';
+        highlightCanvas.style.pointerEvents = 'none';
+        highlightCanvas.style.zIndex = '10';
+        
+        const container = document.getElementById('canvasContainer');
+        if (container) {
+            container.appendChild(highlightCanvas);
+        } else {
+            return; // Exit if container doesn't exist
+        }
+        
+        const highlightCtx = highlightCanvas.getContext('2d');
+        
+        // Animation variables
+        let opacity = 0.6;
+        let pulseDirection = -1;
+        let animationFrame = 0;
+        const maxFrames = 60; // 1 second at 60fps
+        
+        const animate = () => {
+            highlightCtx.clearRect(0, 0, highlightCanvas.width, highlightCanvas.height);
+            
+            // Apply same transformations as main canvas
+            highlightCtx.save();
+            highlightCtx.scale(this.scale, this.scale);
+            highlightCtx.translate(this.translateX / this.scale, this.translateY / this.scale);
+            
+            // Draw pulsing highlight
+            highlightCtx.fillStyle = `rgba(102, 126, 234, ${opacity})`;
+            highlightCtx.fillRect(bbox.x, bbox.y, bbox.width, bbox.height);
+            
+            // Draw animated border
+            highlightCtx.strokeStyle = `rgba(102, 126, 234, ${opacity + 0.3})`;
+            highlightCtx.lineWidth = 6;
+            highlightCtx.strokeRect(bbox.x, bbox.y, bbox.width, bbox.height);
+            
+            highlightCtx.restore();
+            
+            // Update opacity for pulsing effect
+            opacity += pulseDirection * 0.02;
+            if (opacity <= 0.2) {
+                opacity = 0.2;
+                pulseDirection = 1;
+            } else if (opacity >= 0.6) {
+                opacity = 0.6;
+                pulseDirection = -1;
+            }
+            
+            animationFrame++;
+            
+            if (animationFrame < maxFrames) {
+                requestAnimationFrame(animate);
+            } else {
+                // Remove highlight overlay after animation
+                if (container && container.contains(highlightCanvas)) {
+                    container.removeChild(highlightCanvas);
+                }
+            }
+        };
+        
+        animate();
     }
     
     zoomToDetection(index) {

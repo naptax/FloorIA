@@ -29,13 +29,14 @@
 <tr>
 <td width="50%">
 
-### 🎨 **Advanced UI/UX**
-- 🖼️ **Large Visualization Window** (600px height)
-- 🔍 **Interactive Zoom Controls** (In/Out/Fit-to-Window)
-- 🖱️ **Pan & Drag Navigation**
-- 🎯 **Mouse Wheel Zoom** with smart positioning
-- 📊 **Interactive Data Table** with selectable rows
-- 🎪 **Auto-zoom to Selected Detections**
+### 🎨 **Professional VSCode-Inspired UI**
+- 🎨 **Visual Studio Code Theme** - Authentic dark theme with VSCode colors
+- 🖼️ **Maximized Canvas Area** - Full workspace without left sidebar
+- 🔧 **Integrated Toolbar** - All controls in compact header
+- 📋 **Detection Cards Panel** - Modern card-based detection list
+- 🎯 **Highlight Animation** - Temporary pulsing overlay on selection
+- 📊 **Sortable Detection Data** - Click headers to sort by any criteria
+- 🏢 **Professional Footer** - Corporate branding with company info
 
 </td>
 <td width="50%">
@@ -86,6 +87,40 @@ graph TB
 ├── 📚 README.md               # This file
 └── 🔒 .gitignore             # Git ignore rules
 ```
+
+## 🆕 Recent Updates
+
+### v2.0.0 - Visual Studio Code Interface Redesign (January 2025)
+
+#### 🎨 **Complete UI/UX Overhaul**
+- ✅ **VSCode Theme Applied** - Authentic Visual Studio Code dark theme with proper colors (`#1e1e1e`, `#3c3c3c`, `#252526`)
+- ✅ **Consolas Font** - Professional monospace typography matching VSCode
+- ✅ **Compact Layout** - Removed unnecessary left sidebar, maximized canvas workspace
+- ✅ **Integrated Toolbar** - All controls (import, zoom, opacity) moved to compact header
+
+#### 📋 **Detection Panel Redesign**
+- ✅ **Card-Based Layout** - Replaced cramped table with readable detection cards
+- ✅ **Smart Sorting** - Dropdown + direction toggle for better UX in narrow panel
+- ✅ **Improved Readability** - Proper spacing and typography for 350px width
+- ✅ **Smooth Interactions** - Auto-scroll to selected detection card
+
+#### 🎯 **Enhanced Interactions**
+- ✅ **Highlight Animation** - Temporary pulsing overlay instead of disruptive zoom
+- ✅ **Drag & Drop** - File drop support on canvas area
+- ✅ **Professional Footer** - Corporate branding (Deep-5 et BTP Consultants)
+
+#### 🔧 **Technical Improvements**
+- ✅ **Robust JavaScript** - All DOM access secured against null references
+- ✅ **Error Prevention** - Comprehensive null checks for style properties
+- ✅ **Memory Management** - Proper cleanup of highlight overlays
+- ✅ **Responsive Design** - Optimized for professional architectural workflows
+
+#### 🏢 **Professional Branding**
+- ✅ **Footer Integration** - "FloorIA - Analyse Architecturale IA | Deep-5 et BTP Consultants | 60 rue François 1er, 75008 PARIS"
+- ✅ **VSCode Status Bar** - Blue accent bar matching Visual Studio Code
+- ✅ **Corporate Identity** - Professional appearance for architectural industry
+
+---
 
 ## ⚡ Quick Start
 
