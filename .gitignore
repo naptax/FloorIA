@@ -14,9 +14,23 @@ backend/venv/
 frontend/node_modules/
 frontend/package-lock.json
 
-# Environment variables
+# Environment variables and secrets (NEVER COMMIT THESE!)
 backend/.env
+.env
+*.env
+.env.local
+.env.production
+.env.development
+
+# API keys and sensitive configuration
+config/secrets.json
+config/api-keys.json
+*.key
+*.pem
+*.p12
+*.pfx
 
 # Temporary files
 *.tmp
 *.log
+*.cache

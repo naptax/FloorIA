@@ -134,14 +134,30 @@ npm run dev
 
 ### 🤖 Roboflow Integration
 
-Create a `.env` file in the `backend/` directory:
+**🔐 SECURITY FIRST**: Never commit API keys to git!
 
-```env
-ROBOFLOW_API_KEY=your_api_key_here
-ROBOFLOW_MODEL_ENDPOINT=your_model_endpoint_here
+1. Copy the environment template:
+```bash
+cd backend
+cp .env.example .env
 ```
 
-The application is pre-configured for architectural analysis using the `cubicasa5k-2-qpmsa-tppfc/1` model.
+2. Edit `.env` with your actual Roboflow credentials:
+```env
+# ⚠️ KEEP THIS FILE LOCAL - NEVER COMMIT TO GIT!
+ROBOFLOW_API_KEY=your_actual_api_key_here
+ROBOFLOW_WORKSPACE=cubicasa5k-2-qpmsa-tppfc
+ROBOFLOW_PROJECT=cubicasa5k-2-qpmsa-tppfc
+ROBOFLOW_VERSION=1
+```
+
+3. The `.env` file is automatically excluded from git via `.gitignore`
+
+**✅ Security Features:**
+- 🔒 API keys loaded from environment variables only
+- 🚫 `.env` files excluded from git commits
+- ⚠️ Warning messages if API key is missing
+- 📝 Clear documentation on secure practices
 
 ## 🎮 Usage Guide
 

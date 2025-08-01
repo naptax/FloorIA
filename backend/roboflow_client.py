@@ -10,11 +10,16 @@ class RoboflowClient:
     """
     
     def __init__(self):
-        # Initialize the Roboflow client with the provided configuration
-        self.api_key = "9WKvZkSQWxxZTkrenZjF"  # API key provided by user
-        self.workspace = "cubicasa5k-2-qpmsa-tppfc"  # Workspace from model ID
-        self.project_name = "cubicasa5k-2-qpmsa-tppfc"  # Project name
-        self.version = 1  # Version from model ID
+        # Load configuration from environment variables for security
+        self.api_key = os.getenv("ROBOFLOW_API_KEY")
+        self.workspace = os.getenv("ROBOFLOW_WORKSPACE", "cubicasa5k-2-qpmsa-tppfc")
+        self.project_name = os.getenv("ROBOFLOW_PROJECT", "cubicasa5k-2-qpmsa-tppfc")
+        self.version = int(os.getenv("ROBOFLOW_VERSION", "1"))
+        
+        # Validate required environment variables
+        if not self.api_key:
+            print("WARNING: ROBOFLOW_API_KEY not found in environment variables")
+            print("Please set your Roboflow API key in the .env file")
         
         # Initialize Roboflow with error handling
         try:
