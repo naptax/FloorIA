@@ -23,15 +23,41 @@ fi
 if [ ! -d "venv" ]; then
     echo "📦 Création de l'environnement virtuel..."
     python3 -m venv venv
+    if [ $? -ne 0 ]; then
+        echo "❌ Erreur lors de la création de l'environnement virtuel."
+        echo "   Assurez-vous que python3-venv est installé: sudo apt install python3-venv"
+        exit 1
+    fi
 fi
 
 # Activer l'environnement virtuel
 echo "🔧 Activation de l'environnement virtuel..."
 source venv/bin/activate
 
+# Vérifier que l'activation a fonctionné
+if [ "$VIRTUAL_ENV" = "" ]; then
+    echo "❌ Erreur: L'environnement virtuel n'a pas pu être activé."
+    exit 1
+fi
+
 # Installer les dépendances
 echo "📥 Installation des dépendances..."
 pip install -r requirements.txt
+
+# Si l'installation échoue à cause de l'environnement externally-managed
+if [ $? -ne 0 ]; then
+    echo "⚠️  Installation échouée. Tentative avec --break-system-packages..."
+    pip install -r requirements.txt --break-system-packages
+    
+    if [ $? -ne 0 ]; then
+        echo "❌ Impossible d'installer les dépendances."
+        echo "   Solutions possibles:"
+        echo "   1. Utilisez pipx: pipx install <package>"
+        echo "   2. Installez python3-venv: sudo apt install python3-venv python3-full"
+        echo "   3. Utilisez un gestionnaire de paquets système"
+        exit 1
+    fi
+fi
 
 # Vérifier si le fichier .env existe
 if [ ! -f ".env" ]; then
@@ -48,4 +74,4 @@ echo "   API Documentation: http://localhost:8000/docs"
 echo "   Appuyez sur Ctrl+C pour arrêter le serveur"
 echo ""
 
-python main.py
+python3 main.py
