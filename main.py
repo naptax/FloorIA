@@ -1,5 +1,5 @@
 def main():
-    print("Hello from vectorizator!")
+    print("Hello from flooria!")
 
 
 if __name__ == "__main__":

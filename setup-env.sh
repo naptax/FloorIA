@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# 🔐 Vectorizator Environment Setup Script
+# 🔐 FloorIA Environment Setup Script
 # This script helps you set up your environment variables securely
 
-echo "🚀 Vectorizator Environment Setup"
+echo "🚀 FloorIA Environment Setup"
 echo "=================================="
 echo ""
 

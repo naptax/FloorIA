@@ -15,7 +15,7 @@ from geometry_processor import GeometryProcessor
 # Load environment variables
 load_dotenv()
 
-app = FastAPI(title="Vectorizator Backend", version="1.0.0")
+app = FastAPI(title="FloorIA Backend", version="1.0.0")
 
 # Add CORS middleware
 app.add_middleware(
@@ -32,7 +32,7 @@ geometry_processor = GeometryProcessor()
 
 @app.get("/")
 async def root():
-    return {"message": "Vectorizator Backend API", "status": "running"}
+    return {"message": "FloorIA Backend API", "status": "running"}
 
 @app.post("/analyze")
 async def analyze_image(image: UploadFile = File(...)):

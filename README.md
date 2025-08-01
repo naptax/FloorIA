@@ -1,8 +1,8 @@
 <div align="center">
 
-# 🎯 Vectorizator
+# 🏗️ **FloorIA**
 
-**AI-Powered Architectural Image Analysis Platform**
+*AI-Powered Architectural Image Analysis Platform*
 
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-00a393.svg?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
@@ -71,7 +71,7 @@ graph TB
 ## 📁 Project Structure
 
 ```
-🎯 Vectorizator/
+🏗️ FloorIA/
 ├── 🌐 frontend/
 │   ├── 📄 index.html          # Modern UI with advanced controls
 │   ├── ⚡ main.js             # Interactive zoom, pan & table logic
@@ -129,6 +129,46 @@ npm run dev
 - **Frontend**: http://localhost:3000
 - **Backend API**: http://localhost:8000
 - **API Documentation**: http://localhost:8000/docs
+
+## 🎯 Scripts de Démarrage Automatisés
+
+Pour simplifier le développement, des scripts de démarrage automatisés sont disponibles :
+
+### 🐍 Démarrage Backend
+```bash
+./start-backend.sh
+```
+
+**Ce script :**
+- ✅ Vérifie la présence du répertoire backend
+- 🐍 Crée l'environnement virtuel Python si nécessaire
+- 📦 Installe automatiquement les dépendances
+- 🔐 Vérifie la configuration `.env`
+- 🚀 Démarre le serveur FastAPI sur http://localhost:8000
+
+### 🌐 Démarrage Frontend
+```bash
+./start-frontend.sh
+```
+
+**Ce script :**
+- ✅ Vérifie la présence du répertoire frontend
+- 📋 Vérifie que Node.js et npm sont installés
+- 📦 Installe les dépendances npm si nécessaire
+- 🚀 Démarre le serveur Vite sur http://localhost:3000
+
+### 🚀 Démarrage Complet
+Pour démarrer l'application complète :
+
+```bash
+# Terminal 1 - Backend
+./start-backend.sh
+
+# Terminal 2 - Frontend (dans un nouveau terminal)
+./start-frontend.sh
+```
+
+> 💡 **Astuce**: Les scripts incluent toutes les vérifications nécessaires et vous guideront en cas de problème (dépendances manquantes, fichiers de configuration, etc.)
 
 ## 🔧 Configuration
 
@@ -206,7 +246,7 @@ ROBOFLOW_VERSION=1
 
 | Method | Endpoint | Description | Response |
 |--------|----------|-------------|----------|
-| `GET` | `/` | API status | `{"message": "Vectorizator Backend API", "status": "running"}` |
+| `GET` | `/` | API status | `{"message": "FloorIA Backend API", "status": "running"}` |
 | `POST` | `/analyze` | Image analysis | Detection results with geometric data |
 | `GET` | `/health` | Health check | `{"status": "healthy", "service": "vectorizator-backend"}` |
 
