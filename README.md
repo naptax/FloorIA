@@ -294,6 +294,247 @@ ROBOFLOW_VERSION=1
 - **Confidence Scores**: Visual bars with percentage values
 - **Selection Highlighting**: Visual emphasis on selected detections
 
+## 🚀 Production Deployment with Railway
+
+### 🌟 Why Railway?
+
+FloorIA is configured for seamless deployment on **Railway**, a modern platform that provides:
+
+- ✅ **Zero-Config Deployment** - Automatic detection of Python and Node.js projects
+- ✅ **GitHub Integration** - Automatic deployments on git push
+- ✅ **Production Branch Control** - Deploys only from `production` branch
+- ✅ **Built-in Database Support** - PostgreSQL, MySQL, Redis ready for future features
+- ✅ **Environment Variables** - Secure configuration management
+- ✅ **Custom Domains** - Professional URLs for your application
+- ✅ **Real-time Logs** - Comprehensive monitoring and debugging
+
+### 🏗️ Architecture Overview
+
+```
+FloorIA Production Deployment
+├── 🌐 Frontend Service (Vite + TypeScript)
+│   ├── 📦 Nixpacks auto-detection
+│   ├── 🔧 Build: npm ci && npm run build
+│   └── 🚀 Start: vite preview --host 0.0.0.0
+├── 🐍 Backend Service (FastAPI + Python)
+│   ├── 📦 Nixpacks auto-detection
+│   ├── 🔧 Build: pip install -r requirements.txt
+│   └── 🚀 Start: uvicorn main:app --host 0.0.0.0
+└── 🗄️ Database Service (Future: PostgreSQL)
+    └── 🔗 Automatic DATABASE_URL injection
+```
+
+### 📋 Prerequisites
+
+1. **Railway Account**: Sign up at [railway.app](https://railway.app)
+2. **GitHub Connection**: Link your GitHub account to Railway
+3. **Repository Access**: Ensure Railway can access the `naptax/FloorIA` repository
+4. **API Credentials**: Have your Roboflow API key ready (never commit to git!)
+
+### 🚀 Step-by-Step Deployment Guide
+
+#### 1. **Create Railway Project**
+
+```bash
+# Railway will auto-detect the project structure
+1. Go to railway.app dashboard
+2. Click "New Project"
+3. Select "Deploy from GitHub repo"
+4. Choose "naptax/FloorIA"
+5. ⚠️ IMPORTANT: Set branch to "production"
+```
+
+#### 2. **Configure Backend Service**
+
+```yaml
+# Railway automatically detects backend/railway.json
+Service Name: flooria-backend
+Root Directory: /backend
+Build Command: pip install -r requirements.txt
+Start Command: uvicorn main:app --host 0.0.0.0 --port $PORT
+Health Check: /health
+```
+
+**Environment Variables** (Set in Railway Dashboard):
+```env
+# ⚠️ NEVER commit these values to git!
+ROBOFLOW_API_KEY=your_roboflow_api_key_here
+ROBOFLOW_WORKSPACE=your_workspace_name
+ROBOFLOW_PROJECT=your_project_name
+ROBOFLOW_VERSION=1
+CORS_ORIGINS=https://your-frontend-domain.railway.app
+ENVIRONMENT=production
+```
+
+#### 3. **Configure Frontend Service**
+
+```yaml
+# Railway automatically detects frontend/railway.json
+Service Name: flooria-frontend
+Root Directory: /frontend
+Build Command: npm ci && npm run build
+Start Command: npm run preview -- --host 0.0.0.0 --port $PORT
+Health Check: /
+```
+
+**Environment Variables** (Set in Railway Dashboard):
+```env
+VITE_API_BASE_URL=https://your-backend-domain.railway.app
+NODE_ENV=production
+```
+
+#### 4. **Domain Configuration**
+
+Railway provides automatic domains:
+- **Backend**: `https://flooria-backend-production.up.railway.app`
+- **Frontend**: `https://flooria-frontend-production.up.railway.app`
+
+**Custom Domains** (Optional):
+```
+Backend API: api.flooria.com
+Frontend App: app.flooria.com
+```
+
+### 🔄 Deployment Workflow
+
+#### **Development → Production Pipeline**
+
+```bash
+# 1. Development on master branch
+git checkout master
+git add .
+git commit -m "feat: new feature implementation"
+git push origin master
+
+# 2. Deploy to production (triggers Railway build)
+git checkout production
+git merge master
+git push origin production  # 🚀 Automatic deployment starts!
+```
+
+#### **Rollback Strategy**
+
+```bash
+# Quick rollback to previous version
+git checkout production
+git reset --hard HEAD~1  # Go back one commit
+git push --force origin production  # Deploy previous version
+```
+
+### 📊 Monitoring & Maintenance
+
+#### **Health Monitoring**
+- **Backend Health**: `https://your-backend.railway.app/health`
+- **Frontend Health**: `https://your-frontend.railway.app/`
+- **Railway Dashboard**: Real-time service status
+
+#### **Log Access**
+```bash
+# Via Railway CLI (optional)
+npm install -g @railway/cli
+railway login
+railway logs --service flooria-backend
+railway logs --service flooria-frontend
+```
+
+#### **Performance Metrics**
+- 📈 **Request Volume**: Track API usage
+- ⚡ **Response Times**: Monitor performance
+- 💾 **Memory Usage**: Optimize resource consumption
+- 🔄 **Deployment Frequency**: Track release velocity
+
+### 🔮 Future Enhancements
+
+#### **Database Integration** (Ready for Implementation)
+
+```bash
+# Add PostgreSQL service in Railway
+1. Railway Dashboard → Add Service → Database → PostgreSQL
+2. Automatic DATABASE_URL environment variable
+3. Update backend requirements.txt:
+```
+
+```python
+# Additional dependencies for database
+psycopg2-binary==2.9.7
+sqlalchemy==2.0.21
+alembic==1.12.1
+```
+
+#### **Advanced Features Roadmap**
+- 🔐 **Authentication System**: User management and API security
+- 📊 **Analytics Dashboard**: Usage statistics and insights
+- 🗄️ **Data Persistence**: Save analysis results and user projects
+- 🔄 **Batch Processing**: Handle multiple images simultaneously
+- 📱 **Mobile Optimization**: Responsive design improvements
+
+### 🛡️ Security Best Practices
+
+#### **Environment Variables Security**
+- ✅ **Never commit secrets** to git repositories
+- ✅ **Use Railway's secure variable storage**
+- ✅ **Rotate API keys regularly**
+- ✅ **Monitor access logs**
+- ✅ **Enable CORS properly** for production domains
+
+#### **Production Hardening**
+```python
+# Backend security headers (already implemented)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=os.getenv("CORS_ORIGINS", "").split(","),
+    allow_credentials=True,
+    allow_methods=["GET", "POST"],
+    allow_headers=["*"],
+)
+```
+
+### 💰 Cost Optimization
+
+#### **Railway Pricing Tiers**
+- **Hobby Plan**: $5/month per service (recommended for development)
+- **Pro Plan**: $20/month per service (recommended for production)
+- **Database**: $5/month for PostgreSQL (when needed)
+
+#### **Resource Optimization**
+- 🔧 **Right-sizing**: Monitor and adjust resource allocation
+- ⏱️ **Sleep Mode**: Automatic scaling down during low usage
+- 📊 **Usage Analytics**: Track and optimize resource consumption
+
+### 🆘 Troubleshooting Guide
+
+#### **Common Deployment Issues**
+
+| Issue | Symptom | Solution |
+|-------|---------|----------|
+| **Build Failed** | Red deployment status | Check `requirements.txt`/`package.json` |
+| **Health Check Failed** | Service unreachable | Verify `/health` endpoint |
+| **CORS Errors** | Frontend can't reach API | Update `CORS_ORIGINS` variable |
+| **Environment Variables** | Configuration errors | Verify all required vars are set |
+| **Port Binding** | Service won't start | Ensure `--port $PORT` in start command |
+
+#### **Debug Commands**
+```bash
+# Check service logs
+railway logs --service flooria-backend --lines 100
+
+# Verify environment variables
+railway variables --service flooria-backend
+
+# Test health endpoints
+curl https://your-backend.railway.app/health
+curl https://your-frontend.railway.app/
+```
+
+### 📞 Support Resources
+
+- 📖 **Railway Documentation**: [docs.railway.app](https://docs.railway.app)
+- 💬 **Railway Discord**: [discord.gg/railway](https://discord.gg/railway)
+- 🐛 **FloorIA Issues**: [GitHub Issues](https://github.com/naptax/FloorIA/issues)
+- 📧 **Technical Support**: Contact the development team
+
+---
+
 ## 🛠️ Technology Stack
 
 <div align="center">
