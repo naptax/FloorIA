@@ -6,6 +6,7 @@ import { Footer } from '@/components/Footer';
 import { Toolbar } from '@/components/Toolbar';
 import { Canvas } from '@/components/Canvas';
 import { DetectionPanel } from '@/components/DetectionPanel';
+import { ProgressGauge } from '@/components/ProgressGauge';
 import { apiClient } from '@/utils/api';
 import '@/styles/main.css';
 
@@ -18,6 +19,7 @@ class FloorIAApp {
   private toolbar!: Toolbar;
   private canvas!: Canvas;
   private detectionPanel!: DetectionPanel;
+  private progressGauge!: ProgressGauge;
 
   constructor() {
     this.initializeApp();
@@ -59,6 +61,9 @@ class FloorIAApp {
     // Initialize detection panel
     this.detectionPanel = new DetectionPanel(appContainer, eventHandlers);
 
+    // Initialize progress gauge
+    this.progressGauge = new ProgressGauge(appContainer);
+
     // Setup drag and drop
     this.setupDragAndDrop();
 
@@ -71,8 +76,10 @@ class FloorIAApp {
   private async handleFileUpload(file: File): Promise<void> {
     try {
       this.header.updateStatus('Analyse en cours...');
-      this.detectionPanel.showLoading(true);
       this.detectionPanel.hideError();
+      
+      // Show modern progress gauge instead of simple loading
+      this.progressGauge.show();
 
       // Load and display the image
       await this.canvas.loadImage(file);
@@ -83,6 +90,9 @@ class FloorIAApp {
       // Display results
       this.canvas.setAnalysisData(analysisResult);
       this.detectionPanel.setDetections(analysisResult.detections);
+
+      // Complete the progress gauge
+      this.progressGauge.complete();
 
       // Fit image to window initially
       setTimeout(() => {
@@ -96,8 +106,7 @@ class FloorIAApp {
       const errorMessage = error instanceof Error ? error.message : 'Erreur inconnue';
       this.detectionPanel.showError(`Erreur lors du traitement de l'image: ${errorMessage}`);
       this.header.updateStatus('Erreur');
-    } finally {
-      this.detectionPanel.showLoading(false);
+      this.progressGauge.hide();
     }
   }
 
@@ -196,6 +205,7 @@ class FloorIAApp {
     this.toolbar.destroy();
     this.canvas.destroy();
     this.detectionPanel.destroy();
+    this.progressGauge.destroy();
   }
 }
 
