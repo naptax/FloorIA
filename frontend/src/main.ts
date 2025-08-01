@@ -9,6 +9,7 @@ import { DetectionPanel } from '@/components/DetectionPanel';
 import { ProgressGauge } from '@/components/ProgressGauge';
 import { ScaleCalibratorComponent } from '@/components/ScaleCalibrator';
 import { apiClient } from '@/utils/api';
+import { exportDetectionsToJSON } from '@/utils/export';
 import '@/styles/main.css';
 
 /**
@@ -165,6 +166,16 @@ class FloorIAApp {
     // Listen for scale calibrator events
     toolbarElement.addEventListener('open-scale-calibrator', () => {
       this.scaleCalibrator.show();
+    });
+
+    // Listen for export JSON events
+    toolbarElement.addEventListener('export-json', () => {
+      const detections = this.detectionPanel.getDetections();
+      if (detections.length > 0) {
+        exportDetectionsToJSON(detections);
+      } else {
+        alert('Aucune détection à exporter. Veuillez d\'abord analyser une image.');
+      }
     });
   }
 

@@ -149,7 +149,7 @@ export class DetectionPanel {
       
       <div class="detection-details">
         <div class="detail-item">
-          <div class="detail-label">ID Unique</div>
+          <div class="detail-label">Element ID</div>
           <div class="detail-value" style="font-family: monospace; font-size: 0.7rem; opacity: 0.7;">${id.substring(0, 12)}...</div>
         </div>
         <div class="detail-item">
@@ -338,6 +338,13 @@ export class DetectionPanel {
    */
   refreshDisplay(): void {
     this.populateDetectionList();
+  }
+
+  /**
+   * Get current detections
+   */
+  getDetections(): Detection[] {
+    return this.detections;
   }
 
   /**
