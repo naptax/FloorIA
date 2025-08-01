@@ -55,22 +55,45 @@ export interface ExportDetection {
  * Export detection data to JSON format
  */
 export function exportDetectionsToJSON(detections: Detection[], filename?: string): void {
-  const scaleCalibrator = ScaleCalibrator.getInstance();
-  const exportData = createExportData(detections, scaleCalibrator);
+  console.log('🔍 exportDetectionsToJSON called with:', detections.length, 'detections');
   
-  const jsonString = JSON.stringify(exportData, null, 2);
-  const blob = new Blob([jsonString], { type: 'application/json' });
-  
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = filename || `flooria-analysis-${new Date().toISOString().split('T')[0]}.json`;
-  
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  
-  URL.revokeObjectURL(url);
+  try {
+    const scaleCalibrator = ScaleCalibrator.getInstance();
+    console.log('✅ ScaleCalibrator instance obtained');
+    
+    const exportData = createExportData(detections, scaleCalibrator);
+    console.log('✅ Export data created:', exportData);
+    
+    const jsonString = JSON.stringify(exportData, null, 2);
+    console.log('✅ JSON string created, length:', jsonString.length);
+    
+    const blob = new Blob([jsonString], { type: 'application/json' });
+    console.log('✅ Blob created');
+    
+    const url = URL.createObjectURL(blob);
+    console.log('✅ Object URL created:', url);
+    
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename || `flooria-analysis-${new Date().toISOString().split('T')[0]}.json`;
+    console.log('✅ Download link created with filename:', link.download);
+    
+    document.body.appendChild(link);
+    console.log('✅ Link added to DOM');
+    
+    link.click();
+    console.log('✅ Link clicked - download should start');
+    
+    document.body.removeChild(link);
+    console.log('✅ Link removed from DOM');
+    
+    URL.revokeObjectURL(url);
+    console.log('✅ Object URL revoked - export complete!');
+  } catch (error) {
+    console.error('❌ Error in exportDetectionsToJSON:', error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    alert('Erreur lors de l\'export JSON: ' + errorMessage);
+  }
 }
 
 /**
@@ -126,8 +149,8 @@ function createExportData(detections: Detection[], scaleCalibrator: any): Export
       projectName: 'FloorIA Analysis',
       scaleCalibration: {
         scale: scaleCalibrator.getScale(),
-        isCalibrated: scaleCalibrator.isCalibrated(),
-        unit: scaleCalibrator.isCalibrated() ? 'meters' : 'pixels'
+        isCalibrated: scaleCalibrator.getIsCalibrated(),
+        unit: scaleCalibrator.getIsCalibrated() ? 'meters' : 'pixels'
       },
       totalDetections: detections.length,
       analysisTimestamp: new Date().toISOString()

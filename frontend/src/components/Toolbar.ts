@@ -97,7 +97,9 @@ export class Toolbar {
     // Export JSON button
     if (exportBtn) {
       exportBtn.addEventListener('click', () => {
+        console.log('🖱️ Export JSON button clicked!');
         this.element.dispatchEvent(new CustomEvent('export-json'));
+        console.log('📤 Export JSON event dispatched');
       });
     }
 

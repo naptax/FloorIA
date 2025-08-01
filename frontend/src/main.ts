@@ -148,7 +148,9 @@ class FloorIAApp {
    * Setup toolbar to canvas event connections
    */
   private setupToolbarCanvasEvents(): void {
+    console.log('🔧 Setting up toolbar canvas events...');
     const toolbarElement = this.toolbar.getElement();
+    console.log('🔧 Toolbar element obtained:', toolbarElement);
 
     // Listen for toolbar zoom events and call canvas methods directly
     toolbarElement.addEventListener('zoom-in', () => {
@@ -170,10 +172,15 @@ class FloorIAApp {
 
     // Listen for export JSON events
     toolbarElement.addEventListener('export-json', () => {
+      console.log('🎯 Export JSON event received!');
       const detections = this.detectionPanel.getDetections();
+      console.log('📊 Current detections:', detections.length, 'items');
+      
       if (detections.length > 0) {
+        console.log('✅ Calling exportDetectionsToJSON with detections');
         exportDetectionsToJSON(detections);
       } else {
+        console.log('⚠️ No detections to export');
         alert('Aucune détection à exporter. Veuillez d\'abord analyser une image.');
       }
     });
