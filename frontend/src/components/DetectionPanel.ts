@@ -175,13 +175,23 @@ export class DetectionPanel {
   }
 
   /**
-   * Select a detection card
+   * Select a detection card (private method for internal use)
    */
   private selectDetection(index: number): void {
+    this.selectDetectionPublic(index);
+  }
+
+  /**
+   * Select a detection card (public method for external synchronization)
+   */
+  selectDetectionPublic(index: number): void {
+    console.log('🔄 DetectionPanel: Selecting detection at index:', index);
+    
     // Remove previous selection
     const previousSelected = this.element.querySelector('.detection-card.selected');
     if (previousSelected) {
       previousSelected.classList.remove('selected');
+      console.log('🔄 DetectionPanel: Removed previous selection');
     }
     
     // Add new selection
@@ -190,6 +200,9 @@ export class DetectionPanel {
       newSelected.classList.add('selected');
       // Scroll the card into view
       newSelected.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      console.log('✅ DetectionPanel: Selected detection card at index:', index);
+    } else {
+      console.log('⚠️ DetectionPanel: Could not find detection card at index:', index);
     }
   }
 

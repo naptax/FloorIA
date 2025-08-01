@@ -122,10 +122,18 @@ class FloorIAApp {
   }
 
   /**
-   * Handle detection selection
+   * Handle detection selection - synchronize between Canvas and DetectionPanel
    */
   private handleDetectionSelect(index: number): void {
+    console.log('🔄 Main: Synchronizing selection for index:', index);
+    
+    // Select in canvas (visual highlight)
     this.canvas.selectDetection(index);
+    console.log('✅ Main: Canvas selection updated');
+    
+    // Select in detection panel (table row highlight)
+    this.detectionPanel.selectDetectionPublic(index);
+    console.log('✅ Main: DetectionPanel selection updated');
   }
 
   /**

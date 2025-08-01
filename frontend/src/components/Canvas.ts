@@ -60,8 +60,8 @@ export class Canvas {
   }
 
   private setupEventListeners(): void {
-    // Canvas mouse events for panning
-    this.canvas.addEventListener('mousedown', (e) => this.startPan(e));
+    // Canvas mouse events for panning and detection selection
+    this.canvas.addEventListener('mousedown', (e) => this.handleMouseDown(e));
     this.canvas.addEventListener('mousemove', (e) => this.handlePan(e));
     this.canvas.addEventListener('mouseup', () => this.endPan());
     this.canvas.addEventListener('mouseleave', () => this.endPan());
@@ -178,6 +178,44 @@ export class Canvas {
       this.transform.scale = newScale;
       this.redrawCanvas();
     }
+  }
+
+  /**
+   * Handle mouse down - detect clicks on detections or start panning
+   */
+  private handleMouseDown(e: MouseEvent): void {
+    // Convert screen coordinates to canvas coordinates
+    const canvasCoords = CanvasUtils.screenToCanvas(
+      e.clientX, 
+      e.clientY, 
+      this.canvas, 
+      this.transform
+    );
+    
+    // Check if we clicked on a detection
+    if (this.analysisData && this.analysisData.detections) {
+      for (let i = 0; i < this.analysisData.detections.length; i++) {
+        const detection = this.analysisData.detections[i];
+        if (CanvasUtils.isPointInBoundingBox(canvasCoords.x, canvasCoords.y, detection.bbox)) {
+          console.log('🎯 Clicked on detection:', detection.shortName, 'at index:', i);
+          
+          // Select this detection
+          this.selectDetection(i);
+          
+          // Notify parent component via event handler
+          if (this.eventHandlers.onDetectionSelect) {
+            console.log('📤 Triggering onDetectionSelect for index:', i);
+            this.eventHandlers.onDetectionSelect(i);
+          }
+          
+          // Don't start panning if we clicked on a detection
+          return;
+        }
+      }
+    }
+    
+    // If we didn't click on a detection, start panning
+    this.startPan(e);
   }
 
   /**
