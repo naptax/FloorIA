@@ -31,20 +31,21 @@ export interface AnalysisResult {
 }
 
 export interface ModelMetrics {
-  map: string;
+  mAP: string;
   precision: string;
   recall: string;
 }
 
 export interface ModelInfo {
-  name: string;
+  model_name: string;
   project: string;
   workspace: string;
   version: string;
-  dataset_size: number;
+  dataset_size: string;
   description: string;
   classes: string[];
   metrics: ModelMetrics;
+  url?: string;
 }
 
 export interface CanvasTransform {

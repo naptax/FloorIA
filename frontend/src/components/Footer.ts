@@ -63,11 +63,11 @@ export class Footer {
     const recallMetricElement = this.element.querySelector('#recallMetric') as HTMLElement;
 
     if (modelNameElement) {
-      modelNameElement.textContent = `Modèle: ${modelInfo.name}`;
+      modelNameElement.textContent = `Modèle: ${modelInfo.model_name}`;
     }
 
     if (mapMetricElement && modelInfo.metrics) {
-      mapMetricElement.textContent = `mAP: ${modelInfo.metrics.map}`;
+      mapMetricElement.textContent = `mAP: ${modelInfo.metrics.mAP}`;
     }
 
     if (precisionMetricElement && modelInfo.metrics) {
