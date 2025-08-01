@@ -387,13 +387,21 @@ body {
     margin-bottom: 8px;
 }
 
-.detection-index {
+.detection-id {
     font-weight: 600;
-    color: #007acc;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    min-width: 32px;
+    text-align: center;
+    font-family: 'Consolas', monospace;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.detection-card.selected .detection-index {
-    color: #ffffff;
+.detection-card.selected .detection-id {
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.4);
 }
 
 .detection-type {

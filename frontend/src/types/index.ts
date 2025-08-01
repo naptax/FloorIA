@@ -13,6 +13,8 @@ export interface Geometry {
 }
 
 export interface Detection {
+  id: string;           // Identifiant unique permanent
+  shortName: string;    // Nom court pour l'affichage (ex: "W1", "D2", "R3")
   bbox: BoundingBox;
   label: string;
   confidence: number;

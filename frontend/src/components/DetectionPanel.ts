@@ -1,6 +1,7 @@
 // FloorIA Detection Panel Component
 
 import type { Detection, SortKey, ComponentEventHandlers } from '@/types';
+import { enhanceDetections, getElementTypeColor } from '@/utils/detection';
 
 export class DetectionPanel {
   private element: HTMLElement;
@@ -90,9 +91,10 @@ export class DetectionPanel {
   /**
    * Set detections data
    */
-  setDetections(detections: Detection[]): void {
-    this.detections = [...detections];
-    this.originalDetections = [...detections];
+  setDetections(detections: Omit<Detection, 'id' | 'shortName'>[]): void {
+    // Enhance detections with permanent IDs and short names
+    this.detections = enhanceDetections(detections);
+    this.originalDetections = this.detections;
     this.populateDetectionList();
   }
 
@@ -115,11 +117,13 @@ export class DetectionPanel {
    * Create a detection card element
    */
   private createDetectionCard(detection: Detection, index: number): HTMLElement {
-    const { bbox, label, confidence, geometry } = detection;
+    const { id, shortName, bbox, label, confidence, geometry } = detection;
+    const elementColor = getElementTypeColor(label);
     
     const card = document.createElement('div');
     card.className = 'detection-card';
     card.dataset.index = index.toString();
+    card.dataset.id = id;
     
     // Add click event for card selection
     card.addEventListener('click', () => {
@@ -131,18 +135,22 @@ export class DetectionPanel {
     
     card.innerHTML = `
       <div class="detection-card-header">
-        <div class="detection-index">${index + 1}</div>
+        <div class="detection-id" style="background-color: ${elementColor}; color: #ffffff;">${shortName}</div>
         <div class="detection-type">${label}</div>
       </div>
       
       <div class="confidence-section">
         <div class="confidence-bar">
-          <div class="confidence-fill" style="width: ${confidence * 100}%"></div>
+          <div class="confidence-fill" style="width: ${confidence * 100}%; background-color: ${elementColor};"></div>
         </div>
         <div class="confidence-text">Confiance: ${(confidence * 100).toFixed(1)}%</div>
       </div>
       
       <div class="detection-details">
+        <div class="detail-item">
+          <div class="detail-label">ID Unique</div>
+          <div class="detail-value" style="font-family: monospace; font-size: 0.7rem; opacity: 0.7;">${id.substring(0, 12)}...</div>
+        </div>
         <div class="detail-item">
           <div class="detail-label">Position</div>
           <div class="detail-value">${Math.round(bbox.x)}, ${Math.round(bbox.y)}</div>
