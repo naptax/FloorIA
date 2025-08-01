@@ -44,7 +44,4 @@
   <!-- FloorIA Text - Plus Grand -->
   <text x="50" y="18" font-family="Consolas, monospace" font-size="16" font-weight="700" fill="#ffffff">Floor</text>
   <text x="50" y="32" font-family="Consolas, monospace" font-size="16" font-weight="700" fill="url(#aiGradient)">IA</text>
-  
-  <!-- Tagline - Plus Visible -->
-  <text x="110" y="26" font-family="Consolas, monospace" font-size="10" fill="#cccccc" opacity="0.9" font-weight="500">AI Analysis</text>
 </svg>
