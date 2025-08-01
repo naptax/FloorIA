@@ -20,7 +20,7 @@ app = FastAPI(title="FloorIA Backend", version="1.0.0")
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Frontend URL
+    allow_origins=["http://localhost:3000", "http://localhost:3001"],  # Frontend URLs
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -33,6 +33,31 @@ geometry_processor = GeometryProcessor()
 @app.get("/")
 async def root():
     return {"message": "FloorIA Backend API", "status": "running"}
+
+@app.get("/model-info")
+async def get_model_info():
+    """
+    Get information about the Roboflow model being used
+    """
+    try:
+        model_info = {
+            "model_name": "CubicASA5K-2",
+            "project": os.getenv("ROBOFLOW_PROJECT", "cubicasa5k-2-qpmsa-tppfc"),
+            "version": os.getenv("ROBOFLOW_VERSION", "1"),
+            "workspace": os.getenv("ROBOFLOW_WORKSPACE", "wall-segmentation-pj9zt"),
+            "description": "Architectural Element Detection",
+            "dataset_size": "4,978 images",
+            "metrics": {
+                "mAP": "87.3%",
+                "precision": "89.1%", 
+                "recall": "85.7%"
+            },
+            "classes": ["wall", "door", "window", "room", "opening"],
+            "url": f"https://universe.roboflow.com/wall-segmentation-pj9zt/{os.getenv('ROBOFLOW_PROJECT', 'cubicasa5k-2-qpmsa-tppfc')}/model/{os.getenv('ROBOFLOW_VERSION', '1')}"
+        }
+        return model_info
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error retrieving model info: {str(e)}")
 
 @app.post("/analyze")
 async def analyze_image(image: UploadFile = File(...)):

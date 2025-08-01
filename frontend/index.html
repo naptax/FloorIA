@@ -120,11 +120,38 @@
             gap: 15px;
         }
         
+        .footer-center {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 0.7rem;
+        }
+        
         .footer-right {
             display: flex;
             align-items: center;
             gap: 10px;
             font-size: 0.7rem;
+        }
+        
+        .model-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .model-metrics {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            opacity: 0.9;
+        }
+        
+        .metric {
+            background: rgba(255,255,255,0.15);
+            padding: 1px 4px;
+            border-radius: 2px;
+            font-size: 0.65rem;
         }
 
         /* Professional Upload Area */
@@ -505,7 +532,7 @@
             <div class="header-bar">
                 <div class="logo">FloorIA</div>
                 <div class="project-info">
-                    <span>Analyse Architecturale IA</span>
+                    <span>FLOOR IA - Analyse Architecturale par IA</span>
                     <span>|</span>
                     <span id="projectStatus">Prêt</span>
                 </div>
@@ -578,6 +605,16 @@
             <div class="footer">
                 <div class="footer-left">
                     <span><strong>FloorIA</strong> - Analyse Architecturale IA</span>
+                </div>
+                <div class="footer-center">
+                    <div class="model-info">
+                        <span id="modelName">Modèle: CubicASA5K-2</span>
+                        <div class="model-metrics">
+                            <span class="metric" id="mapMetric">mAP: --</span>
+                            <span class="metric" id="precisionMetric">Précision: --</span>
+                            <span class="metric" id="recallMetric">Rappel: --</span>
+                        </div>
+                    </div>
                 </div>
                 <div class="footer-right">
                     <span>Deep-5 et BTP Consultants</span>

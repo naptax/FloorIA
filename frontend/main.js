@@ -31,6 +31,7 @@ class ImageAnalyzer {
         this.originalDetections = null;
         
         this.initializeEventListeners();
+        this.loadModelInfo();
     }
     
     initializeEventListeners() {
@@ -764,6 +765,46 @@ class ImageAnalyzer {
         
         this.centerCanvas();
         this.redrawCanvas();
+    }
+    
+    // Load and display Roboflow model information
+    async loadModelInfo() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/model-info`);
+            if (response.ok) {
+                const modelInfo = await response.json();
+                
+                // Update footer with model information
+                const modelNameElement = document.getElementById('modelName');
+                const mapMetricElement = document.getElementById('mapMetric');
+                const precisionMetricElement = document.getElementById('precisionMetric');
+                const recallMetricElement = document.getElementById('recallMetric');
+                
+                if (modelNameElement) {
+                    modelNameElement.textContent = `Modèle: ${modelInfo.model_name}`;
+                    modelNameElement.title = `${modelInfo.description} - ${modelInfo.dataset_size}`;
+                }
+                
+                if (mapMetricElement && modelInfo.metrics) {
+                    mapMetricElement.textContent = `mAP: ${modelInfo.metrics.mAP}`;
+                }
+                
+                if (precisionMetricElement && modelInfo.metrics) {
+                    precisionMetricElement.textContent = `Précision: ${modelInfo.metrics.precision}`;
+                }
+                
+                if (recallMetricElement && modelInfo.metrics) {
+                    recallMetricElement.textContent = `Rappel: ${modelInfo.metrics.recall}`;
+                }
+                
+                console.log('Model info loaded:', modelInfo);
+            } else {
+                console.warn('Failed to load model info:', response.status);
+            }
+        } catch (error) {
+            console.warn('Error loading model info:', error);
+            // Keep default values in footer if API call fails
+        }
     }
 }
 
