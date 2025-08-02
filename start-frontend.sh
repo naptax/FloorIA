@@ -41,6 +41,19 @@ else
     echo "✅ Les dépendances npm sont déjà installées."
 fi
 
+# Activer l'environnement virtuel du backend (requis pour toutes les opérations)
+echo "🔧 Activation de l'environnement virtuel..."
+source ../backend/venv/bin/activate
+
+# Vérifier que l'activation a fonctionné
+if [ "$VIRTUAL_ENV" = "" ]; then
+    echo "❌ Erreur: L'environnement virtuel n'a pas pu être activé."
+    echo "   Assurez-vous que le venv existe dans backend/venv/"
+    exit 1
+fi
+
+echo "✅ Environnement virtuel activé: $VIRTUAL_ENV"
+
 # Démarrer le serveur de développement
 echo "🌟 Démarrage du serveur frontend sur http://localhost:3000"
 echo "   Le navigateur devrait s'ouvrir automatiquement"

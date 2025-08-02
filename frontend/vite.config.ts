@@ -2,24 +2,28 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { resolve } from 'path'
 
+// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [vue()],
+  root: '.',
   resolve: {
     alias: {
       '@': resolve(__dirname, 'src'),
-      '@/components': resolve(__dirname, 'src/components'),
-      '@/types': resolve(__dirname, 'src/types'),
-      '@/utils': resolve(__dirname, 'src/utils'),
-      '@/styles': resolve(__dirname, 'src/styles')
-    }
+    },
   },
   server: {
     port: 3000,
-    host: true
+    host: true,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+        secure: false,
+      },
+    },
   },
   build: {
-    target: 'ES2020',
     outDir: 'dist',
-    sourcemap: true
-  }
+    sourcemap: true,
+  },
 })

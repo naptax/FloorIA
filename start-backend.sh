@@ -68,10 +68,14 @@ if [ ! -f ".env" ]; then
     fi
 fi
 
+# Vérification finale que le venv est bien activé
+echo "✅ Environnement virtuel activé: $VIRTUAL_ENV"
+echo "✅ Python utilisé: $(which python)"
+
 # Démarrer le serveur
 echo "🌟 Démarrage du serveur backend sur http://localhost:8000"
 echo "   API Documentation: http://localhost:8000/docs"
 echo "   Appuyez sur Ctrl+C pour arrêter le serveur"
 echo ""
 
-python3 main.py
+python main.py
