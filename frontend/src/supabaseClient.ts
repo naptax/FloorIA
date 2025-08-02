@@ -3,11 +3,16 @@
  */
 import { createClient, SupabaseClient, Session } from '@supabase/supabase-js';
 
-// Configuration Supabase
-const supabaseUrl = 'https://your-project.supabase.co'; // À remplacer par votre URL Supabase
-const supabaseAnonKey = 'your-supabase-anon-key'; // À remplacer par votre clé anonyme Supabase
+// Configuration Supabase - Using environment variables for security
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
 
-// Créer le client Supabase
+// Validate environment variables
+if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error('Missing Supabase environment variables. Please check your .env file.');
+}
+
+// Create Supabase client
 export const supabase: SupabaseClient = createClient(supabaseUrl, supabaseAnonKey);
 
 // Types pour l'authentification

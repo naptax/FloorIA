@@ -84,11 +84,21 @@ SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_TOKEN=your_supabase_anon_key
 ```
 
-In the frontend `supabaseClient.ts` file:
+Create a frontend `.env` file (never commit this file!):
+
+```env
+# Frontend .env file
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+VITE_API_BASE_URL=http://localhost:8000
+```
+
+The `supabaseClient.ts` file automatically uses these environment variables:
 
 ```typescript
-const supabaseUrl = 'https://your-project.supabase.co';
-const supabaseAnonKey = 'your_supabase_anon_key';
+// Secure configuration using environment variables
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
 ```
 
 ## Usage for Users
@@ -211,6 +221,12 @@ const unsubscribe = authManager.onAuthStateChange((user) => {
 2. **HTTPS**: Always use HTTPS in production
 3. **Tokens**: Access tokens are automatically managed and renewed
 4. **Environment Variables**: Never expose secret keys in code
+5. **Frontend Security**: 
+   - Always use `.env` files for Supabase credentials
+   - Never hardcode API keys in source code
+   - Ensure `.env` files are in `.gitignore`
+   - Only use public/anon keys in frontend (never service role keys)
+   - Frontend environment variables are visible to users - only use public keys
 
 ### Row Level Security (RLS)
 

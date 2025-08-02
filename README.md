@@ -225,6 +225,30 @@ SUPABASE_TOKEN=your_supabase_anon_key_here
 
 **Security Note**: The `.env` file is automatically excluded from git commits. Never commit API keys to version control.
 
+### Frontend Environment Variables
+
+The frontend also requires environment variables for Supabase configuration:
+
+```bash
+cd frontend
+cp .env.example .env
+```
+
+Edit the frontend `.env` file:
+
+```env
+# Frontend Supabase Configuration
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+VITE_API_BASE_URL=http://localhost:8000
+```
+
+**⚠️ CRITICAL SECURITY WARNING**: 
+- **NEVER** hardcode API keys in source code
+- Frontend `.env` files must be in `.gitignore`
+- Only use public/anon keys in frontend (never service role keys)
+- Frontend environment variables are visible to users - only use public keys
+
 ### Authentication Setup
 
 For user authentication functionality, configure your Supabase project:
@@ -232,7 +256,7 @@ For user authentication functionality, configure your Supabase project:
 1. Create a Supabase project at [supabase.com](https://supabase.com)
 2. Enable email authentication in the Supabase dashboard
 3. Create the required database tables (see `AUTHENTICATION.md` for details)
-4. Update the frontend configuration with your Supabase credentials
+4. Configure environment variables securely (see Security section below)
 
 ---
 
