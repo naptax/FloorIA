@@ -54,7 +54,7 @@ FloorIA is a comprehensive web application that combines computer vision and geo
 - Interactive bounding box visualization
 
 ### User Authentication
-- Secure user registration and login via Supabase
+- Secure user registration and login via [Supabase](https://supabase.com)
 - Session management and user profiles
 - Protected API endpoints
 
@@ -67,7 +67,7 @@ FloorIA is a comprehensive web application that combines computer vision and geo
 ### Professional Architecture
 - FastAPI backend with comprehensive API documentation
 - Component-based frontend architecture
-- Scalable deployment with Railway integration
+- Scalable deployment with [Railway](https://railway.app) integration
 - Comprehensive error handling and logging
 
 ---
@@ -77,7 +77,7 @@ FloorIA is a comprehensive web application that combines computer vision and geo
 ### Backend
 - Python 3.8+
 - FastAPI framework
-- Supabase for authentication and database
+- [Supabase](https://supabase.com) for authentication and database
 - Roboflow API for AI model inference
 - Shapely for geometric processing
 - Uvicorn ASGI server
@@ -98,7 +98,7 @@ FloorIA is a comprehensive web application that combines computer vision and geo
 - Python 3.8 or higher
 - Node.js 18 or higher
 - Roboflow account with API access
-- Supabase project (for authentication)
+- [Supabase](https://supabase.com) project (for authentication)
 
 ### Backend Setup
 
@@ -218,7 +218,7 @@ ROBOFLOW_WORKSPACE=cubicasa5k-2-qpmsa-tppfc
 ROBOFLOW_PROJECT=cubicasa5k-2-qpmsa-tppfc
 ROBOFLOW_VERSION=1
 
-# Supabase Configuration
+# [Supabase](https://supabase.com) Configuration
 SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_TOKEN=your_supabase_anon_key_here
 ```
@@ -227,7 +227,7 @@ SUPABASE_TOKEN=your_supabase_anon_key_here
 
 ### Frontend Environment Variables
 
-The frontend also requires environment variables for Supabase configuration:
+The frontend also requires environment variables for [Supabase](https://supabase.com) configuration:
 
 ```bash
 cd frontend
@@ -237,7 +237,7 @@ cp .env.example .env
 Edit the frontend `.env` file:
 
 ```env
-# Frontend Supabase Configuration
+# Frontend [Supabase](https://supabase.com) Configuration
 VITE_SUPABASE_URL=https://your-project.supabase.co
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 VITE_API_BASE_URL=http://localhost:8000
@@ -251,10 +251,10 @@ VITE_API_BASE_URL=http://localhost:8000
 
 ### Authentication Setup
 
-For user authentication functionality, configure your Supabase project:
+For user authentication functionality, configure your [Supabase](https://supabase.com) project:
 
 1. Create a Supabase project at [supabase.com](https://supabase.com)
-2. Enable email authentication in the Supabase dashboard
+2. Enable email authentication in the [Supabase](https://supabase.com) dashboard
 3. Create the required database tables (see `AUTHENTICATION.md` for details)
 4. Configure environment variables securely (see Security section below)
 
@@ -375,9 +375,9 @@ FloorIA includes comprehensive documentation to help you set up, configure, and 
 | Document | Description | Purpose |
 |----------|-------------|----------|
 | [`README.md`](README.md) | Main project documentation | Overview, setup, and usage instructions |
-| [`AUTHENTICATION.md`](AUTHENTICATION.md) | Authentication setup guide | Supabase auth configuration and user flows |
+| [`AUTHENTICATION.md`](AUTHENTICATION.md) | Authentication setup guide | [Supabase](https://supabase.com) auth configuration and user flows |
 | [`SUPABASE_ADMIN.md`](SUPABASE_ADMIN.md) | Administrator guide | User management and admin workflows |
-| [`RAILWAY_DEPLOYMENT.md`](RAILWAY_DEPLOYMENT.md) | Deployment guide | Production deployment on Railway platform |
+| [`RAILWAY_DEPLOYMENT.md`](RAILWAY_DEPLOYMENT.md) | Deployment guide | Production deployment on [Railway](https://railway.app) platform |
 
 ### 🔗 Quick Navigation
 
@@ -500,6 +500,6 @@ This project is licensed under the MIT License.
 ## Acknowledgments
 
 - Roboflow for AI model hosting and inference
-- Supabase for authentication and database services
+- [Supabase](https://supabase.com) for authentication and database services
 - FastAPI for the robust backend framework
 - Vite for modern frontend tooling

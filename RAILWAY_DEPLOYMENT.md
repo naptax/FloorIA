@@ -1,11 +1,11 @@
-# 🚀 FloorIA - Railway Deployment Guide
+# 🚀 FloorIA - [Railway](https://railway.app) Deployment Guide
 
 ## 📋 Prerequisites
-- Railway account created and connected to GitHub
-- FloorIA repository accessible from Railway
+- [Railway](https://railway.app) account created and connected to GitHub
+- FloorIA repository accessible from [Railway](https://railway.app)
 - Roboflow API keys available
 
-## 🔧 Railway Configuration
+## 🔧 [Railway](https://railway.app) Configuration
 
 ### 1. Create Services
 
@@ -72,7 +72,7 @@ git push --force origin production
 - **Frontend**: `https://your-frontend.railway.app/`
 
 ### Real-time Logs
-- Railway Dashboard → Service → Logs
+- [Railway](https://railway.app) Dashboard → Service → Logs
 - CLI: `railway logs --service flooria-backend`
 
 ## 🔮 Future Evolution - Database
@@ -98,5 +98,5 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 - **CORS Errors**: Check `CORS_ORIGINS` in backend
 
 ### Support
-- Railway Discord: https://discord.gg/railway
+- [Railway](https://railway.app) Discord: https://discord.gg/railway
 - Documentation: https://docs.railway.app/

@@ -1,15 +1,15 @@
-# Supabase Administration Guide for FloorIA
+# [Supabase](https://supabase.com) Administration Guide for FloorIA
 
-This guide explains how to manage users, roles, and authentication settings using the Supabase dashboard for the FloorIA application.
+This guide explains how to manage users, roles, and authentication settings using the [Supabase](https://supabase.com) dashboard for the FloorIA application.
 
-**⚠️ IMPORTANT**: Public user registration is **DISABLED** for security reasons. All user accounts must be created by administrators through the Supabase dashboard as described in this guide.
+**⚠️ IMPORTANT**: Public user registration is **DISABLED** for security reasons. All user accounts must be created by administrators through the [Supabase](https://supabase.com) dashboard as described in this guide.
 
 ## Table of Contents
 
 - [Account Creation Overview](#account-creation-overview)
 - [Creating User Accounts](#creating-user-accounts)
 - [Setting Up the First Administrator](#setting-up-the-first-administrator)
-- [Accessing the Supabase Dashboard](#accessing-the-supabase-dashboard)
+- [Accessing the [Supabase](https://supabase.com) Dashboard](#accessing-the-supabase-dashboard)
 - [User Management](#user-management)
 - [Role Management](#role-management)
 - [Authentication Settings](#authentication-settings)
@@ -23,7 +23,7 @@ This guide explains how to manage users, roles, and authentication settings usin
 
 FloorIA uses a **secure, admin-only** account creation system. This means:
 
-- ✅ **Administrators** create accounts via Supabase dashboard
+- ✅ **Administrators** create accounts via [Supabase](https://supabase.com) dashboard
 - ❌ **Public registration** is disabled (no signup button in the app)
 - 🔒 **Users** can only log in with existing accounts
 - 👥 **Account requests** must go through administrators
@@ -42,7 +42,7 @@ FloorIA uses a **secure, admin-only** account creation system. This means:
 ### Step-by-Step Account Creation
 
 **Prerequisites:**
-- Access to the Supabase dashboard
+- Access to the [Supabase](https://supabase.com) dashboard
 - Administrator privileges on the FloorIA project
 
 **Steps:**

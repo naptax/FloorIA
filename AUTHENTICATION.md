@@ -1,12 +1,12 @@
-# FloorIA Authentication Guide with Supabase
+# FloorIA Authentication Guide with [Supabase](https://supabase.com)
 
 ## Overview
 
-FloorIA v1.4.0 integrates a complete authentication system based on Supabase, allowing users to create accounts, log in, and manage their sessions securely.
+FloorIA v1.4.0 integrates a complete authentication system based on [Supabase](https://supabase.com), allowing users to create accounts, log in, and manage their sessions securely.
 
-## Supabase Configuration (Administrators)
+## [Supabase](https://supabase.com) Configuration (Administrators)
 
-### 1. Creating the Supabase Project
+### 1. Creating the [Supabase](https://supabase.com) Project
 
 1. Go to [supabase.com](https://supabase.com)
 2. Create a new project
@@ -14,7 +14,7 @@ FloorIA v1.4.0 integrates a complete authentication system based on Supabase, al
 
 ### 2. Authentication Configuration
 
-In the Supabase dashboard:
+In the [Supabase](https://supabase.com) dashboard:
 
 1. **Authentication > Settings**
    - Enable email authentication
@@ -27,7 +27,7 @@ In the Supabase dashboard:
 
 ### 3. Creating the profiles table
 
-Execute this SQL query in the Supabase SQL editor:
+Execute this SQL query in the [Supabase](https://supabase.com) SQL editor:
 
 ```sql
 -- Create the profiles table
@@ -222,7 +222,7 @@ const unsubscribe = authManager.onAuthStateChange((user) => {
 3. **Tokens**: Access tokens are automatically managed and renewed
 4. **Environment Variables**: Never expose secret keys in code
 5. **Frontend Security**: 
-   - Always use `.env` files for Supabase credentials
+   - Always use `.env` files for [Supabase](https://supabase.com) credentials
    - Never hardcode API keys in source code
    - Ensure `.env` files are in `.gitignore`
    - Only use public/anon keys in frontend (never service role keys)
@@ -230,7 +230,7 @@ const unsubscribe = authManager.onAuthStateChange((user) => {
 
 ### Row Level Security (RLS)
 
-Supabase uses RLS to ensure that:
+[Supabase](https://supabase.com) uses RLS to ensure that:
 - Users can only access their own data
 - Operations are automatically filtered by user
 - Security is enforced at the database level
@@ -239,13 +239,13 @@ Supabase uses RLS to ensure that:
 
 ### Common Issues
 
-1. **Supabase connection error**
+1. **[Supabase](https://supabase.com) connection error**
    - Check that SUPABASE_URL and SUPABASE_TOKEN variables are correctly configured
-   - Ensure the Supabase project is active
+   - Ensure the [Supabase](https://supabase.com) project is active
 
 2. **Confirmation email not received**
    - Check spam folder
-   - Ensure email authentication is enabled in Supabase
+   - Ensure email authentication is enabled in [Supabase](https://supabase.com)
 
 3. **"Invalid credentials" error**
    - Check that email and password are correct
@@ -259,7 +259,7 @@ Supabase uses RLS to ensure that:
 
 - Authentication errors are logged in the browser console
 - Backend errors are visible in server logs
-- Use Supabase development tools to monitor authentication
+- Use [Supabase](https://supabase.com) development tools to monitor authentication
 
 ## Support
 
@@ -270,4 +270,4 @@ For any questions or issues:
 
 ---
 
-*FloorIA v1.4.0 - Supabase Authentication System*
+*FloorIA v1.4.0 - [Supabase](https://supabase.com) Authentication System*
