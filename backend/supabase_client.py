@@ -3,7 +3,7 @@ Supabase client configuration and authentication utilities for FloorIA.
 """
 import os
 import jwt
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 from supabase import create_client, Client
 from dotenv import load_dotenv
 
@@ -108,6 +108,75 @@ class SupabaseAuth:
         except Exception as e:
             print(f"Error creating user profile: {e}")
             return False
+    
+    def get_all_users(self) -> List[Dict[str, Any]]:
+        """
+        Get all user profiles (admin only)
+        """
+        try:
+            response = self.client.table('profiles').select('*').execute()
+            return response.data
+        except Exception as e:
+            print(f"Error fetching users: {e}")
+            return []
+    
+    def update_user_profile(self, user_id: str, updates: Dict[str, Any]) -> bool:
+        """
+        Update user profile (admin only)
+        """
+        try:
+            updates['updated_at'] = 'now()'
+            response = self.client.table('profiles').update(updates).eq('id', user_id).execute()
+            return len(response.data) > 0
+        except Exception as e:
+            print(f"Error updating user profile: {e}")
+            return False
+    
+    def delete_user_profile(self, user_id: str) -> bool:
+        """
+        Delete user profile (admin only)
+        """
+        try:
+            response = self.client.table('profiles').delete().eq('id', user_id).execute()
+            return len(response.data) > 0
+        except Exception as e:
+            print(f"Error deleting user profile: {e}")
+            return False
+    
+    def create_admin_user(self, email: str, password: str, full_name: str) -> Dict[str, Any]:
+        """
+        Create an admin user (system function)
+        """
+        try:
+            response = self.client.auth.sign_up({
+                "email": email,
+                "password": password,
+                "options": {
+                    "data": {
+                        "full_name": full_name,
+                        "role": "admin"
+                    }
+                }
+            })
+            
+            if response.user:
+                # Create profile with admin role
+                profile_created = self.create_user_profile(
+                    response.user.id,
+                    response.user.email,
+                    {"full_name": full_name, "role": "admin"}
+                )
+                
+                return {
+                    "success": True,
+                    "user_id": response.user.id,
+                    "email": response.user.email,
+                    "profile_created": profile_created
+                }
+            return {"success": False, "error": "Failed to create user"}
+        except Exception as e:
+            print(f"Error creating admin user: {e}")
+            return {"success": False, "error": str(e)}
     
     def get_user_profile(self, user_id: str) -> Optional[Dict[str, Any]]:
         """

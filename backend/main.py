@@ -14,7 +14,7 @@ from typing import Optional, Dict, Any
 from roboflow_client import RoboflowClient
 from geometry_processor import GeometryProcessor
 from auth_middleware import get_current_user, get_current_user_optional, require_auth
-from supabase_client import supabase_auth
+from supabase_client import SupabaseAuth
 
 # Load environment variables
 load_dotenv()
@@ -23,6 +23,19 @@ load_dotenv()
 class LoginRequest(BaseModel):
     email: str
     password: str
+
+class UserUpdateRequest(BaseModel):
+    user_id: str
+    email: Optional[str] = None
+    full_name: Optional[str] = None
+    role: Optional[str] = None
+    is_active: Optional[bool] = None
+
+class UserCreateRequest(BaseModel):
+    email: str
+    password: str
+    full_name: str
+    role: str = "user"
 
 class SignupRequest(BaseModel):
     email: str
@@ -49,13 +62,27 @@ app.add_middleware(
 # Initialize services
 roboflow_client = RoboflowClient()
 geometry_processor = GeometryProcessor()
+supabase_auth = SupabaseAuth()
+
+# Admin role checking function
+def require_admin(user: Dict[str, Any] = Depends(get_current_user)) -> Dict[str, Any]:
+    """
+    Dependency to ensure the current user has admin role
+    """
+    user_profile = supabase_auth.get_user_profile(user['id'])
+    if not user_profile or user_profile.get('role') != 'admin':
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin access required"
+        )
+    return user
 
 @app.get("/")
 async def root():
     return {"message": "FloorIA Backend API", "status": "running"}
 
 @app.get("/model-info")
-async def get_model_info():
+async def get_model_info(user: Dict[str, Any] = Depends(get_current_user)):
     """
     Get information about the Roboflow model being used
     """
@@ -80,7 +107,7 @@ async def get_model_info():
         raise HTTPException(status_code=500, detail=f"Error retrieving model info: {str(e)}")
 
 @app.post("/analyze")
-async def analyze_image(image: UploadFile = File(...)):
+async def analyze_image(image: UploadFile = File(...), user: Dict[str, Any] = Depends(get_current_user)):
     """
     Analyze an uploaded image using Roboflow API and process geometries with Shapely
     """
@@ -106,7 +133,7 @@ async def analyze_image(image: UploadFile = File(...)):
         
         try:
             # Call Roboflow API
-            print(f"Calling Roboflow API for image: {temp_file_path}")
+            print(f"User {user['email']} (ID: {user['id']}) analyzing image: {temp_file_path}")
             roboflow_response = await roboflow_client.infer_image(temp_file_path)
             print(f"Roboflow response received: {type(roboflow_response)}")
             
