@@ -32,6 +32,8 @@
       <div class="sidebar">
         <!-- Toolbar -->
         <FlooriaToolbar 
+          :hasFile="!!currentImageSrc"
+          :hasDetections="detections.length > 0"
           @file-selected="handleFileSelected"
           @analyze="handleAnalyze"
           @export="handleExport"
@@ -154,44 +156,101 @@ const handleFileSelected = (file: File) => {
 
 // Analysis methods
 const handleAnalyze = async () => {
-  if (!currentImageSrc.value) return
+  console.log('🔍 Starting analysis...')
+  if (!currentImageSrc.value) {
+    console.error('❌ No image source available')
+    return
+  }
   
   isAnalyzing.value = true
   analysisProgress.value = 0
   detections.value = []
   
   try {
+    console.log('📊 Setting up progress simulation...')
     // Simulate progress
     const progressInterval = setInterval(() => {
       analysisProgress.value += 10
+      console.log(`📈 Progress: ${analysisProgress.value}%`)
       if (analysisProgress.value >= 90) {
         clearInterval(progressInterval)
       }
     }, 200)
     
+    console.log('🖼️ Converting image to blob...')
     // Call API for analysis
     const formData = new FormData()
     const blob = await fetch(currentImageSrc.value).then(r => r.blob())
-    formData.append('file', blob, currentImageFilename.value)
+    console.log('📦 Blob created:', blob.size, 'bytes, type:', blob.type)
     
-    const response = await fetch('/api/analyze', {
+    formData.append('image', blob, currentImageFilename.value)
+    console.log('📝 FormData field name: "image" (matching backend expectation)')
+    
+    const authToken = authManager.getAuthToken()
+    console.log('🔐 Auth token:', authToken ? 'Present' : 'Missing')
+    console.log('👤 Current user:', currentUser.value?.email || 'Not logged in')
+    console.log('📤 Sending request to /api/analyze...')
+    
+    const headers: Record<string, string> = {}
+    if (authToken) {
+      headers['Authorization'] = `Bearer ${authToken}`
+    }
+    
+    // Bypass Vite proxy and call backend directly
+    const backendUrl = 'http://localhost:8000/analyze'
+    console.log('🎯 Calling backend directly:', backendUrl)
+    
+    const response = await fetch(backendUrl, {
       method: 'POST',
       body: formData,
-      headers: {
-        'Authorization': `Bearer ${authManager.getAuthToken()}`
-      }
+      headers
     })
+    
+    console.log('📥 Response received:', response.status, response.statusText)
     
     if (response.ok) {
       const result = await response.json()
-      detections.value = result.detections || []
+      console.log('✅ Analysis result:', result)
+      console.log('🔍 Raw detections from backend:', result.detections)
+      console.log('📊 Number of detections:', result.detections?.length || 0)
+      
+      if (result.detections && result.detections.length > 0) {
+        console.log('🔬 First detection sample:', result.detections[0])
+        console.log('🏷️ Detection keys:', Object.keys(result.detections[0]))
+      }
+      
+      // Transform backend format to Vue.js format
+      const transformedDetections = (result.detections || []).map((detection: any, index: number) => {
+        const transformed = {
+          id: `detection_${index}`,
+          class: detection.label || detection.class || 'unknown',
+          confidence: detection.confidence || 0,
+          x: detection.bbox?.x || detection.x || 0,
+          y: detection.bbox?.y || detection.y || 0,
+          width: detection.bbox?.width || detection.width || 0,
+          height: detection.bbox?.height || detection.height || 0
+        }
+        return transformed
+      })
+      
+      console.log('🔄 Transformed detections:', transformedDetections.length)
+      if (transformedDetections.length > 0) {
+        console.log('✨ First transformed detection:', transformedDetections[0])
+      }
+      
+      detections.value = transformedDetections
+      console.log('📋 Detections assigned to Vue state:', detections.value.length)
       analysisProgress.value = 100
+      clearInterval(progressInterval)
     } else {
-      throw new Error('Analysis failed')
+      const errorText = await response.text()
+      console.error('❌ Analysis failed:', response.status, errorText)
+      throw new Error(`Analysis failed: ${response.status} ${response.statusText}`)
     }
   } catch (error) {
-    console.error('Analysis error:', error)
+    console.error('❌ Analysis error:', error)
   } finally {
+    console.log('🏁 Analysis completed, cleaning up...')
     setTimeout(() => {
       isAnalyzing.value = false
       analysisProgress.value = 0

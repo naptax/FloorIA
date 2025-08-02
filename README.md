@@ -497,6 +497,45 @@ This project is licensed under the MIT License.
 
 ---
 
+## Changelog
+
+### v1.5.1 (2025-01-02)
+- **🔧 CRITICAL FIX**: Fixed detection display issue in Vue.js interface
+- **🔄 Data Transformation**: Added automatic format conversion from backend (label, bbox) to Vue.js format (class, x, y, width, height, id)
+- **📊 Visual Results**: AI analysis results now display correctly in DetectionPanel and Canvas
+- **🐛 Bug Resolution**: Resolved "Unhandled error during execution of render function" warnings
+- **✅ Full Integration**: Complete end-to-end workflow now functional (import → analyze → display → export)
+
+### v1.5.0 (2025-01-01)
+- **🚀 MAJOR**: Complete migration to Vue.js 3 with Composition API and TypeScript
+- **🏗️ Architecture**: All components migrated from vanilla TypeScript to Vue.js
+- **⚡ Performance**: Modern reactive state management with Vue 3
+- **🎨 UI/UX**: Enhanced interface with Vue.js component architecture
+
+### v1.4.1 (2024-12-30)
+- **🔐 AUTH FIX**: Fixed critical Supabase authentication error with proper JWT token verification
+- **🔑 Security**: Corrected API key usage for client operations vs admin operations
+
+### v1.4.0 (2024-12-29)
+- **🔐 Authentication**: Integrated Supabase authentication with user management
+- **🛡️ Security**: Protected API endpoints with authentication middleware
+- **👤 User Profiles**: Added user registration, login, and profile management
+
+### v1.3.0 (2024-12-28)
+- **📱 UX Enhancement**: Expanded image display area and responsive canvas centering
+- **💾 Smart Export**: Intelligent JSON export with filename matching source image
+- **🎨 Interface**: Clean detection list and improved footer branding
+
+### v1.2.0 (2024-12-27)
+- **🎨 Visual**: Element type colors on canvas (walls, doors, windows, rooms)
+- **🔘 UI**: Enhanced primary button styling with gradient and animations
+
+### v1.1.0 (2024-12-26)
+- **🔄 Interaction**: Bidirectional synchronization between canvas clicks and detection table
+- **🎯 Selection**: Click elements on image to highlight corresponding table rows
+
+---
+
 ## Acknowledgments
 
 - Roboflow for AI model hosting and inference
