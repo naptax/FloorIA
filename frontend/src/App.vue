@@ -26,8 +26,23 @@
     <!-- Test Page or Main Content -->
     <TechnicalTestPage v-if="showTestPage" />
     
-    <!-- Main Content -->
-    <div v-else class="main-container">
+    <!-- Login Screen - When not authenticated -->
+    <div v-else-if="!isAuthenticated" class="login-container">
+      <div class="login-card">
+        <div class="login-header">
+          <h2>FloorIA</h2>
+          <p>Connexion requise pour accéder à l'application</p>
+        </div>
+        <div class="login-actions">
+          <button @click="showAuthModal" class="login-btn">
+            Se connecter
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Main Content - Only if authenticated -->
+    <div v-else-if="isAuthenticated" class="main-container">
       <!-- Top Section: Sidebar + Canvas -->
       <div class="top-section">
         <!-- Sidebar -->
@@ -543,6 +558,65 @@ body {
   border-radius: 12px;
   min-width: 24px;
   text-align: center;
+}
+
+/* Login screen styles */
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #1a1b26 0%, #24283b 100%);
+  font-family: Lato, system-ui, sans-serif;
+}
+
+.login-card {
+  background: #24283b;
+  border: 1px solid #414868;
+  border-radius: 12px;
+  padding: 3rem 2.5rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+}
+
+.login-header h2 {
+  color: #c0caf5;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, #7aa2f7, #bb9af7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.login-header p {
+  color: #9aa5ce;
+  font-size: 1rem;
+  margin-bottom: 2rem;
+  line-height: 1.5;
+}
+
+.login-btn {
+  background: linear-gradient(135deg, #7aa2f7, #bb9af7);
+  color: #1a1b26;
+  border: none;
+  padding: 0.875rem 2rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(122, 162, 247, 0.3);
+  font-family: Lato, system-ui, sans-serif;
+}
+
+.login-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(122, 162, 247, 0.4);
+  background: linear-gradient(135deg, #bb9af7, #7dcfff);
 }
 
 /* Responsive design */

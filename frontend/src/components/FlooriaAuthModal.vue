@@ -16,37 +16,14 @@
       </div>
       
       <div class="modal-content">
-        <!-- Login/Signup Toggle -->
-        <div class="auth-toggle">
-          <button 
-            :class="['toggle-btn', { active: isLogin }]"
-            @click="isLogin = true"
-          >
-            Connexion
-          </button>
-          <button 
-            :class="['toggle-btn', { active: !isLogin }]"
-            @click="isLogin = false"
-          >
-            Inscription
-          </button>
+        <!-- Login Only - No Signup -->
+        <div class="auth-header">
+          <h4>Connexion requise</h4>
+          <p>Utilisez vos identifiants autorisés</p>
         </div>
         
-        <!-- Auth Form -->
+        <!-- Auth Form - Login Only -->
         <form @submit.prevent="handleSubmit" class="auth-form">
-          <!-- Name field (signup only) -->
-          <div v-if="!isLogin" class="form-group">
-            <label for="name">Nom complet</label>
-            <input
-              id="name"
-              v-model="formData.name"
-              type="text"
-              placeholder="Votre nom complet"
-              class="form-input"
-              required
-            />
-          </div>
-          
           <!-- Email field -->
           <div class="form-group">
             <label for="email">Email</label>
@@ -71,7 +48,6 @@
                 placeholder="Votre mot de passe"
                 class="form-input"
                 required
-                :minlength="isLogin ? 1 : 6"
               />
               <button
                 type="button"
@@ -88,20 +64,6 @@
                 </svg>
               </button>
             </div>
-          </div>
-          
-          <!-- Confirm Password field (signup only) -->
-          <div v-if="!isLogin" class="form-group">
-            <label for="confirmPassword">Confirmer le mot de passe</label>
-            <input
-              id="confirmPassword"
-              v-model="formData.confirmPassword"
-              type="password"
-              placeholder="Confirmez votre mot de passe"
-              class="form-input"
-              required
-              minlength="6"
-            />
           </div>
           
           <!-- Error Message -->
@@ -126,26 +88,23 @@
           <!-- Submit Button -->
           <button 
             type="submit" 
-            :disabled="isLoading || !isFormValid"
             class="submit-btn"
-            :class="{ loading: isLoading }"
+            :disabled="isLoading"
           >
-            <div v-if="isLoading" class="loading-spinner"></div>
-            <span v-else>{{ isLogin ? 'Se connecter' : 'S\'inscrire' }}</span>
+            <svg v-if="isLoading" class="loading-spinner" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-dasharray="31.416" stroke-dashoffset="31.416">
+                <animate attributeName="stroke-dasharray" dur="2s" values="0 31.416;15.708 15.708;0 31.416" repeatCount="indefinite"/>
+                <animate attributeName="stroke-dashoffset" dur="2s" values="0;-15.708;-31.416" repeatCount="indefinite"/>
+              </circle>
+            </svg>
+            {{ isLoading ? 'Connexion...' : 'Se connecter' }}
           </button>
         </form>
         
-        <!-- Additional Options -->
+        <!-- Login Only - No Signup Option -->
         <div class="auth-footer">
-          <p class="auth-switch">
-            {{ isLogin ? 'Pas encore de compte ?' : 'Déjà un compte ?' }}
-            <button 
-              type="button"
-              @click="toggleMode"
-              class="switch-btn"
-            >
-              {{ isLogin ? 'S\'inscrire' : 'Se connecter' }}
-            </button>
+          <p class="auth-info">
+            Seuls les comptes autorisés peuvent se connecter.
           </p>
         </div>
       </div>
@@ -165,49 +124,27 @@ const emit = defineEmits<{
   'login-success': [user: User]
 }>()
 
-// State
-const isLogin = ref(true)
+// State - Login only mode
 const showPassword = ref(false)
 const isLoading = ref(false)
 const errorMessage = ref('')
 const successMessage = ref('')
 
 const formData = ref({
-  name: '',
   email: '',
-  password: '',
-  confirmPassword: ''
+  password: ''
 })
 
-// Computed
+// Computed - Login validation only
 const isFormValid = computed(() => {
-  if (isLogin.value) {
-    return formData.value.email && formData.value.password
-  } else {
-    return (
-      formData.value.name &&
-      formData.value.email &&
-      formData.value.password &&
-      formData.value.confirmPassword &&
-      formData.value.password === formData.value.confirmPassword &&
-      formData.value.password.length >= 6
-    )
-  }
+  return formData.value.email && formData.value.password
 })
 
-// Methods
-const toggleMode = () => {
-  isLogin.value = !isLogin.value
-  clearMessages()
-  resetForm()
-}
-
+// Methods - Login only
 const resetForm = () => {
   formData.value = {
-    name: '',
     email: '',
-    password: '',
-    confirmPassword: ''
+    password: ''
   }
 }
 
@@ -223,45 +160,21 @@ const handleSubmit = async () => {
   clearMessages()
   
   try {
-    if (isLogin.value) {
-      // Login
-      const result = await authManager.signIn({
-        email: formData.value.email,
-        password: formData.value.password
-      })
-      
-      if (!result.success) {
-        throw new Error(result.message)
-      }
-      
-      const user = result.user!
-      successMessage.value = 'Connexion réussie !'
-      setTimeout(() => {
-        emit('login-success', user)
-      }, 1000)
-    } else {
-      // Signup
-      if (formData.value.password !== formData.value.confirmPassword) {
-        throw new Error('Les mots de passe ne correspondent pas')
-      }
-      
-      const result = await authManager.signUp({
-        email: formData.value.email,
-        password: formData.value.password,
-        full_name: formData.value.name
-      })
-      
-      if (!result.success) {
-        throw new Error(result.message)
-      }
-      
-      const user = result.user!
-      
-      successMessage.value = 'Inscription réussie ! Vérifiez votre email pour confirmer votre compte.'
-      setTimeout(() => {
-        emit('login-success', user)
-      }, 2000)
+    // Login only
+    const result = await authManager.signIn({
+      email: formData.value.email,
+      password: formData.value.password
+    })
+    
+    if (!result.success) {
+      throw new Error(result.message)
     }
+    
+    const user = result.user!
+    successMessage.value = 'Connexion réussie !'
+    setTimeout(() => {
+      emit('login-success', user)
+    }, 1000)
   } catch (error: any) {
     console.error('Auth error:', error)
     errorMessage.value = error.message || 'Une erreur est survenue'
@@ -345,30 +258,22 @@ const handleSubmit = async () => {
   padding: 1.5rem;
 }
 
-.auth-toggle {
-  display: flex;
-  background: #f1f5f9;
-  border-radius: 8px;
-  padding: 0.25rem;
+.auth-header {
+  text-align: center;
   margin-bottom: 1.5rem;
 }
 
-.toggle-btn {
-  flex: 1;
-  padding: 0.75rem;
-  background: none;
-  border: none;
-  border-radius: 6px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  color: #6b7280;
+.auth-header h4 {
+  margin: 0 0 0.5rem 0;
+  color: #1a1b26;
+  font-size: 1.1rem;
+  font-weight: 600;
 }
 
-.toggle-btn.active {
-  background: white;
-  color: #374151;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+.auth-header p {
+  margin: 0;
+  color: #565f89;
+  font-size: 0.9rem;
 }
 
 .auth-form {
@@ -515,24 +420,11 @@ const handleSubmit = async () => {
   text-align: center;
 }
 
-.auth-switch {
-  color: #6b7280;
+.auth-info {
+  color: #565f89;
   font-size: 0.9rem;
   margin: 0;
-}
-
-.switch-btn {
-  background: none;
-  border: none;
-  color: #3b82f6;
-  font-weight: 600;
-  cursor: pointer;
-  text-decoration: underline;
-  margin-left: 0.25rem;
-}
-
-.switch-btn:hover {
-  color: #1d4ed8;
+  text-align: center;
 }
 
 @media (max-width: 768px) {
