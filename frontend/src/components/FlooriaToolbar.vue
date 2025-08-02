@@ -110,8 +110,9 @@ export default {
 <style scoped>
 .flooria-toolbar {
   padding: 1.5rem;
-  background: white;
-  border-bottom: 1px solid #e2e8f0;
+  background: #24283b;
+  border-bottom: 1px solid #414868;
+  font-family: Lato, system-ui, sans-serif;
 }
 
 .toolbar-section {
@@ -125,10 +126,10 @@ export default {
 .section-title {
   font-size: 1rem;
   font-weight: 600;
-  color: #374151;
+  color: #c0caf5;
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
-  border-bottom: 2px solid #e5e7eb;
+  border-bottom: 2px solid #414868;
 }
 
 .file-input-container {
@@ -144,19 +145,20 @@ export default {
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1rem;
-  background: #f8fafc;
-  border: 2px dashed #cbd5e1;
+  background: #1a1b26;
+  border: 2px dashed #565f89;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
   font-size: 0.9rem;
-  color: #64748b;
+  color: #9aa5ce;
+  font-weight: 500;
 }
 
 .file-input-label:hover {
-  background: #f1f5f9;
-  border-color: #94a3b8;
-  color: #475569;
+  background: #414868;
+  border-color: #7aa2f7;
+  color: #c0caf5;
 }
 
 .btn-primary {
@@ -166,22 +168,23 @@ export default {
   justify-content: center;
   gap: 0.5rem;
   padding: 0.875rem 1rem;
-  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-  color: white;
+  background: linear-gradient(135deg, #7aa2f7, #bb9af7);
+  color: #1a1b26;
   border: none;
   border-radius: 8px;
   font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 2px 4px rgba(122, 162, 247, 0.3);
   margin-bottom: 1rem;
+  font-family: Lato, system-ui, sans-serif;
 }
 
 .btn-primary:hover:not(.disabled) {
-  background: linear-gradient(135deg, #2563eb, #1e40af);
+  background: linear-gradient(135deg, #bb9af7, #7dcfff);
   transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.4);
+  box-shadow: 0 4px 8px rgba(187, 154, 247, 0.4);
 }
 
 .btn-secondary {
@@ -191,19 +194,22 @@ export default {
   justify-content: center;
   gap: 0.5rem;
   padding: 0.75rem 1rem;
-  background: white;
-  color: #374151;
-  border: 1px solid #d1d5db;
+  background: #1a1b26;
+  color: #c0caf5;
+  border: 1px solid #414868;
   border-radius: 6px;
   font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.2s ease;
   margin-bottom: 0.5rem;
+  font-family: Lato, system-ui, sans-serif;
+  font-weight: 500;
 }
 
 .btn-secondary:hover:not(.disabled) {
-  background: #f9fafb;
-  border-color: #9ca3af;
+  background: #414868;
+  border-color: #7aa2f7;
+  color: #ffffff;
   transform: translateY(-1px);
 }
 
@@ -212,7 +218,7 @@ export default {
 }
 
 .disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: not-allowed !important;
   transform: none !important;
 }
@@ -221,6 +227,7 @@ export default {
   width: 18px;
   height: 18px;
   stroke-width: 2;
+  color: inherit;
 }
 
 @media (max-width: 768px) {

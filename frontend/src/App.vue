@@ -400,9 +400,10 @@ provide('authState', {
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  background-color: #f8fafc;
-  color: #334155;
+  font-family: Lato, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background-color: #1a1b26;
+  color: #c0caf5;
+  font-weight: 400;
 }
 
 #app {
@@ -412,37 +413,37 @@ body {
 }
 
 .test-mode-toggle {
-  background: #1e293b;
+  background: #1a1b26;
   padding: 0.75rem;
   display: flex;
   justify-content: center;
-  border-bottom: 1px solid #334155;
+  border-bottom: 1px solid #24283b;
 }
 
 .btn-test-toggle {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background: #374151;
-  color: #e5e7eb;
-  border: 1px solid #4b5563;
+  background: #24283b;
+  color: #c0caf5;
+  border: 1px solid #414868;
   padding: 0.5rem 1rem;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 0.9rem;
-  font-weight: 500;
+  font-weight: 600;
   transition: all 0.2s ease;
 }
 
 .btn-test-toggle:hover {
-  background: #4b5563;
-  border-color: #6b7280;
+  background: #414868;
+  border-color: #565f89;
 }
 
 .btn-test-toggle.active {
-  background: #3b82f6;
-  border-color: #2563eb;
-  color: white;
+  background: #bb9af7;
+  border-color: #bb9af7;
+  color: #1a1b26;
 }
 
 .btn-test-toggle svg {
@@ -466,17 +467,18 @@ body {
 
 .sidebar {
   width: 240px;
-  background: white;
-  border-right: 1px solid #e2e8f0;
+  background: #24283b;
+  border-right: 1px solid #414868;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  box-shadow: 2px 0 4px rgba(26, 27, 38, 0.3);
 }
 
 .canvas-container {
   flex: 1;
   position: relative;
-  background: #f1f5f9;
+  background: #1a1b26;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -484,23 +486,23 @@ body {
 
 .detection-table-section {
   height: 520px;
-  background: white;
-  border-top: 2px solid #e2e8f0;
-  overflow: hidden;
-  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+  background: #24283b;
+  border-top: 2px solid #bb9af7;
+  overflow: auto;
+  box-shadow: 0 -4px 12px rgba(187, 154, 247, 0.2);
 }
 
 /* Sidebar summary styles */
 .detection-summary-sidebar {
   padding: 1rem 1.5rem;
-  background: #f8fafc;
-  border-top: 1px solid #e2e8f0;
+  background: #1a1b26;
+  border-top: 1px solid #414868;
 }
 
 .summary-title {
   font-size: 0.9rem;
   font-weight: 600;
-  color: #374151;
+  color: #c0caf5;
   margin: 0 0 0.75rem 0;
 }
 
@@ -518,24 +520,27 @@ body {
 }
 
 .stat-indicator {
-  width: 8px;
-  height: 8px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
   flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+  margin-right: 0.25rem;
 }
 
 .stat-label {
   flex: 1;
-  color: #6b7280;
+  color: #9aa5ce;
   font-weight: 500;
 }
 
 .stat-count {
-  color: #374151;
+  color: #1a1b26;
   font-weight: 600;
-  background: #e2e8f0;
+  background: #bb9af7;
   padding: 0.125rem 0.375rem;
-  border-radius: 10px;
+  border-radius: 12px;
   min-width: 24px;
   text-align: center;
 }

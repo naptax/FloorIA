@@ -24,121 +24,86 @@
     </div>
     
     <!-- Detection Table -->
-    <div v-if="detections.length > 0" class="detection-table-container">
-      <table class="detection-table">
-        <thead>
-          <tr>
-            <th 
-              class="sortable-header" 
-              @click="sortBy('class')"
-              :class="{ 'sorted': sortField === 'class' }"
-            >
-              <div class="header-content">
-                <span>Type</span>
-                <svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path d="M7 10l5 5 5-5"/>
-                  <path d="M7 14l5-5 5 5"/>
-                </svg>
-              </div>
-            </th>
-            <th 
-              class="sortable-header" 
-              @click="sortBy('confidence')"
-              :class="{ 'sorted': sortField === 'confidence' }"
-            >
-              <div class="header-content">
-                <span>Confiance</span>
-                <svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path d="M7 10l5 5 5-5"/>
-                  <path d="M7 14l5-5 5 5"/>
-                </svg>
-              </div>
-            </th>
-            <th 
-              class="sortable-header" 
-              @click="sortBy('x')"
-              :class="{ 'sorted': sortField === 'x' }"
-            >
-              <div class="header-content">
-                <span>Position X</span>
-                <svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path d="M7 10l5 5 5-5"/>
-                  <path d="M7 14l5-5 5 5"/>
-                </svg>
-              </div>
-            </th>
-            <th 
-              class="sortable-header" 
-              @click="sortBy('y')"
-              :class="{ 'sorted': sortField === 'y' }"
-            >
-              <div class="header-content">
-                <span>Position Y</span>
-                <svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path d="M7 10l5 5 5-5"/>
-                  <path d="M7 14l5-5 5 5"/>
-                </svg>
-              </div>
-            </th>
-            <th 
-              class="sortable-header" 
-              @click="sortBy('width')"
-              :class="{ 'sorted': sortField === 'width' }"
-            >
-              <div class="header-content">
-                <span>Largeur</span>
-                <svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path d="M7 10l5 5 5-5"/>
-                  <path d="M7 14l5-5 5 5"/>
-                </svg>
-              </div>
-            </th>
-            <th 
-              class="sortable-header" 
-              @click="sortBy('height')"
-              :class="{ 'sorted': sortField === 'height' }"
-            >
-              <div class="header-content">
-                <span>Hauteur</span>
-                <svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path d="M7 10l5 5 5-5"/>
-                  <path d="M7 14l5-5 5 5"/>
-                </svg>
-              </div>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr 
-            v-for="detection in sortedDetections"
-            :key="detection.id"
-            :class="[
-              'detection-row',
-              { 'selected': selectedDetection?.id === detection.id }
-            ]"
-            @click="selectDetection(detection)"
+    <div v-if="detections.length > 0" class="detection-table-wrapper">
+      <!-- Fixed Header -->
+      <div class="detection-table-header">
+        <div class="header-row">
+          <div 
+            class="header-cell sortable"
+            :class="getSortClass('class')"
+            @click="sortBy('class')"
           >
-            <td class="type-cell">
-              <div class="type-content">
-                <div 
-                  class="type-indicator"
-                  :style="{ backgroundColor: getElementColor(detection.class) }"
-                ></div>
-                <span class="type-name">{{ formatClassName(detection.class) }}</span>
-              </div>
-            </td>
-            <td class="confidence-cell">
-              <div class="confidence-badge" :class="getConfidenceClass(detection.confidence)">
-                {{ Math.round(detection.confidence * 100) }}%
-              </div>
-            </td>
-            <td class="numeric-cell">{{ Math.round(detection.x) }}</td>
-            <td class="numeric-cell">{{ Math.round(detection.y) }}</td>
-            <td class="numeric-cell">{{ Math.round(detection.width) }}</td>
-            <td class="numeric-cell">{{ Math.round(detection.height) }}</td>
-          </tr>
-        </tbody>
-      </table>
+            Type
+          </div>
+          <div 
+            class="header-cell sortable"
+            :class="getSortClass('confidence')"
+            @click="sortBy('confidence')"
+          >
+            Confiance
+          </div>
+          <div 
+            class="header-cell sortable"
+            :class="getSortClass('x')"
+            @click="sortBy('x')"
+          >
+            Position X
+          </div>
+          <div 
+            class="header-cell sortable"
+            :class="getSortClass('y')"
+            @click="sortBy('y')"
+          >
+            Position Y
+          </div>
+          <div 
+            class="header-cell sortable"
+            :class="getSortClass('width')"
+            @click="sortBy('width')"
+          >
+            Largeur
+          </div>
+          <div 
+            class="header-cell sortable"
+            :class="getSortClass('height')"
+            @click="sortBy('height')"
+          >
+            Hauteur
+          </div>
+        </div>
+      </div>
+      
+      <!-- Scrollable Body -->
+      <div class="detection-table-body">
+        <div 
+          v-for="detection in sortedDetections"
+          :key="detection.id"
+          :class="[
+            'detection-row',
+            { 'selected': selectedDetection?.id === detection.id }
+          ]"
+          @click="selectDetection(detection)"
+        >
+          <div class="table-cell type-cell">
+            <div class="type-content">
+              <div 
+                class="type-indicator"
+                :style="{ backgroundColor: getElementColor(detection.class) }"
+              ></div>
+              <span class="type-name">{{ formatClassName(detection.class) }}</span>
+            </div>
+          </div>
+          <div class="table-cell confidence-cell">
+            <div class="confidence-badge" :class="getConfidenceClass(detection.confidence)">
+              {{ Math.round(detection.confidence * 100) }}%
+            </div>
+          </div>
+          <div class="table-cell numeric-cell">{{ Math.round(detection.x) }}</div>
+          <div class="table-cell numeric-cell">{{ Math.round(detection.y) }}</div>
+          <div class="table-cell numeric-cell">{{ Math.round(detection.width) }}</div>
+          <div class="table-cell numeric-cell">{{ Math.round(detection.height) }}</div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -162,12 +127,22 @@ const emit = defineEmits<{
 const sortField = ref<keyof Detection>('class')
 const sortDirection = ref<'asc' | 'desc'>('asc')
 
-// Element type colors matching Canvas component
+// Element type colors - Tokyo Night palette with high contrast
 const elementColors: Record<string, string> = {
-  'mur': '#4fc3f7',
-  'porte': '#66bb6a', 
-  'fenêtre': '#ffa726',
-  'pièce': '#ab47bc'
+  'mur': '#7aa2f7',        // Tokyo Night blue
+  'porte': '#9ece6a',      // Tokyo Night green
+  'fenêtre': '#e0af68',    // Tokyo Night yellow/orange
+  'pièce': '#bb9af7',      // Tokyo Night purple
+  'door': '#9ece6a',       // English variant
+  'wall': '#7aa2f7',       // English variant
+  'window': '#e0af68',     // English variant
+  'room': '#bb9af7',       // English variant
+  'escalier': '#f7768e',   // Tokyo Night red/pink
+  'stairs': '#f7768e',     // English variant
+  'meuble': '#7dcfff',     // Tokyo Night cyan
+  'furniture': '#7dcfff',  // English variant
+  'cloison': '#c0caf5',    // Tokyo Night light
+  'partition': '#c0caf5'   // English variant
 }
 
 // Computed detection statistics
@@ -234,6 +209,11 @@ const getConfidenceClass = (confidence: number): string => {
   if (confidence >= 0.8) return 'high'
   if (confidence >= 0.6) return 'medium'
   return 'low'
+}
+
+const getSortClass = (field: keyof Detection): string => {
+  if (sortField.value !== field) return ''
+  return sortDirection.value === 'asc' ? 'sort-asc' : 'sort-desc'
 }
 </script>
 
@@ -305,100 +285,122 @@ const getConfidenceClass = (confidence: number): string => {
   color: #9ca3af;
 }
 
-/* Table container */
-.detection-table-container {
+/* Table wrapper with fixed header */
+.detection-table-wrapper {
   flex: 1;
-  overflow: auto;
-  background: white;
+  display: flex;
+  flex-direction: column;
+  background: #1a1b26;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(26, 27, 38, 0.3);
 }
 
-.detection-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.9rem;
-  table-layout: auto;
+/* Fixed header */
+.detection-table-header {
+  background: #24283b;
+  border-bottom: 2px solid #414868;
+  z-index: 100;
+  position: relative;
 }
 
-/* Table header */
-.detection-table thead {
-  background: #f8fafc;
-  border-bottom: 2px solid #e2e8f0;
-  position: sticky;
-  top: 0;
-  z-index: 10;
+.header-row {
+  display: grid;
+  grid-template-columns: 2fr 1.5fr 1fr 1fr 1fr 1fr;
+  font-family: Lato, system-ui, sans-serif;
 }
 
-.sortable-header {
-  padding: 0.75rem 1rem;
+.header-cell {
+  background: #24283b;
+  color: #ffffff;
+  padding: 0.8rem;
   text-align: left;
   font-weight: 600;
-  color: #374151;
+  border-right: 1px solid #414868;
   cursor: pointer;
   user-select: none;
   transition: background-color 0.2s ease;
-  border-right: 1px solid #e2e8f0;
-  white-space: nowrap;
-}
-
-.sortable-header:hover {
-  background: #f1f5f9;
-}
-
-.sortable-header.sorted {
-  background: #eff6ff;
-  color: #3b82f6;
-}
-
-.header-content {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
 }
 
-.sort-icon {
-  width: 16px;
-  height: 16px;
-  stroke-width: 2;
-  opacity: 0.5;
-  transition: opacity 0.2s ease;
+.header-cell:last-child {
+  border-right: none;
 }
 
-.sortable-header:hover .sort-icon,
-.sortable-header.sorted .sort-icon {
+.header-cell:hover {
+  background: #414868;
+}
+
+/* Scrollable body */
+.detection-table-body {
+  flex: 1;
+  overflow-y: auto;
+  max-height: 450px;
+}
+
+/* Remove old table styles - now using grid */
+
+/* Sorting indicators for header cells */
+.header-cell.sortable::after {
+  content: '↕';
+  margin-left: 0.5rem;
+  opacity: 0.7;
+  color: #9aa5ce;
+  font-size: 0.8rem;
+}
+
+.header-cell.sort-asc::after {
+  content: '↑';
   opacity: 1;
+  color: #7aa2f7;
 }
 
-/* Table body */
-.detection-table tbody tr {
-  border-bottom: 1px solid #f1f5f9;
+.header-cell.sort-desc::after {
+  content: '↓';
+  opacity: 1;
+  color: #7aa2f7;
+}
+
+/* Detection rows using CSS Grid */
+.detection-row {
+  display: grid;
+  grid-template-columns: 2fr 1.5fr 1fr 1fr 1fr 1fr;
+  border-bottom: 1px solid #414868;
   transition: background-color 0.2s ease;
+  font-family: Lato, system-ui, sans-serif;
 }
 
 .detection-row:hover {
-  background: #f8fafc;
+  background: #1a1b26;
 }
 
 .detection-row.selected {
-  background: #eff6ff;
-  border-color: #3b82f6;
+  background: rgba(187, 154, 247, 0.2);
+  border-color: #bb9af7;
 }
 
 .detection-row.selected:hover {
-  background: #dbeafe;
+  background: rgba(187, 154, 247, 0.3);
 }
 
-/* Table cells */
-.detection-table td {
+/* Table cells using divs */
+.table-cell {
   padding: 0.6rem 0.8rem;
-  border-right: 1px solid #e2e8f0;
-  vertical-align: middle;
+  border-right: 1px solid #414868;
   font-size: 0.85rem;
   white-space: nowrap;
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+}
+
+.table-cell:last-child {
+  border-right: none;
 }
 
 .type-cell {
-  /* Auto-sized */
+  width: auto;
 }
 
 .type-content {
@@ -408,15 +410,18 @@ const getConfidenceClass = (confidence: number): string => {
 }
 
 .type-indicator {
-  width: 12px;
-  height: 12px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   flex-shrink: 0;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+  margin-right: 0.25rem;
 }
 
 .type-name {
   font-weight: 600;
-  color: #374151;
+  color: #ffffff;
 }
 
 .confidence-cell {
@@ -434,23 +439,23 @@ const getConfidenceClass = (confidence: number): string => {
 }
 
 .confidence-badge.high {
-  background: #dcfce7;
-  color: #166534;
+  background: #7dcfff;
+  color: #1a1b26;
 }
 
 .confidence-badge.medium {
-  background: #fef3c7;
-  color: #92400e;
+  background: #7aa2f7;
+  color: #1a1b26;
 }
 
 .confidence-badge.low {
-  background: #fee2e2;
-  color: #991b1b;
+  background: #565f89;
+  color: #c0caf5;
 }
 
 .numeric-cell {
   font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
-  color: #374151;
+  color: #ffffff;
   text-align: center;
   font-size: 0.8rem;
   font-weight: 500;
@@ -480,16 +485,9 @@ const getConfidenceClass = (confidence: number): string => {
   gap: 0.5rem;
 }
 
-.type-indicator {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
 .type-name {
   font-weight: 600;
-  color: #374151;
+  color: #ffffff;
   font-size: 0.9rem;
 }
 
