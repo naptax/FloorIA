@@ -30,6 +30,7 @@ AI-powered architectural image analysis platform for automated floor plan proces
   - [Interface Features](#interface-features)
 - [API Documentation](#api-documentation)
 - [Use Cases](#use-cases)
+- [Documentation](#documentation)
 - [Development](#development)
 - [Deployment](#deployment)
 - [Contributing](#contributing)
@@ -338,6 +339,43 @@ curl -X POST "http://localhost:8000/analyze" \
 - Design validation workflows
 - Space optimization studies
 - Renovation planning support
+
+---
+
+## Documentation
+
+FloorIA includes comprehensive documentation to help you set up, configure, and manage the application:
+
+### 📚 Available Documentation
+
+| Document | Description | Purpose |
+|----------|-------------|----------|
+| [`README.md`](README.md) | Main project documentation | Overview, setup, and usage instructions |
+| [`AUTHENTICATION.md`](AUTHENTICATION.md) | Authentication setup guide | Supabase auth configuration and user flows |
+| [`SUPABASE_ADMIN.md`](SUPABASE_ADMIN.md) | Administrator guide | User management and admin workflows |
+| [`RAILWAY_DEPLOYMENT.md`](RAILWAY_DEPLOYMENT.md) | Deployment guide | Production deployment on Railway platform |
+
+### 🔗 Quick Navigation
+
+**For Users:**
+- Start with [`README.md`](README.md) for basic setup
+- Follow [`AUTHENTICATION.md`](AUTHENTICATION.md) for auth configuration
+
+**For Administrators:**
+- Read [`SUPABASE_ADMIN.md`](SUPABASE_ADMIN.md) for user management
+- Use [`RAILWAY_DEPLOYMENT.md`](RAILWAY_DEPLOYMENT.md) for production deployment
+
+**For Developers:**
+- All documents contain relevant technical information
+- See [Development](#development) section below for dev workflows
+
+### 📋 Documentation Standards
+
+- **Clear step-by-step instructions** with code examples
+- **Security best practices** highlighted throughout
+- **Troubleshooting sections** for common issues
+- **Cross-references** between related documents
+- **Regular updates** to match current features
 
 ---
 
