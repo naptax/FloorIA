@@ -8,8 +8,8 @@
       @logout="handleLogout"
     />
     
-    <!-- Test Mode Toggle -->
-    <div class="test-mode-toggle">
+    <!-- Test Mode Toggle (only visible with ?modetest parameter) -->
+    <div v-if="showTestModeButton" class="test-mode-toggle">
       <button 
         @click="showTestPage = !showTestPage" 
         class="btn-test-toggle"
@@ -108,6 +108,7 @@ const isAuthenticated = ref(false)
 const currentUser = ref<User | null>(null)
 const showAuthModalState = ref(false)
 const showTestPage = ref(false)
+const showTestModeButton = ref(false)
 const currentImageSrc = ref<string | null>(null)
 const currentImageFilename = ref<string>('')
 const detections = ref<Detection[]>([])
@@ -305,6 +306,15 @@ const handleCanvasReady = () => {
 // Initialize authentication
 onMounted(async () => {
   try {
+    // Check for test mode parameter in URL
+    const urlParams = new URLSearchParams(window.location.search)
+    showTestModeButton.value = urlParams.has('modetest')
+    
+    console.log('🧪 Test mode button visibility:', showTestModeButton.value ? 'VISIBLE' : 'HIDDEN')
+    if (showTestModeButton.value) {
+      console.log('🔧 Test mode enabled via URL parameter: ?modetest')
+    }
+    
     const user = authManager.getCurrentUser()
     if (user) {
       currentUser.value = user
