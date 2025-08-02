@@ -48,26 +48,31 @@ FloorIA is a comprehensive web application that combines computer vision and geo
 ## Key Features
 
 ### AI-Powered Analysis
-- Automated detection of architectural elements
-- Real-time confidence scoring
-- Geometric data processing with Shapely
-- Interactive bounding box visualization
+- **Automated detection** of architectural elements (walls, doors, windows, rooms)
+- **Real-time confidence scoring** with visual feedback
+- **Intelligent data transformation** from backend to frontend formats
+- **Interactive bounding box visualization** with color-coded element types
+- **Geometric data processing** with Shapely for precise measurements
 
 ### User Authentication
-- Secure user registration and login via [Supabase](https://supabase.com)
-- Session management and user profiles
-- Protected API endpoints
+- **Secure user registration and login** via [Supabase](https://supabase.com)
+- **Session management** with persistent authentication state
+- **Protected API endpoints** with JWT token verification
+- **User profiles** with personalized experience
 
-### Modern Interface
-- Responsive web application built with TypeScript
-- Interactive canvas with zoom and pan capabilities
-- Real-time detection results display
-- Export functionality for analysis data
+### Modern Vue.js Interface
+- **Vue.js 3 with Composition API** for reactive state management
+- **Component-based architecture** with reusable UI elements
+- **Interactive canvas** with zoom, pan, and click-to-select capabilities
+- **Real-time detection results** display with synchronized views
+- **Smart export functionality** with intelligent filename matching
+- **Developer tools** accessible via URL parameters (?modetest)
 
 ### Professional Architecture
-- FastAPI backend with comprehensive API documentation
-- Component-based frontend architecture
-- Scalable deployment with [Railway](https://railway.app) integration
+- **FastAPI backend** with comprehensive API documentation
+- **Vue.js frontend** with TypeScript and modern tooling
+- **Scalable deployment** with [Railway](https://railway.app) integration
+- **Comprehensive error handling** and logging throughout
 - Comprehensive error handling and logging
 
 ---
@@ -83,11 +88,12 @@ FloorIA is a comprehensive web application that combines computer vision and geo
 - Uvicorn ASGI server
 
 ### Frontend
-- TypeScript 5.2+
-- Vite build tool
-- Modern ES modules
-- Canvas API for image manipulation
-- Responsive CSS design
+- **Vue.js 3** with Composition API
+- **TypeScript 5.2+** with strict type checking
+- **Vite** build tool with hot reload
+- **Component-based architecture** with reactive state management
+- **Canvas API** for interactive image manipulation
+- **Responsive design** with modern CSS and Vue.js styling
 
 ---
 
@@ -262,26 +268,39 @@ For user authentication functionality, configure your [Supabase](https://supabas
 
 ## Usage
 
-### Image Analysis Workflow
+### Vue.js Application Workflow
 
-1. **Upload**: Select an architectural floor plan image
-2. **Processing**: The AI model automatically detects structural elements
-3. **Results**: View detected elements with confidence scores and geometric data
-4. **Export**: Download analysis results in JSON format
+1. **Authentication**: Secure login via Supabase (optional but recommended)
+2. **Import**: Click "Analyser un plan" to select an architectural floor plan image
+3. **AI Processing**: Real-time progress indicator shows analysis status
+4. **Visual Results**: Detected elements appear on canvas with color-coded bounding boxes
+5. **Interactive Exploration**: Click elements on image to highlight corresponding table rows
+6. **Export**: Download analysis results with intelligent filename matching
 
-### Interface Features
+### Vue.js Interface Features
 
-**Navigation**
-- Zoom controls for detailed inspection
-- Pan functionality for large images
-- Fit-to-window for optimal viewing
-- Mouse wheel zoom with cursor positioning
+**Modern Component Architecture**
+- **Reactive state management** with Vue.js 3 Composition API
+- **Real-time synchronization** between canvas and detection panel
+- **Responsive design** that adapts to different screen sizes
+- **Component-based UI** with reusable elements
 
-**Data Visualization**
-- Interactive detection table with sorting
-- Color-coded element types (walls, doors, windows, rooms)
-- Confidence score visualization
-- Geometric measurements and calculations
+**Interactive Canvas**
+- **Zoom and pan** with smooth mouse/touch controls
+- **Click-to-select** elements for detailed inspection
+- **Color-coded visualization** (walls: blue, doors: green, windows: orange, rooms: purple)
+- **Automatic centering** and responsive resizing
+
+**Smart Data Management**
+- **Automatic format transformation** from backend to frontend
+- **Bidirectional synchronization** between canvas clicks and table selection
+- **Real-time confidence scoring** with visual feedback
+- **Intelligent export** with filename matching source image
+
+**Developer Tools**
+- **Test mode access** via URL parameter: `?modetest`
+- **Comprehensive logging** for debugging and monitoring
+- **Technical validation page** for integration testing
 
 **User Management**
 - Secure registration and login system
@@ -504,7 +523,10 @@ This project is licensed under the MIT License.
 - **🔄 Data Transformation**: Added automatic format conversion from backend (label, bbox) to Vue.js format (class, x, y, width, height, id)
 - **📊 Visual Results**: AI analysis results now display correctly in DetectionPanel and Canvas
 - **🐛 Bug Resolution**: Resolved "Unhandled error during execution of render function" warnings
+- **🧪 Test Mode Enhancement**: Hide "Mode Test" button by default, show only with ?modetest URL parameter
+- **📝 Documentation Update**: Complete documentation overhaul reflecting Vue.js migration and new features
 - **✅ Full Integration**: Complete end-to-end workflow now functional (import → analyze → display → export)
+- **🎯 Production Ready**: Clean interface for end users, developer tools accessible via URL parameter
 
 ### v1.5.0 (2025-01-01)
 - **🚀 MAJOR**: Complete migration to Vue.js 3 with Composition API and TypeScript

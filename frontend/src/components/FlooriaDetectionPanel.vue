@@ -23,70 +23,128 @@
       <small>Analysez un plan pour voir les résultats</small>
     </div>
     
-    <!-- Detection List -->
-    <div v-else class="detection-list">
-      <div
-        v-for="(detection, index) in detections"
-        :key="detection.id"
-        :class="[
-          'detection-item',
-          { 'selected': selectedDetection?.id === detection.id }
-        ]"
-        @click="selectDetection(detection)"
-      >
-        <div class="detection-header">
-          <div class="detection-type">
-            <div 
-              class="type-indicator"
-              :style="{ backgroundColor: getElementColor(detection.class) }"
-            ></div>
-            <span class="type-name">{{ formatClassName(detection.class) }}</span>
-          </div>
-          <div class="confidence-badge" :class="getConfidenceClass(detection.confidence)">
-            {{ Math.round(detection.confidence * 100) }}%
-          </div>
-        </div>
-        
-        <div class="detection-details">
-          <div class="detail-row">
-            <span class="detail-label">Position:</span>
-            <span class="detail-value">
-              {{ Math.round(detection.x) }}, {{ Math.round(detection.y) }}
-            </span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Taille:</span>
-            <span class="detail-value">
-              {{ Math.round(detection.width) }} × {{ Math.round(detection.height) }}
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Summary Stats -->
-    <div v-if="detections.length > 0" class="detection-summary">
-      <h4 class="summary-title">Résumé</h4>
-      <div class="summary-stats">
-        <div
-          v-for="(count, type) in detectionStats"
-          :key="type"
-          class="stat-item"
-        >
-          <div 
-            class="stat-indicator"
-            :style="{ backgroundColor: getElementColor(type) }"
-          ></div>
-          <span class="stat-label">{{ formatClassName(type) }}</span>
-          <span class="stat-count">{{ count }}</span>
-        </div>
-      </div>
+    <!-- Detection Table -->
+    <div v-if="detections.length > 0" class="detection-table-container">
+      <table class="detection-table">
+        <thead>
+          <tr>
+            <th 
+              class="sortable-header" 
+              @click="sortBy('class')"
+              :class="{ 'sorted': sortField === 'class' }"
+            >
+              <div class="header-content">
+                <span>Type</span>
+                <svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M7 10l5 5 5-5"/>
+                  <path d="M7 14l5-5 5 5"/>
+                </svg>
+              </div>
+            </th>
+            <th 
+              class="sortable-header" 
+              @click="sortBy('confidence')"
+              :class="{ 'sorted': sortField === 'confidence' }"
+            >
+              <div class="header-content">
+                <span>Confiance</span>
+                <svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M7 10l5 5 5-5"/>
+                  <path d="M7 14l5-5 5 5"/>
+                </svg>
+              </div>
+            </th>
+            <th 
+              class="sortable-header" 
+              @click="sortBy('x')"
+              :class="{ 'sorted': sortField === 'x' }"
+            >
+              <div class="header-content">
+                <span>Position X</span>
+                <svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M7 10l5 5 5-5"/>
+                  <path d="M7 14l5-5 5 5"/>
+                </svg>
+              </div>
+            </th>
+            <th 
+              class="sortable-header" 
+              @click="sortBy('y')"
+              :class="{ 'sorted': sortField === 'y' }"
+            >
+              <div class="header-content">
+                <span>Position Y</span>
+                <svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M7 10l5 5 5-5"/>
+                  <path d="M7 14l5-5 5 5"/>
+                </svg>
+              </div>
+            </th>
+            <th 
+              class="sortable-header" 
+              @click="sortBy('width')"
+              :class="{ 'sorted': sortField === 'width' }"
+            >
+              <div class="header-content">
+                <span>Largeur</span>
+                <svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M7 10l5 5 5-5"/>
+                  <path d="M7 14l5-5 5 5"/>
+                </svg>
+              </div>
+            </th>
+            <th 
+              class="sortable-header" 
+              @click="sortBy('height')"
+              :class="{ 'sorted': sortField === 'height' }"
+            >
+              <div class="header-content">
+                <span>Hauteur</span>
+                <svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M7 10l5 5 5-5"/>
+                  <path d="M7 14l5-5 5 5"/>
+                </svg>
+              </div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr 
+            v-for="detection in sortedDetections"
+            :key="detection.id"
+            :class="[
+              'detection-row',
+              { 'selected': selectedDetection?.id === detection.id }
+            ]"
+            @click="selectDetection(detection)"
+          >
+            <td class="type-cell">
+              <div class="type-content">
+                <div 
+                  class="type-indicator"
+                  :style="{ backgroundColor: getElementColor(detection.class) }"
+                ></div>
+                <span class="type-name">{{ formatClassName(detection.class) }}</span>
+              </div>
+            </td>
+            <td class="confidence-cell">
+              <div class="confidence-badge" :class="getConfidenceClass(detection.confidence)">
+                {{ Math.round(detection.confidence * 100) }}%
+              </div>
+            </td>
+            <td class="numeric-cell">{{ Math.round(detection.x) }}</td>
+            <td class="numeric-cell">{{ Math.round(detection.y) }}</td>
+            <td class="numeric-cell">{{ Math.round(detection.width) }}</td>
+            <td class="numeric-cell">{{ Math.round(detection.height) }}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import type { Detection } from '../types/types'
 
 interface Props {
@@ -99,6 +157,10 @@ const props = defineProps<Props>()
 const emit = defineEmits<{
   'detection-select': [detection: Detection | null]
 }>()
+
+// Sorting state
+const sortField = ref<keyof Detection>('class')
+const sortDirection = ref<'asc' | 'desc'>('asc')
 
 // Element type colors matching Canvas component
 const elementColors: Record<string, string> = {
@@ -117,10 +179,41 @@ const detectionStats = computed(() => {
   return stats
 })
 
+// Sorted detections
+const sortedDetections = computed(() => {
+  const sorted = [...props.detections].sort((a, b) => {
+    const aValue = a[sortField.value]
+    const bValue = b[sortField.value]
+    
+    let comparison = 0
+    
+    if (typeof aValue === 'string' && typeof bValue === 'string') {
+      comparison = aValue.localeCompare(bValue)
+    } else if (typeof aValue === 'number' && typeof bValue === 'number') {
+      comparison = aValue - bValue
+    }
+    
+    return sortDirection.value === 'asc' ? comparison : -comparison
+  })
+  
+  return sorted
+})
+
 // Methods
 const selectDetection = (detection: Detection) => {
   const isCurrentlySelected = props.selectedDetection?.id === detection.id
   emit('detection-select', isCurrentlySelected ? null : detection)
+}
+
+const sortBy = (field: keyof Detection) => {
+  if (sortField.value === field) {
+    // Toggle direction if same field
+    sortDirection.value = sortDirection.value === 'asc' ? 'desc' : 'asc'
+  } else {
+    // New field, start with ascending
+    sortField.value = field
+    sortDirection.value = 'asc'
+  }
 }
 
 const getElementColor = (className: string): string => {
@@ -212,20 +305,155 @@ const getConfidenceClass = (confidence: number): string => {
   color: #9ca3af;
 }
 
-.detection-list {
+/* Table container */
+.detection-table-container {
   flex: 1;
-  overflow-y: auto;
-  padding: 0.5rem;
+  overflow: auto;
+  background: white;
 }
 
-.detection-item {
-  background: white;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  padding: 1rem;
-  margin-bottom: 0.5rem;
+.detection-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  table-layout: auto;
+}
+
+/* Table header */
+.detection-table thead {
+  background: #f8fafc;
+  border-bottom: 2px solid #e2e8f0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.sortable-header {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #374151;
   cursor: pointer;
-  transition: all 0.2s ease;
+  user-select: none;
+  transition: background-color 0.2s ease;
+  border-right: 1px solid #e2e8f0;
+  white-space: nowrap;
+}
+
+.sortable-header:hover {
+  background: #f1f5f9;
+}
+
+.sortable-header.sorted {
+  background: #eff6ff;
+  color: #3b82f6;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.sort-icon {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2;
+  opacity: 0.5;
+  transition: opacity 0.2s ease;
+}
+
+.sortable-header:hover .sort-icon,
+.sortable-header.sorted .sort-icon {
+  opacity: 1;
+}
+
+/* Table body */
+.detection-table tbody tr {
+  border-bottom: 1px solid #f1f5f9;
+  transition: background-color 0.2s ease;
+}
+
+.detection-row:hover {
+  background: #f8fafc;
+}
+
+.detection-row.selected {
+  background: #eff6ff;
+  border-color: #3b82f6;
+}
+
+.detection-row.selected:hover {
+  background: #dbeafe;
+}
+
+/* Table cells */
+.detection-table td {
+  padding: 0.6rem 0.8rem;
+  border-right: 1px solid #e2e8f0;
+  vertical-align: middle;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.type-cell {
+  /* Auto-sized */
+}
+
+.type-content {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.type-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.type-name {
+  font-weight: 600;
+  color: #374151;
+}
+
+.confidence-cell {
+  text-align: center;
+}
+
+.confidence-badge {
+  display: inline-block;
+  padding: 0.3rem 0.6rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-align: center;
+  min-width: 45px;
+}
+
+.confidence-badge.high {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.confidence-badge.medium {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.confidence-badge.low {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.numeric-cell {
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+  color: #374151;
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: 500;
 }
 
 .detection-item:hover {
@@ -307,6 +535,25 @@ const getConfidenceClass = (confidence: number): string => {
 .detail-value {
   color: #374151;
   font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+}
+
+/* Compact view styles */
+.detection-compact {
+  margin-top: 0.5rem;
+}
+
+.compact-info {
+  display: flex;
+  justify-content: center;
+}
+
+.compact-label {
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+  background: #f1f5f9;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
 }
 
 .detection-summary {

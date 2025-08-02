@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Script pour démarrer le frontend FloorIA
-echo "🚀 Démarrage du frontend FloorIA..."
+# Script pour démarrer le frontend FloorIA Vue.js
+echo "🚀 Démarrage du frontend FloorIA Vue.js 3..."
 
 # Vérifier si nous sommes dans le bon répertoire
 if [ ! -d "frontend" ]; then
@@ -54,9 +54,10 @@ fi
 
 echo "✅ Environnement virtuel activé: $VIRTUAL_ENV"
 
-# Démarrer le serveur de développement
-echo "🌟 Démarrage du serveur frontend sur http://localhost:3000"
-echo "   Le navigateur devrait s'ouvrir automatiquement"
+# Démarrer le serveur de développement Vue.js
+echo "🌟 Démarrage du serveur Vue.js sur http://localhost:3000"
+echo "   Interface Vue.js 3 avec Composition API"
+echo "   Mode test disponible avec: http://localhost:3000?modetest"
 echo "   Appuyez sur Ctrl+C pour arrêter le serveur"
 echo ""
 

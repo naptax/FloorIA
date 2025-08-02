@@ -2,7 +2,7 @@
 
 ## Overview
 
-FloorIA v1.4.0 integrates a complete authentication system based on [Supabase](https://supabase.com), allowing users to create accounts, log in, and manage their sessions securely.
+FloorIA v1.5.1 features a complete authentication system integrated with Vue.js 3 and [Supabase](https://supabase.com), providing reactive user management with secure session handling throughout the Vue.js component architecture.
 
 ## [Supabase](https://supabase.com) Configuration (Administrators)
 

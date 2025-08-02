@@ -28,48 +28,72 @@
     
     <!-- Main Content -->
     <div v-else class="main-container">
-      <!-- Sidebar -->
-      <div class="sidebar">
-        <!-- Toolbar -->
-        <FlooriaToolbar 
-          :hasFile="!!currentImageSrc"
-          :hasDetections="detections.length > 0"
-          @file-selected="handleFileSelected"
-          @analyze="handleAnalyze"
-          @export="handleExport"
-          @calibrate="handleCalibrate"
-        />
+      <!-- Top Section: Sidebar + Canvas -->
+      <div class="top-section">
+        <!-- Sidebar -->
+        <div class="sidebar">
+          <!-- Toolbar -->
+          <FlooriaToolbar 
+            :hasFile="!!currentImageSrc"
+            :hasDetections="detections.length > 0"
+            @file-selected="handleFileSelected"
+            @analyze="handleAnalyze"
+            @export="handleExport"
+            @calibrate="handleCalibrate"
+          />
+          
+          <!-- Progress Gauge -->
+          <FlooriaProgressGauge 
+            v-if="isAnalyzing"
+            :progress="analysisProgress"
+          />
+          
+          <!-- Summary Stats Only -->
+          <div v-if="detections.length > 0" class="detection-summary-sidebar">
+            <h4 class="summary-title">Résumé des détections</h4>
+            <div class="summary-stats">
+              <div
+                v-for="(count, type) in detectionStats"
+                :key="type"
+                class="stat-item"
+              >
+                <div 
+                  class="stat-indicator"
+                  :style="{ backgroundColor: getElementColor(type) }"
+                ></div>
+                <span class="stat-label">{{ formatClassName(type) }}</span>
+                <span class="stat-count">{{ count }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
         
-        <!-- Progress Gauge -->
-        <FlooriaProgressGauge 
-          v-if="isAnalyzing"
-          :progress="analysisProgress"
-        />
-        
-        <!-- Detection Panel -->
+        <!-- Canvas Area -->
+        <div class="canvas-container">
+          <FlooriaCanvas 
+            ref="canvasRef"
+            :image-src="currentImageSrc"
+            :detections="detections"
+            :selected-detection="selectedDetection"
+            @detection-select="handleDetectionSelect"
+            @canvas-ready="handleCanvasReady"
+          />
+          
+          <!-- Scale Calibrator -->
+          <FlooriaScaleCalibrator 
+            v-if="showCalibrator"
+            @calibration-complete="handleCalibrationComplete"
+            @close="showCalibrator = false"
+          />
+        </div>
+      </div>
+      
+      <!-- Bottom Section: Detection Table -->
+      <div v-if="detections.length > 0" class="detection-table-section">
         <FlooriaDetectionPanel 
           :detections="detections"
           :selected-detection="selectedDetection"
           @detection-select="handleDetectionSelect"
-        />
-      </div>
-      
-      <!-- Canvas Area -->
-      <div class="canvas-container">
-        <FlooriaCanvas 
-          ref="canvasRef"
-          :image-src="currentImageSrc"
-          :detections="detections"
-          :selected-detection="selectedDetection"
-          @detection-select="handleDetectionSelect"
-          @canvas-ready="handleCanvasReady"
-        />
-        
-        <!-- Scale Calibrator -->
-        <FlooriaScaleCalibrator 
-          v-if="showCalibrator"
-          @calibration-complete="handleCalibrationComplete"
-          @close="showCalibrator = false"
         />
       </div>
     </div>
@@ -87,7 +111,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, provide } from 'vue'
+import { ref, computed, onMounted, provide } from 'vue'
 import FlooriaHeader from './components/FlooriaHeader.vue'
 import FlooriaToolbar from './components/FlooriaToolbar.vue'
 import FlooriaCanvas from './components/FlooriaCanvas.vue'
@@ -303,6 +327,35 @@ const handleCanvasReady = () => {
   console.log('Canvas is ready')
 }
 
+// Detection statistics and utilities (for sidebar summary)
+const detectionStats = computed(() => {
+  const stats: Record<string, number> = {}
+  detections.value.forEach(detection => {
+    stats[detection.class] = (stats[detection.class] || 0) + 1
+  })
+  return stats
+})
+
+const getElementColor = (className: string): string => {
+  const elementColors: Record<string, string> = {
+    'mur': '#4fc3f7',
+    'porte': '#66bb6a', 
+    'fenêtre': '#ffa726',
+    'pièce': '#ab47bc'
+  }
+  return elementColors[className] || '#64748b'
+}
+
+const formatClassName = (className: string): string => {
+  const classNames: Record<string, string> = {
+    'mur': 'Mur',
+    'porte': 'Porte',
+    'fenêtre': 'Fenêtre',
+    'pièce': 'Pièce'
+  }
+  return classNames[className] || className.charAt(0).toUpperCase() + className.slice(1)
+}
+
 // Initialize authentication
 onMounted(async () => {
   try {
@@ -401,7 +454,14 @@ body {
 .main-container {
   flex: 1;
   display: flex;
+  flex-direction: column;
   height: calc(100vh - 120px); /* Account for header and footer */
+}
+
+.top-section {
+  display: flex;
+  flex: 1;
+  min-height: 0; /* Allow flex shrinking */
 }
 
 .sidebar {
@@ -420,6 +480,64 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.detection-table-section {
+  height: 520px;
+  background: white;
+  border-top: 2px solid #e2e8f0;
+  overflow: hidden;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Sidebar summary styles */
+.detection-summary-sidebar {
+  padding: 1rem 1.5rem;
+  background: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+}
+
+.summary-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #374151;
+  margin: 0 0 0.75rem 0;
+}
+
+.summary-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+}
+
+.stat-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.stat-label {
+  flex: 1;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.stat-count {
+  color: #374151;
+  font-weight: 600;
+  background: #e2e8f0;
+  padding: 0.125rem 0.375rem;
+  border-radius: 10px;
+  min-width: 24px;
+  text-align: center;
 }
 
 /* Responsive design */
