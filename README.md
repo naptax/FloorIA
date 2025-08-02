@@ -202,7 +202,7 @@ Both scripts include comprehensive validation and will guide you through any con
 
 ### Environment Variables
 
-Copy the environment template and configure your API credentials:
+Configure backend environment variables:
 
 ```bash
 cd backend
