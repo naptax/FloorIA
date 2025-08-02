@@ -1,39 +1,79 @@
 # FloorIA
 
+![Python](https://img.shields.io/badge/python-v3.8+-blue.svg)
+![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=flat&logo=fastapi)
+![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=flat&logo=typescript&logoColor=white)
+![Vite](https://img.shields.io/badge/vite-%23646CFF.svg?style=flat&logo=vite&logoColor=white)
+![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=flat&logo=supabase&logoColor=white)
+![License](https://img.shields.io/badge/license-MIT-green.svg)
+
 AI-powered architectural image analysis platform for automated floor plan processing and element detection.
+
+---
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Key Features](#key-features)
+- [Technology Stack](#technology-stack)
+- [Quick Start](#quick-start)
+  - [Prerequisites](#prerequisites)
+  - [Backend Setup](#backend-setup)
+  - [Frontend Setup](#frontend-setup)
+  - [Access Points](#access-points)
+- [Automated Setup Scripts](#automated-setup-scripts)
+- [Configuration](#configuration)
+  - [Environment Variables](#environment-variables)
+  - [Authentication Setup](#authentication-setup)
+- [Usage](#usage)
+  - [Image Analysis Workflow](#image-analysis-workflow)
+  - [Interface Features](#interface-features)
+- [API Documentation](#api-documentation)
+- [Use Cases](#use-cases)
+- [Development](#development)
+- [Deployment](#deployment)
+- [Contributing](#contributing)
+- [License](#license)
+- [Acknowledgments](#acknowledgments)
+
+---
 
 ## Overview
 
 FloorIA is a comprehensive web application that combines computer vision and geometric processing to analyze architectural floor plans. The platform automatically detects and categorizes structural elements such as walls, doors, windows, and rooms using advanced AI models.
 
-### Key Features
+---
 
-**AI-Powered Analysis**
+## Key Features
+
+### AI-Powered Analysis
 - Automated detection of architectural elements
 - Real-time confidence scoring
 - Geometric data processing with Shapely
 - Interactive bounding box visualization
 
-**User Authentication**
+### User Authentication
 - Secure user registration and login via Supabase
 - Session management and user profiles
 - Protected API endpoints
 
-**Modern Interface**
+### Modern Interface
 - Responsive web application built with TypeScript
 - Interactive canvas with zoom and pan capabilities
 - Real-time detection results display
 - Export functionality for analysis data
 
-**Professional Architecture**
+### Professional Architecture
 - FastAPI backend with comprehensive API documentation
 - Component-based frontend architecture
 - Scalable deployment with Railway integration
 - Comprehensive error handling and logging
 
+---
+
 ## Technology Stack
 
-**Backend**
+### Backend
 - Python 3.8+
 - FastAPI framework
 - Supabase for authentication and database
@@ -41,12 +81,14 @@ FloorIA is a comprehensive web application that combines computer vision and geo
 - Shapely for geometric processing
 - Uvicorn ASGI server
 
-**Frontend**
+### Frontend
 - TypeScript 5.2+
 - Vite build tool
 - Modern ES modules
 - Canvas API for image manipulation
 - Responsive CSS design
+
+---
 
 ## Quick Start
 
@@ -110,6 +152,8 @@ FloorIA is a comprehensive web application that combines computer vision and geo
 - **API Server**: http://localhost:8000
 - **API Documentation**: http://localhost:8000/docs
 
+---
+
 ## Automated Setup Scripts
 
 For streamlined development, automated setup scripts are provided:
@@ -151,6 +195,8 @@ To start the full application stack:
 
 Both scripts include comprehensive validation and will guide you through any configuration issues.
 
+---
+
 ## Configuration
 
 ### Environment Variables
@@ -187,6 +233,8 @@ For user authentication functionality, configure your Supabase project:
 3. Create the required database tables (see `AUTHENTICATION.md` for details)
 4. Update the frontend configuration with your Supabase credentials
 
+---
+
 ## Usage
 
 ### Image Analysis Workflow
@@ -215,6 +263,8 @@ For user authentication functionality, configure your Supabase project:
 - Session persistence across browser sessions
 - User profile management
 - Selection highlighting with visual emphasis
+
+---
 
 ## API Documentation
 
@@ -267,27 +317,39 @@ curl -X POST "http://localhost:8000/analyze" \
 }
 ```
 
+---
+
 ## Use Cases
 
-**Architecture and Construction**
+### Architecture and Construction
 - Automated floor plan analysis
 - Building element identification
 - Space measurement and validation
 - Construction planning assistance
 
-**Real Estate and Property Management**
+### Real Estate and Property Management
 - Property assessment automation
 - Space utilization analysis
 - Documentation generation
 - Compliance verification
 
-**Design and Planning**
+### Design and Planning
 - Architectural review processes
 - Design validation workflows
 - Space optimization studies
 - Renovation planning support
 
+---
+
 ## Development
+
+### Development Workflow
+
+```bash
+# Backend setup
+cd backend
+python -m venv venv
+source venv/bin/activate
 pip install -r requirements.txt
 
 # Frontend setup
@@ -333,6 +395,8 @@ The application includes comprehensive error handling and logging. For developme
 - Health check endpoint: `http://localhost:8000/health`
 - Frontend development tools available in browser
 
+---
+
 ## Deployment
 
 FloorIA supports deployment on Railway with automated CI/CD:
@@ -343,6 +407,8 @@ FloorIA supports deployment on Railway with automated CI/CD:
 4. Configure custom domains if needed
 
 See `RAILWAY_DEPLOYMENT.md` for detailed deployment instructions.
+
+---
 
 ## Contributing
 
@@ -361,9 +427,13 @@ Contributions are welcome. Please follow these guidelines:
 - Documentation: Update README and inline comments
 - Testing: Include tests for new functionality
 
+---
+
 ## License
 
 This project is licensed under the MIT License.
+
+---
 
 ## Acknowledgments
 
