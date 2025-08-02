@@ -10,7 +10,10 @@ import { ProgressGauge } from '@/components/ProgressGauge';
 import { ScaleCalibratorComponent } from '@/components/ScaleCalibrator';
 import { apiClient } from '@/utils/api';
 import { exportDetectionsToJSON } from '@/utils/export';
+import { authManager, AuthUser } from './supabaseClient';
+import { AuthModal } from './AuthModal';
 import '@/styles/main.css';
+import './auth.css';
 
 /**
  * Main FloorIA Application Class
@@ -24,6 +27,8 @@ class FloorIAApp {
   private progressGauge!: ProgressGauge;
   private scaleCalibrator!: ScaleCalibratorComponent;
   private currentImageFilename: string = '';
+  private authModal!: AuthModal;
+  private currentUser: AuthUser | null = null;
 
   constructor() {
     this.initializeApp();
@@ -45,6 +50,9 @@ class FloorIAApp {
       onOpacityChange: this.handleOpacityChange.bind(this),
       onReset: this.handleReset.bind(this)
     };
+
+    // Initialize authentication
+    this.initializeAuth();
 
     // Initialize components
     this.header = new Header(appContainer);
@@ -249,6 +257,112 @@ class FloorIAApp {
         }
       }
     });
+  }
+
+  /**
+   * Initialize authentication system
+   */
+  private initializeAuth(): void {
+    // Initialize auth modal
+    this.authModal = new AuthModal((user: AuthUser) => {
+      this.handleAuthSuccess(user);
+    });
+
+    // Listen for auth state changes
+    authManager.onAuthStateChange((user: AuthUser | null) => {
+      this.currentUser = user;
+      this.updateAuthUI();
+    });
+
+    // Check if user is already authenticated
+    this.currentUser = authManager.getCurrentUser();
+    this.updateAuthUI();
+  }
+
+  /**
+   * Handle successful authentication
+   */
+  private handleAuthSuccess(user: AuthUser): void {
+    console.log('User authenticated:', user);
+    this.currentUser = user;
+    this.updateAuthUI();
+  }
+
+  /**
+   * Update the authentication UI elements
+   */
+  private updateAuthUI(): void {
+    // Add auth button to toolbar if not already present
+    this.addAuthButtonToToolbar();
+  }
+
+  /**
+   * Add authentication button to toolbar
+   */
+  private addAuthButtonToToolbar(): void {
+    const toolbarElement = document.querySelector('.toolbar') as HTMLElement;
+    if (!toolbarElement) return;
+
+    // Remove existing auth elements
+    const existingAuthElements = toolbarElement.querySelectorAll('.toolbar-auth, .toolbar-user-info');
+    existingAuthElements.forEach(el => el.remove());
+
+    if (this.currentUser) {
+      // User is authenticated - show user info and logout button
+      const userInfo = document.createElement('div');
+      userInfo.className = 'toolbar-user-info';
+      
+      const avatar = document.createElement('div');
+      avatar.className = 'toolbar-user-avatar';
+      avatar.textContent = this.currentUser.email.charAt(0).toUpperCase();
+      
+      const userText = document.createElement('span');
+      userText.textContent = this.currentUser.full_name || this.currentUser.email;
+      
+      const logoutBtn = document.createElement('button');
+      logoutBtn.className = 'toolbar-logout-btn';
+      logoutBtn.textContent = 'Déconnexion';
+      logoutBtn.addEventListener('click', () => this.handleLogout());
+      
+      userInfo.appendChild(avatar);
+      userInfo.appendChild(userText);
+      userInfo.appendChild(logoutBtn);
+      
+      toolbarElement.appendChild(userInfo);
+    } else {
+      // User is not authenticated - show login button
+      const loginBtn = document.createElement('button');
+      loginBtn.className = 'toolbar-auth-btn';
+      loginBtn.textContent = 'Se connecter';
+      loginBtn.addEventListener('click', () => this.showAuthModal());
+      
+      toolbarElement.appendChild(loginBtn);
+    }
+  }
+
+  /**
+   * Show authentication modal
+   */
+  private showAuthModal(): void {
+    this.authModal.show();
+  }
+
+  /**
+   * Handle user logout
+   */
+  private async handleLogout(): Promise<void> {
+    try {
+      const result = await authManager.signOut();
+      if (result.success) {
+        console.log('User logged out successfully');
+        this.currentUser = null;
+        this.updateAuthUI();
+      } else {
+        console.error('Logout failed:', result.message);
+      }
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
   }
 
   /**

@@ -1,217 +1,245 @@
-<div align="center">
+# FloorIA
 
-# 🏗️ **FloorIA**
+AI-powered architectural image analysis platform for automated floor plan processing and element detection.
 
-*AI-Powered Architectural Image Analysis Platform*
+## Overview
 
-[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-00a393.svg?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
-[![Node.js](https://img.shields.io/badge/Node.js-18+-339933.svg?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.2+-3178C6.svg?style=for-the-badge&logo=typescript&logoColor=white)](https://typescriptlang.org)
-[![Vite](https://img.shields.io/badge/Vite-5.0+-646CFF.svg?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev)
-[![Roboflow](https://img.shields.io/badge/Roboflow-AI-6366f1.svg?style=for-the-badge&logo=roboflow&logoColor=white)](https://roboflow.com)
+FloorIA is a comprehensive web application that combines computer vision and geometric processing to analyze architectural floor plans. The platform automatically detects and categorizes structural elements such as walls, doors, windows, and rooms using advanced AI models.
 
+### Key Features
 
-*Une application d'analyse d'images avec IA composée d'un frontend TypeScript/Vite moderne avec architecture à composants et d'un backend Python utilisant Shapely pour le traitement géométrique et l'API Roboflow pour la détection d'objets.*
+**AI-Powered Analysis**
+- Automated detection of architectural elements
+- Real-time confidence scoring
+- Geometric data processing with Shapely
+- Interactive bounding box visualization
 
-[🚀 Demo](#demo) • [📖 Documentation](#documentation) • [⚡ Quick Start](#quick-start) • [🤝 Contributing](#contributing)
+**User Authentication**
+- Secure user registration and login via Supabase
+- Session management and user profiles
+- Protected API endpoints
 
-</div>
+**Modern Interface**
+- Responsive web application built with TypeScript
+- Interactive canvas with zoom and pan capabilities
+- Real-time detection results display
+- Export functionality for analysis data
 
----
+**Professional Architecture**
+- FastAPI backend with comprehensive API documentation
+- Component-based frontend architecture
+- Scalable deployment with Railway integration
+- Comprehensive error handling and logging
 
+## Technology Stack
 
-### 🤖 **AI & Analysis**
-- 🏗️ **Architectural Element Detection**
-- 📐 **Shapely Geometric Processing**
-- 🎯 **Roboflow API Integration**
-- 📊 **Real-time Bounding Box Overlay**
-- 📈 **Confidence Score Visualization**
-- 🔢 **Geometric Data Display**
+**Backend**
+- Python 3.8+
+- FastAPI framework
+- Supabase for authentication and database
+- Roboflow API for AI model inference
+- Shapely for geometric processing
+- Uvicorn ASGI server
 
-</td>
-</tr>
-</table>
+**Frontend**
+- TypeScript 5.2+
+- Vite build tool
+- Modern ES modules
+- Canvas API for image manipulation
+- Responsive CSS design
 
----
+## Quick Start
 
-## ⚡ Quick Start
+### Prerequisites
 
-### 🐍 Backend Setup
+- Python 3.8 or higher
+- Node.js 18 or higher
+- Roboflow account with API access
+- Supabase project (for authentication)
 
-```bash
-# Navigate to backend directory
-cd backend
+### Backend Setup
 
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # Linux/Mac
-# venv\Scripts\activate   # Windows
+1. Navigate to the backend directory:
+   ```bash
+   cd backend
+   ```
 
-# Install dependencies
-pip install -r requirements.txt
+2. Create and activate a virtual environment:
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # Linux/Mac
+   # venv\Scripts\activate   # Windows
+   ```
 
-# Configure environment
-cp .env.example .env
-# Edit .env with your Roboflow API credentials
+3. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-# Start the server
-python main.py
-```
+4. Configure environment variables:
+   ```bash
+   cp .env.example .env
+   ```
+   Edit the `.env` file with your API credentials.
 
-### 🌐 Frontend Setup
+5. Start the development server:
+   ```bash
+   python main.py
+   ```
 
-```bash
-# Navigate to frontend directory
-cd frontend
+### Frontend Setup
 
-# Install dependencies
-npm install
+1. Navigate to the frontend directory:
+   ```bash
+   cd frontend
+   ```
 
-# Start development server
-npm run dev
-```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-### 🚀 Access the Application
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
 
-- **Frontend**: http://localhost:3000
-- **Backend API**: http://localhost:8000
+### Access Points
+
+- **Application**: http://localhost:3000
+- **API Server**: http://localhost:8000
 - **API Documentation**: http://localhost:8000/docs
 
-## 🎯 Scripts de Démarrage Automatisés
+## Automated Setup Scripts
 
-Pour simplifier le développement, des scripts de démarrage automatisés sont disponibles :
+For streamlined development, automated setup scripts are provided:
 
-### 🐍 Démarrage Backend
+### Backend Script
 ```bash
 ./start-backend.sh
 ```
 
-**Ce script :**
-- ✅ Vérifie la présence du répertoire backend
-- 🐍 Crée l'environnement virtuel Python si nécessaire
-- 📦 Installe automatiquement les dépendances
-- 🔐 Vérifie la configuration `.env`
-- 🚀 Démarre le serveur FastAPI sur http://localhost:8000
+This script automatically:
+- Verifies backend directory structure
+- Creates Python virtual environment if needed
+- Installs all required dependencies
+- Validates environment configuration
+- Starts the FastAPI server
 
-### 🌐 Démarrage Frontend
+### Frontend Script
 ```bash
 ./start-frontend.sh
 ```
 
-**Ce script :**
-- ✅ Vérifie la présence du répertoire frontend
-- 📋 Vérifie que Node.js et npm sont installés
-- 📦 Installe les dépendances npm si nécessaire
-- 🚀 Démarre le serveur Vite sur http://localhost:3000
+This script automatically:
+- Verifies frontend directory structure
+- Checks Node.js and npm installation
+- Installs npm dependencies if needed
+- Starts the Vite development server
 
-### 🚀 Démarrage Complet
-Pour démarrer l'application complète :
+### Complete Application Startup
+
+To start the full application stack:
 
 ```bash
 # Terminal 1 - Backend
 ./start-backend.sh
 
-# Terminal 2 - Frontend (dans un nouveau terminal)
+# Terminal 2 - Frontend (new terminal)
 ./start-frontend.sh
 ```
 
-> 💡 **Astuce**: Les scripts incluent toutes les vérifications nécessaires et vous guideront en cas de problème (dépendances manquantes, fichiers de configuration, etc.)
+Both scripts include comprehensive validation and will guide you through any configuration issues.
 
-## 🔧 Configuration
+## Configuration
 
-### 🤖 Roboflow Integration
+### Environment Variables
 
-**🔐 SECURITY FIRST**: Never commit API keys to git!
+Copy the environment template and configure your API credentials:
 
-1. Copy the environment template:
 ```bash
 cd backend
 cp .env.example .env
 ```
 
-2. Edit `.env` with your actual Roboflow credentials:
+Edit the `.env` file with your actual credentials:
+
 ```env
-# ⚠️ KEEP THIS FILE LOCAL - NEVER COMMIT TO GIT!
+# Roboflow API Configuration
 ROBOFLOW_API_KEY=your_actual_api_key_here
 ROBOFLOW_WORKSPACE=cubicasa5k-2-qpmsa-tppfc
 ROBOFLOW_PROJECT=cubicasa5k-2-qpmsa-tppfc
 ROBOFLOW_VERSION=1
+
+# Supabase Configuration
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_TOKEN=your_supabase_anon_key_here
 ```
 
-3. The `.env` file is automatically excluded from git via `.gitignore`
+**Security Note**: The `.env` file is automatically excluded from git commits. Never commit API keys to version control.
 
-**✅ Security Features:**
-- 🔒 API keys loaded from environment variables only
-- 🚫 `.env` files excluded from git commits
-- ⚠️ Warning messages if API key is missing
-- 📝 Clear documentation on secure practices
+### Authentication Setup
 
-## 🎮 Usage Guide
+For user authentication functionality, configure your Supabase project:
 
-### 📤 Upload & Analysis
-1. **Upload Image**: Drag & drop or click to select an architectural image
-2. **AI Analysis**: Automatic processing with Roboflow API
-3. **View Results**: Bounding boxes overlaid on the image
+1. Create a Supabase project at [supabase.com](https://supabase.com)
+2. Enable email authentication in the Supabase dashboard
+3. Create the required database tables (see `AUTHENTICATION.md` for details)
+4. Update the frontend configuration with your Supabase credentials
 
-### 🔍 Navigation & Interaction
-- **Zoom In/Out**: Use `+` and `−` buttons
-- **Fit to Window**: Click `⌂` to auto-fit image
-- **Pan**: Click and drag to navigate
-- **Mouse Wheel**: Zoom towards cursor position
-- **Table Selection**: Click rows to highlight detections
-- **Opacity Control**: Adjust background image transparency
+## Usage
 
-### 📊 Data Analysis
-- **Interactive Table**: View all detection data
-- **Geometric Information**: Position, dimensions, area, perimeter
-- **Confidence Scores**: Visual bars with percentage values
-- **Selection Highlighting**: Visual emphasis on selected detections
+### Image Analysis Workflow
 
-## 🛠️ Technology Stack
+1. **Upload**: Select an architectural floor plan image
+2. **Processing**: The AI model automatically detects structural elements
+3. **Results**: View detected elements with confidence scores and geometric data
+4. **Export**: Download analysis results in JSON format
 
-<div align="center">
+### Interface Features
 
-### Frontend Technologies
-[![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev)
-[![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://javascript.info)
-[![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)](https://html.spec.whatwg.org)
-[![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)](https://www.w3.org/Style/CSS)
-[![Canvas API](https://img.shields.io/badge/Canvas_API-FF6B6B?style=for-the-badge&logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API)
+**Navigation**
+- Zoom controls for detailed inspection
+- Pan functionality for large images
+- Fit-to-window for optimal viewing
+- Mouse wheel zoom with cursor positioning
 
-### Backend Technologies
-[![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
-[![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
-[![Shapely](https://img.shields.io/badge/Shapely-4CAF50?style=for-the-badge&logo=python&logoColor=white)](https://shapely.readthedocs.io)
-[![Pillow](https://img.shields.io/badge/Pillow-FF9800?style=for-the-badge&logo=python&logoColor=white)](https://pillow.readthedocs.io)
-[![Uvicorn](https://img.shields.io/badge/Uvicorn-2196F3?style=for-the-badge&logo=python&logoColor=white)](https://www.uvicorn.org)
+**Data Visualization**
+- Interactive detection table with sorting
+- Color-coded element types (walls, doors, windows, rooms)
+- Confidence score visualization
+- Geometric measurements and calculations
 
-</div>
+**User Management**
+- Secure registration and login system
+- Session persistence across browser sessions
+- User profile management
+- Selection highlighting with visual emphasis
 
-## 📊 API Documentation
+## API Documentation
 
-### 🔗 Endpoints
+### Core Endpoints
 
-| Method | Endpoint | Description | Response |
-|--------|----------|-------------|----------|
-| `GET` | `/` | API status | `{"message": "FloorIA Backend API", "status": "running"}` |
-| `POST` | `/analyze` | Image analysis | Detection results with geometric data |
-| `GET` | `/health` | Health check | `{"status": "healthy", "service": "vectorizator-backend"}` |
+| Method | Endpoint | Description | Authentication |
+|--------|----------|-------------|----------------|
+| `GET` | `/` | API status | None |
+| `POST` | `/analyze` | Image analysis | Optional |
+| `GET` | `/health` | Health check | None |
+| `POST` | `/auth/signup` | User registration | None |
+| `POST` | `/auth/login` | User authentication | None |
+| `POST` | `/auth/logout` | User logout | Required |
+| `GET` | `/auth/me` | Current user info | Required |
 
-### 📝 Request/Response Examples
+### Image Analysis Request
 
-<details>
-<summary><b>POST /analyze - Image Analysis</b></summary>
-
-**Request:**
 ```bash
 curl -X POST "http://localhost:8000/analyze" \
-     -H "accept: application/json" \
      -H "Content-Type: multipart/form-data" \
-     -F "image=@your_image.jpg"
+     -F "image=@floor_plan.jpg"
 ```
 
-**Response:**
+### Response Format
+
 ```json
 {
   "status": "success",
@@ -221,50 +249,52 @@ curl -X POST "http://localhost:8000/analyze" \
   },
   "detections": [
     {
-      "label": "room",
-      "confidence": 0.85,
+      "label": "wall",
+      "confidence": 0.92,
       "bbox": {
         "x": 100,
         "y": 150,
         "width": 300,
-        "height": 200
+        "height": 20
       },
       "geometry": {
-        "area": 60000,
-        "perimeter": 1000,
-        "centroid": {"x": 250, "y": 250}
+        "area": 6000,
+        "perimeter": 640,
+        "centroid": {"x": 250, "y": 160}
       }
     }
   ]
 }
 ```
-</details>
 
-## 🎯 Use Cases
+## Use Cases
 
-- 🏠 **Architectural Analysis**: Floor plan element detection
-- 🏗️ **Construction Planning**: Room and structure identification
-- 📐 **Space Planning**: Geometric analysis of architectural elements
-- 🎨 **Design Validation**: Automated architectural review
-- 📊 **Property Assessment**: Automated space measurement
+**Architecture and Construction**
+- Automated floor plan analysis
+- Building element identification
+- Space measurement and validation
+- Construction planning assistance
 
-## 🚧 Development
+**Real Estate and Property Management**
+- Property assessment automation
+- Space utilization analysis
+- Documentation generation
+- Compliance verification
 
-### 🔄 Development Workflow
+**Design and Planning**
+- Architectural review processes
+- Design validation workflows
+- Space optimization studies
+- Renovation planning support
 
-```bash
-# Clone the repository
-git clone https://github.com/dean/vectorizator.git
-cd vectorizator
-
-# Setup backend
-cd backend && python -m venv venv && source venv/bin/activate
+## Development
 pip install -r requirements.txt
 
-# Setup frontend
-cd ../frontend && npm install
+# Frontend setup
+cd frontend
+npm install
 
-# Start both servers
+# Start development servers
 # Terminal 1: Backend
 cd backend && python main.py
 
@@ -272,45 +302,72 @@ cd backend && python main.py
 cd frontend && npm run dev
 ```
 
-### 🧪 Testing
+### Project Structure
 
-```bash
-# Backend tests
-cd backend
-python -m pytest
-
-# Frontend tests
-cd frontend
-npm test
+```
+FloorIA/
+├── backend/
+│   ├── main.py              # FastAPI application
+│   ├── supabase_client.py   # Authentication client
+│   ├── auth_middleware.py   # Authentication middleware
+│   ├── roboflow_client.py   # AI model integration
+│   ├── geometry_processor.py # Geometric calculations
+│   ├── requirements.txt     # Python dependencies
+│   └── .env                 # Environment variables
+├── frontend/
+│   ├── src/
+│   │   ├── main.ts         # Application entry point
+│   │   ├── supabaseClient.ts # Authentication client
+│   │   ├── AuthModal.ts    # Authentication modal
+│   │   └── components/     # UI components
+│   ├── package.json        # Node.js dependencies
+│   └── vite.config.js      # Build configuration
+└── README.md
 ```
 
-## 🤝 Contributing
+### Testing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+The application includes comprehensive error handling and logging. For development testing:
 
-1. 🍴 Fork the repository
-2. 🌟 Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. 💾 Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. 📤 Push to the branch (`git push origin feature/AmazingFeature`)
-5. 🔄 Open a Pull Request
+- Backend API documentation: `http://localhost:8000/docs`
+- Health check endpoint: `http://localhost:8000/health`
+- Frontend development tools available in browser
 
-## 📄 License
+## Deployment
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+FloorIA supports deployment on Railway with automated CI/CD:
 
-## 🙏 Acknowledgments
+1. Configure environment variables in Railway dashboard
+2. Connect your GitHub repository
+3. Deploy backend and frontend services separately
+4. Configure custom domains if needed
 
-- 🤖 [Roboflow](https://roboflow.com) for AI model hosting
-- 📐 [Shapely](https://shapely.readthedocs.io) for geometric computations
-- ⚡ [FastAPI](https://fastapi.tiangolo.com) for the robust backend framework
-- 🚀 [Vite](https://vitejs.dev) for the lightning-fast frontend tooling
+See `RAILWAY_DEPLOYMENT.md` for detailed deployment instructions.
 
----
+## Contributing
 
-<div align="center">
+Contributions are welcome. Please follow these guidelines:
 
-**Made with ❤️ from Paris**
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/new-feature`)
+3. Commit your changes (`git commit -m 'Add new feature'`)
+4. Push to the branch (`git push origin feature/new-feature`)
+5. Open a Pull Request
 
+### Code Standards
 
+- Backend: Follow PEP 8 Python style guidelines
+- Frontend: Use TypeScript with strict type checking
+- Documentation: Update README and inline comments
+- Testing: Include tests for new functionality
 
-</div>
+## License
+
+This project is licensed under the MIT License.
+
+## Acknowledgments
+
+- Roboflow for AI model hosting and inference
+- Supabase for authentication and database services
+- FastAPI for the robust backend framework
+- Vite for modern frontend tooling

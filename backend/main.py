@@ -1,6 +1,7 @@
-from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi import FastAPI, UploadFile, File, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from pydantic import BaseModel
 import uvicorn
 import os
 from dotenv import load_dotenv
@@ -8,12 +9,31 @@ import tempfile
 from PIL import Image
 import io
 import base64
+from typing import Optional, Dict, Any
 
 from roboflow_client import RoboflowClient
 from geometry_processor import GeometryProcessor
+from auth_middleware import get_current_user, get_current_user_optional, require_auth
+from supabase_client import supabase_auth
 
 # Load environment variables
 load_dotenv()
+
+# Pydantic models for authentication
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+
+class SignupRequest(BaseModel):
+    email: str
+    password: str
+    full_name: Optional[str] = None
+
+class UserResponse(BaseModel):
+    id: str
+    email: str
+    full_name: Optional[str] = None
+    created_at: Optional[str] = None
 
 app = FastAPI(title="FloorIA Backend", version="1.0.0")
 
@@ -130,6 +150,120 @@ async def analyze_image(image: UploadFile = File(...)):
 async def health_check():
     """Health check endpoint"""
     return {"status": "healthy", "service": "vectorizator-backend"}
+
+# Authentication endpoints
+@app.post("/auth/signup")
+async def signup(signup_data: SignupRequest):
+    """
+    Register a new user with Supabase
+    """
+    try:
+        response = supabase_auth.client.auth.sign_up({
+            "email": signup_data.email,
+            "password": signup_data.password,
+            "options": {
+                "data": {
+                    "full_name": signup_data.full_name
+                }
+            }
+        })
+        
+        if response.user:
+            # Create user profile
+            profile_created = supabase_auth.create_user_profile(
+                response.user.id,
+                response.user.email,
+                {"full_name": signup_data.full_name}
+            )
+            
+            return {
+                "status": "success",
+                "message": "User created successfully. Please check your email for verification.",
+                "user": {
+                    "id": response.user.id,
+                    "email": response.user.email,
+                    "email_confirmed_at": response.user.email_confirmed_at
+                }
+            }
+        else:
+            raise HTTPException(status_code=400, detail="Failed to create user")
+            
+    except Exception as e:
+        print(f"Signup error: {e}")
+        raise HTTPException(status_code=400, detail=str(e))
+
+@app.post("/auth/login")
+async def login(login_data: LoginRequest):
+    """
+    Login user with Supabase
+    """
+    try:
+        response = supabase_auth.client.auth.sign_in_with_password({
+            "email": login_data.email,
+            "password": login_data.password
+        })
+        
+        if response.user and response.session:
+            return {
+                "status": "success",
+                "message": "Login successful",
+                "user": {
+                    "id": response.user.id,
+                    "email": response.user.email,
+                    "full_name": response.user.user_metadata.get("full_name")
+                },
+                "session": {
+                    "access_token": response.session.access_token,
+                    "refresh_token": response.session.refresh_token,
+                    "expires_at": response.session.expires_at
+                }
+            }
+        else:
+            raise HTTPException(status_code=401, detail="Invalid credentials")
+            
+    except Exception as e:
+        print(f"Login error: {e}")
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+
+@app.post("/auth/logout")
+async def logout(user: Dict[str, Any] = Depends(get_current_user)):
+    """
+    Logout current user
+    """
+    try:
+        # Note: Supabase handles token invalidation on the client side
+        # This endpoint mainly serves to confirm the logout action
+        return {
+            "status": "success",
+            "message": "Logout successful"
+        }
+    except Exception as e:
+        print(f"Logout error: {e}")
+        raise HTTPException(status_code=500, detail="Logout failed")
+
+@app.get("/auth/me")
+async def get_current_user_info(user: Dict[str, Any] = Depends(get_current_user)):
+    """
+    Get current user information
+    """
+    try:
+        # Get additional profile information
+        profile = supabase_auth.get_user_profile(user["id"])
+        
+        user_info = {
+            "id": user["id"],
+            "email": user["email"],
+            "user_metadata": user.get("user_metadata", {}),
+            "profile": profile
+        }
+        
+        return {
+            "status": "success",
+            "user": user_info
+        }
+    except Exception as e:
+        print(f"Get user info error: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get user information")
 
 if __name__ == "__main__":
     uvicorn.run(
