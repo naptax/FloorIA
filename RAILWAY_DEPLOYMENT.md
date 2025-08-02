@@ -1,28 +1,28 @@
-# 🚀 FloorIA - Guide de Déploiement Railway
+# 🚀 FloorIA - Railway Deployment Guide
 
-## 📋 Prérequis
-- Compte Railway créé et connecté à GitHub
-- Repository FloorIA accessible depuis Railway
-- Clés API Roboflow disponibles
+## 📋 Prerequisites
+- Railway account created and connected to GitHub
+- FloorIA repository accessible from Railway
+- Roboflow API keys available
 
-## 🔧 Configuration Railway
+## 🔧 Railway Configuration
 
-### 1. Créer les Services
+### 1. Create Services
 
 #### Backend Service
 1. **New Project** → **Deploy from GitHub repo**
-2. Sélectionner `naptax/FloorIA`
+2. Select `naptax/FloorIA`
 3. **Root Directory**: `/backend`
-4. **Branch**: `production` (important !)
+4. **Branch**: `production` (important!)
 5. **Service Name**: `flooria-backend`
 
 #### Frontend Service  
 1. **Add Service** → **GitHub Repo**
 2. **Root Directory**: `/frontend`
-3. **Branch**: `production` (important !)
+3. **Branch**: `production` (important!)
 4. **Service Name**: `flooria-frontend`
 
-### 2. Variables d'Environnement
+### 2. Environment Variables
 
 #### Backend Variables
 ```
@@ -38,30 +38,30 @@ VITE_API_BASE_URL=https://flooria-backend.up.railway.app
 NODE_ENV=production
 ```
 
-### 3. Domaines Personnalisés (Optionnel)
+### 3. Custom Domains (Optional)
 - Backend: `api.flooria.com`
 - Frontend: `app.flooria.com`
 
-## 🌿 Workflow de Déploiement
+## 🌿 Deployment Workflow
 
-### Déploiement Automatique
+### Automatic Deployment
 ```bash
-# Développement sur master
+# Development on master
 git checkout master
 git add .
-git commit -m "feat: nouvelle fonctionnalité"
+git commit -m "feat: new feature"
 git push origin master
 
-# Déploiement en production
+# Production deployment
 git checkout production
 git merge master
-git push origin production  # 🚀 Déploiement automatique !
+git push origin production  # 🚀 Automatic deployment!
 ```
 
-### Rollback Rapide
+### Quick Rollback
 ```bash
 git checkout production
-git reset --hard HEAD~1  # Revenir au commit précédent
+git reset --hard HEAD~1  # Return to previous commit
 git push --force origin production
 ```
 
@@ -71,16 +71,16 @@ git push --force origin production
 - **Backend**: `https://your-backend.railway.app/health`
 - **Frontend**: `https://your-frontend.railway.app/`
 
-### Logs en Temps Réel
-- Dashboard Railway → Service → Logs
+### Real-time Logs
+- Railway Dashboard → Service → Logs
 - CLI: `railway logs --service flooria-backend`
 
-## 🔮 Évolution Future - Base de Données
+## 🔮 Future Evolution - Database
 
-### Ajout PostgreSQL
+### Adding PostgreSQL
 1. **Add Service** → **Database** → **PostgreSQL**
-2. Variable automatique: `DATABASE_URL`
-3. Mise à jour backend:
+2. Automatic variable: `DATABASE_URL`
+3. Backend update:
 ```python
 # requirements.txt
 psycopg2-binary==2.9.7
@@ -92,10 +92,10 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 
 ## 🚨 Troubleshooting
 
-### Problèmes Courants
-- **Build Failed**: Vérifier `requirements.txt` / `package.json`
-- **Health Check Failed**: Vérifier les endpoints `/health`
-- **CORS Errors**: Vérifier `CORS_ORIGINS` dans le backend
+### Common Issues
+- **Build Failed**: Check `requirements.txt` / `package.json`
+- **Health Check Failed**: Check `/health` endpoints
+- **CORS Errors**: Check `CORS_ORIGINS` in backend
 
 ### Support
 - Railway Discord: https://discord.gg/railway

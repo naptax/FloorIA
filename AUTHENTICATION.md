@@ -1,36 +1,36 @@
-# Guide d'Authentification FloorIA avec Supabase
+# FloorIA Authentication Guide with Supabase
 
-## Vue d'ensemble
+## Overview
 
-FloorIA v1.4.0 intègre un système d'authentification complet basé sur Supabase, permettant aux utilisateurs de créer des comptes, se connecter et gérer leurs sessions de manière sécurisée.
+FloorIA v1.4.0 integrates a complete authentication system based on Supabase, allowing users to create accounts, log in, and manage their sessions securely.
 
-## Configuration Supabase (Administrateurs)
+## Supabase Configuration (Administrators)
 
-### 1. Création du projet Supabase
+### 1. Creating the Supabase Project
 
-1. Rendez-vous sur [supabase.com](https://supabase.com)
-2. Créez un nouveau projet
-3. Notez l'URL du projet et la clé anonyme (anon key)
+1. Go to [supabase.com](https://supabase.com)
+2. Create a new project
+3. Note the project URL and anonymous key (anon key)
 
-### 2. Configuration de l'authentification
+### 2. Authentication Configuration
 
-Dans le dashboard Supabase :
+In the Supabase dashboard:
 
 1. **Authentication > Settings**
-   - Activez l'authentification par email
-   - Configurez les templates d'email (optionnel)
-   - Définissez les URLs de redirection si nécessaire
+   - Enable email authentication
+   - Configure email templates (optional)
+   - Set redirect URLs if necessary
 
 2. **Authentication > Providers**
-   - Assurez-vous que "Email" est activé
-   - Configurez d'autres providers si souhaité (Google, GitHub, etc.)
+   - Ensure "Email" is enabled
+   - Configure other providers if desired (Google, GitHub, etc.)
 
-### 3. Création de la table profiles
+### 3. Creating the profiles table
 
-Exécutez cette requête SQL dans l'éditeur SQL de Supabase :
+Execute this SQL query in the Supabase SQL editor:
 
 ```sql
--- Créer la table profiles
+-- Create the profiles table
 CREATE TABLE profiles (
   id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
   email TEXT UNIQUE NOT NULL,
@@ -40,22 +40,22 @@ CREATE TABLE profiles (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Activer RLS (Row Level Security)
+-- Enable RLS (Row Level Security)
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 
--- Politique pour permettre aux utilisateurs de voir leur propre profil
+-- Policy to allow users to view their own profile
 CREATE POLICY "Users can view own profile" ON profiles
   FOR SELECT USING (auth.uid() = id);
 
--- Politique pour permettre aux utilisateurs de mettre à jour leur propre profil
+-- Policy to allow users to update their own profile
 CREATE POLICY "Users can update own profile" ON profiles
   FOR UPDATE USING (auth.uid() = id);
 
--- Politique pour permettre l'insertion de nouveaux profils
+-- Policy to allow insertion of new profiles
 CREATE POLICY "Users can insert own profile" ON profiles
   FOR INSERT WITH CHECK (auth.uid() = id);
 
--- Fonction pour créer automatiquement un profil lors de l'inscription
+-- Function to automatically create a profile upon registration
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -69,107 +69,107 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- Trigger pour exécuter la fonction lors de l'inscription
+-- Trigger to execute the function upon registration
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
 ```
 
-### 4. Configuration des variables d'environnement
+### 4. Environment Variables Configuration
 
-Dans le fichier `.env` du backend :
+In the backend `.env` file:
 
 ```env
-SUPABASE_URL=https://votre-projet.supabase.co
-SUPABASE_TOKEN=votre_cle_anonyme_supabase
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_TOKEN=your_supabase_anon_key
 ```
 
-Dans le fichier `supabaseClient.ts` du frontend :
+In the frontend `supabaseClient.ts` file:
 
 ```typescript
-const supabaseUrl = 'https://votre-projet.supabase.co';
-const supabaseAnonKey = 'votre_cle_anonyme_supabase';
+const supabaseUrl = 'https://your-project.supabase.co';
+const supabaseAnonKey = 'your_supabase_anon_key';
 ```
 
-## Utilisation pour les utilisateurs
+## Usage for Users
 
-### 1. Inscription
+### 1. Registration
 
-1. Ouvrez FloorIA dans votre navigateur
-2. Cliquez sur le bouton "Se connecter" dans la barre d'outils
-3. Dans la modal qui s'ouvre, cliquez sur "S'inscrire"
-4. Remplissez le formulaire :
-   - **Email** : Votre adresse email (obligatoire)
-   - **Nom complet** : Votre nom (optionnel)
-   - **Mot de passe** : Un mot de passe sécurisé (obligatoire)
-5. Cliquez sur "S'inscrire"
-6. Vérifiez votre email pour confirmer votre compte
+1. Open FloorIA in your browser
+2. Click the "Login" button in the toolbar
+3. In the modal that opens, click "Sign Up"
+4. Fill out the form:
+   - **Email**: Your email address (required)
+   - **Full Name**: Your name (optional)
+   - **Password**: A secure password (required)
+5. Click "Sign Up"
+6. Check your email to confirm your account
 
-### 2. Connexion
+### 2. Login
 
-1. Cliquez sur le bouton "Se connecter" dans la barre d'outils
-2. Entrez votre email et mot de passe
-3. Cliquez sur "Se connecter"
-4. Vous êtes maintenant connecté et votre nom/avatar apparaît dans la barre d'outils
+1. Click the "Login" button in the toolbar
+2. Enter your email and password
+3. Click "Login"
+4. You are now logged in and your name/avatar appears in the toolbar
 
-### 3. Déconnexion
+### 3. Logout
 
-1. Cliquez sur le bouton "Déconnexion" à côté de votre nom dans la barre d'outils
-2. Vous êtes automatiquement déconnecté
+1. Click the "Logout" button next to your name in the toolbar
+2. You are automatically logged out
 
-### 4. Fonctionnalités avec authentification
+### 4. Authentication Features
 
-Une fois connecté, vous bénéficiez de :
-- **Persistance de session** : Vous restez connecté même après fermeture du navigateur
-- **Profil utilisateur** : Vos informations sont sauvegardées
-- **Accès sécurisé** : Certaines fonctionnalités futures pourront être réservées aux utilisateurs connectés
+Once logged in, you benefit from:
+- **Session persistence**: You stay logged in even after closing the browser
+- **User profile**: Your information is saved
+- **Secure access**: Some future features may be reserved for logged-in users
 
-## API d'authentification (Développeurs)
+## Authentication API (Developers)
 
-### Endpoints backend
+### Backend Endpoints
 
 #### POST `/auth/signup`
-Inscription d'un nouvel utilisateur.
+Register a new user.
 
-**Body :**
+**Body:**
 ```json
 {
   "email": "user@example.com",
-  "password": "motdepasse123",
-  "full_name": "Nom Utilisateur" // optionnel
+  "password": "password123",
+  "full_name": "User Name" // optional
 }
 ```
 
 #### POST `/auth/login`
-Connexion d'un utilisateur existant.
+Login an existing user.
 
-**Body :**
+**Body:**
 ```json
 {
   "email": "user@example.com",
-  "password": "motdepasse123"
+  "password": "password123"
 }
 ```
 
 #### POST `/auth/logout`
-Déconnexion de l'utilisateur actuel.
+Logout the current user.
 
-**Headers :**
+**Headers:**
 ```
 Authorization: Bearer <token>
 ```
 
 #### GET `/auth/me`
-Récupération des informations de l'utilisateur actuel.
+Retrieve current user information.
 
-**Headers :**
+**Headers:**
 ```
 Authorization: Bearer <token>
 ```
 
-### Protection des endpoints
+### Endpoint Protection
 
-Pour protéger un endpoint, utilisez le middleware d'authentification :
+To protect an endpoint, use the authentication middleware:
 
 ```python
 from auth_middleware import require_auth
@@ -179,79 +179,79 @@ async def protected_route(user: Dict[str, Any] = Depends(require_auth)):
     return {"message": f"Hello {user['email']}!"}
 ```
 
-### Client frontend
+### Frontend Client
 
 ```typescript
 import { authManager } from './supabaseClient';
 
-// Vérifier si l'utilisateur est connecté
+// Check if user is authenticated
 const isAuthenticated = authManager.isAuthenticated();
 
-// Obtenir l'utilisateur actuel
+// Get current user
 const currentUser = authManager.getCurrentUser();
 
-// Obtenir le token d'authentification
+// Get authentication token
 const token = authManager.getAuthToken();
 
-// Écouter les changements d'état d'authentification
+// Listen to authentication state changes
 const unsubscribe = authManager.onAuthStateChange((user) => {
   if (user) {
-    console.log('Utilisateur connecté:', user);
+    console.log('User logged in:', user);
   } else {
-    console.log('Utilisateur déconnecté');
+    console.log('User logged out');
   }
 });
 ```
 
-## Sécurité
+## Security
 
-### Bonnes pratiques
+### Best Practices
 
-1. **Mots de passe** : Encouragez les utilisateurs à utiliser des mots de passe forts
-2. **HTTPS** : Utilisez toujours HTTPS en production
-3. **Tokens** : Les tokens d'accès sont automatiquement gérés et renouvelés
-4. **Variables d'environnement** : Ne jamais exposer les clés secrètes dans le code
+1. **Passwords**: Encourage users to use strong passwords
+2. **HTTPS**: Always use HTTPS in production
+3. **Tokens**: Access tokens are automatically managed and renewed
+4. **Environment Variables**: Never expose secret keys in code
 
 ### Row Level Security (RLS)
 
-Supabase utilise RLS pour s'assurer que :
-- Les utilisateurs ne peuvent accéder qu'à leurs propres données
-- Les opérations sont automatiquement filtrées par utilisateur
-- La sécurité est appliquée au niveau de la base de données
+Supabase uses RLS to ensure that:
+- Users can only access their own data
+- Operations are automatically filtered by user
+- Security is enforced at the database level
 
-## Dépannage
+## Troubleshooting
 
-### Problèmes courants
+### Common Issues
 
-1. **Erreur de connexion Supabase**
-   - Vérifiez que les variables SUPABASE_URL et SUPABASE_TOKEN sont correctement configurées
-   - Assurez-vous que le projet Supabase est actif
+1. **Supabase connection error**
+   - Check that SUPABASE_URL and SUPABASE_TOKEN variables are correctly configured
+   - Ensure the Supabase project is active
 
-2. **Email de confirmation non reçu**
-   - Vérifiez les spams
-   - Assurez-vous que l'authentification par email est activée dans Supabase
+2. **Confirmation email not received**
+   - Check spam folder
+   - Ensure email authentication is enabled in Supabase
 
-3. **Erreur "Invalid credentials"**
-   - Vérifiez que l'email et le mot de passe sont corrects
-   - Assurez-vous que le compte a été confirmé par email
+3. **"Invalid credentials" error**
+   - Check that email and password are correct
+   - Ensure the account has been confirmed via email
 
-4. **Token expiré**
-   - Les tokens sont automatiquement renouvelés
-   - En cas de problème, déconnectez-vous et reconnectez-vous
+4. **Expired token**
+   - Tokens are automatically renewed
+   - If there's an issue, log out and log back in
 
-### Logs et debugging
+### Logs and Debugging
 
-- Les erreurs d'authentification sont loggées dans la console du navigateur
-- Les erreurs backend sont visibles dans les logs du serveur
-- Utilisez les outils de développement Supabase pour monitorer l'authentification
+- Authentication errors are logged in the browser console
+- Backend errors are visible in server logs
+- Use Supabase development tools to monitor authentication
 
 ## Support
 
-Pour toute question ou problème :
-1. Consultez la [documentation Supabase](https://supabase.com/docs)
-2. Vérifiez les logs d'erreur
-3. Contactez l'équipe de développement FloorIA
+For any questions or issues:
+1. Check the [Supabase documentation](https://supabase.com/docs)
+2. Review error logs
+3. Contact the FloorIA development team
 
 ---
 
-*FloorIA v1.4.0 - Système d'authentification Supabase*
+*FloorIA v1.4.0 - Supabase Authentication System*
