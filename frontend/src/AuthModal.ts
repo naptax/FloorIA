@@ -1,11 +1,10 @@
 /**
  * Modal d'authentification pour FloorIA
  */
-import { authManager, LoginCredentials, SignupCredentials } from './supabaseClient';
+import { authManager, LoginCredentials } from './supabaseClient';
 
 export class AuthModal {
     private modal: HTMLElement | null = null;
-    private isLoginMode: boolean = true;
     private onAuthSuccess?: (user: any) => void;
 
     constructor(onAuthSuccess?: (user: any) => void) {
@@ -25,15 +24,15 @@ export class AuthModal {
                         </div>
                         
                         <div class="auth-modal-body">
+                            <div class="auth-info">
+                                <p>🔒 Accès restreint - Connexion requise</p>
+                                <p>Pour obtenir un compte, contactez votre administrateur.</p>
+                            </div>
+                            
                             <form id="auth-form">
                                 <div class="auth-form-group">
                                     <label for="auth-email">Email</label>
                                     <input type="email" id="auth-email" required>
-                                </div>
-                                
-                                <div class="auth-form-group" id="full-name-group" style="display: none;">
-                                    <label for="auth-full-name">Nom complet (optionnel)</label>
-                                    <input type="text" id="auth-full-name">
                                 </div>
                                 
                                 <div class="auth-form-group">
@@ -45,13 +44,6 @@ export class AuthModal {
                                     <button type="submit" id="auth-submit-btn" class="auth-btn auth-btn-primary">
                                         Se connecter
                                     </button>
-                                </div>
-                                
-                                <div class="auth-form-toggle">
-                                    <p id="auth-toggle-text">
-                                        Pas encore de compte ? 
-                                        <a href="#" id="auth-toggle-link">S'inscrire</a>
-                                    </p>
                                 </div>
                             </form>
                             
@@ -78,14 +70,7 @@ export class AuthModal {
             if (e.target === overlay) this.hide();
         });
 
-        // Basculer entre connexion et inscription
-        const toggleLink = this.modal.querySelector('#auth-toggle-link') as HTMLElement;
-        toggleLink?.addEventListener('click', (e) => {
-            e.preventDefault();
-            this.toggleMode();
-        });
-
-        // Soumettre le formulaire
+        // Gestion du formulaire
         const form = this.modal.querySelector('#auth-form') as HTMLFormElement;
         form?.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -100,51 +85,15 @@ export class AuthModal {
         });
     }
 
-    private toggleMode(): void {
-        this.isLoginMode = !this.isLoginMode;
-        this.updateModalContent();
-    }
-
-    private updateModalContent(): void {
-        if (!this.modal) return;
-
-        const title = this.modal.querySelector('#auth-modal-title') as HTMLElement;
-        const submitBtn = this.modal.querySelector('#auth-submit-btn') as HTMLElement;
-        const toggleText = this.modal.querySelector('#auth-toggle-text') as HTMLElement;
-        const toggleLink = this.modal.querySelector('#auth-toggle-link') as HTMLElement;
-        const fullNameGroup = this.modal.querySelector('#full-name-group') as HTMLElement;
-
-        if (this.isLoginMode) {
-            title.textContent = 'Connexion à FloorIA';
-            submitBtn.textContent = 'Se connecter';
-            toggleText.innerHTML = 'Pas encore de compte ? <a href="#" id="auth-toggle-link">S\'inscrire</a>';
-            fullNameGroup.style.display = 'none';
-        } else {
-            title.textContent = 'Inscription à FloorIA';
-            submitBtn.textContent = 'S\'inscrire';
-            toggleText.innerHTML = 'Déjà un compte ? <a href="#" id="auth-toggle-link">Se connecter</a>';
-            fullNameGroup.style.display = 'block';
-        }
-
-        // Re-bind toggle link event
-        const newToggleLink = this.modal.querySelector('#auth-toggle-link') as HTMLElement;
-        newToggleLink?.addEventListener('click', (e) => {
-            e.preventDefault();
-            this.toggleMode();
-        });
-    }
-
     private async handleSubmit(): Promise<void> {
         if (!this.modal) return;
 
         const emailInput = this.modal.querySelector('#auth-email') as HTMLInputElement;
         const passwordInput = this.modal.querySelector('#auth-password') as HTMLInputElement;
-        const fullNameInput = this.modal.querySelector('#auth-full-name') as HTMLInputElement;
         const submitBtn = this.modal.querySelector('#auth-submit-btn') as HTMLButtonElement;
 
         const email = emailInput.value.trim();
         const password = passwordInput.value;
-        const fullName = fullNameInput.value.trim();
 
         if (!email || !password) {
             this.showMessage('Veuillez remplir tous les champs requis.', 'error');
@@ -153,35 +102,21 @@ export class AuthModal {
 
         // Désactiver le bouton pendant la requête
         submitBtn.disabled = true;
-        submitBtn.textContent = this.isLoginMode ? 'Connexion...' : 'Inscription...';
+        submitBtn.textContent = 'Connexion...';
 
         try {
-            let result;
-            
-            if (this.isLoginMode) {
-                const credentials: LoginCredentials = { email, password };
-                result = await authManager.signIn(credentials);
-            } else {
-                const credentials: SignupCredentials = { email, password, full_name: fullName || undefined };
-                result = await authManager.signUp(credentials);
-            }
+            const credentials: LoginCredentials = { email, password };
+            const result = await authManager.signIn(credentials);
 
             if (result.success) {
                 this.showMessage(result.message, 'success');
                 
-                if (this.isLoginMode && result.user) {
+                if (result.user) {
                     // Connexion réussie, fermer la modal après un délai
                     setTimeout(() => {
                         this.hide();
                         this.onAuthSuccess?.(result.user);
                     }, 1500);
-                } else if (!this.isLoginMode) {
-                    // Inscription réussie, basculer vers la connexion
-                    setTimeout(() => {
-                        this.isLoginMode = true;
-                        this.updateModalContent();
-                        this.clearForm();
-                    }, 2000);
                 }
             } else {
                 this.showMessage(result.message, 'error');
@@ -192,7 +127,7 @@ export class AuthModal {
         } finally {
             // Réactiver le bouton
             submitBtn.disabled = false;
-            submitBtn.textContent = this.isLoginMode ? 'Se connecter' : 'S\'inscrire';
+            submitBtn.textContent = 'Se connecter';
         }
     }
 

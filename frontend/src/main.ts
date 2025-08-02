@@ -43,6 +43,9 @@ class FloorIAApp {
       throw new Error('App container not found');
     }
 
+    // Initialize authentication first
+    this.initializeAuth();
+
     // Create event handlers for component communication
     const eventHandlers: ComponentEventHandlers = {
       onFileUpload: this.handleFileUpload.bind(this),
@@ -51,16 +54,14 @@ class FloorIAApp {
       onReset: this.handleReset.bind(this)
     };
 
-    // Initialize authentication
-    this.initializeAuth();
-
-    // Initialize components
+    // Initialize components but keep them hidden initially
     this.header = new Header(appContainer);
     this.footer = new Footer(appContainer);
 
     // Create main workspace
     const mainWorkspace = document.createElement('div');
     mainWorkspace.className = 'main-workspace';
+    mainWorkspace.id = 'main-workspace';
     appContainer.appendChild(mainWorkspace);
 
     // Initialize toolbar and canvas
@@ -87,7 +88,36 @@ class FloorIAApp {
     // Setup drag and drop
     this.setupDragAndDrop();
 
+    // Hide the main interface initially until user is authenticated
+    this.hideMainInterface();
+
     console.log('FloorIA application initialized successfully');
+  }
+
+  /**
+   * Hide the main application interface
+   */
+  private hideMainInterface(): void {
+    const mainWorkspace = document.getElementById('main-workspace');
+    const detectionPanel = document.querySelector('.detection-panel') as HTMLElement;
+    const footer = document.querySelector('.footer') as HTMLElement;
+    
+    if (mainWorkspace) mainWorkspace.style.display = 'none';
+    if (detectionPanel) detectionPanel.style.display = 'none';
+    if (footer) footer.style.display = 'none';
+  }
+
+  /**
+   * Show the main application interface
+   */
+  private showMainInterface(): void {
+    const mainWorkspace = document.getElementById('main-workspace');
+    const detectionPanel = document.querySelector('.detection-panel') as HTMLElement;
+    const footer = document.querySelector('.footer') as HTMLElement;
+    
+    if (mainWorkspace) mainWorkspace.style.display = 'flex';
+    if (detectionPanel) detectionPanel.style.display = 'block';
+    if (footer) footer.style.display = 'block';
   }
 
   /**
@@ -292,8 +322,26 @@ class FloorIAApp {
    * Update the authentication UI elements
    */
   private updateAuthUI(): void {
-    // Add auth button to toolbar if not already present
-    this.addAuthButtonToToolbar();
+    if (this.currentUser) {
+      // User is authenticated - show main interface
+      this.showMainInterface();
+      this.addAuthButtonToToolbar();
+      console.log('✅ User authenticated - showing main interface');
+    } else {
+      // User is not authenticated - hide main interface and show login
+      this.hideMainInterface();
+      this.showAuthModal();
+      console.log('❌ User not authenticated - hiding main interface');
+    }
+  }
+
+  /**
+   * Show the authentication modal
+   */
+  private showAuthModal(): void {
+    if (this.authModal) {
+      this.authModal.show();
+    }
   }
 
   /**
@@ -338,13 +386,6 @@ class FloorIAApp {
       
       toolbarElement.appendChild(loginBtn);
     }
-  }
-
-  /**
-   * Show authentication modal
-   */
-  private showAuthModal(): void {
-    this.authModal.show();
   }
 
   /**

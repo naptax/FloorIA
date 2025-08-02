@@ -2,8 +2,13 @@
 
 This guide explains how to manage users, roles, and authentication settings using the Supabase dashboard for the FloorIA application.
 
+**⚠️ IMPORTANT**: Public user registration is **DISABLED** for security reasons. All user accounts must be created by administrators through the Supabase dashboard as described in this guide.
+
 ## Table of Contents
 
+- [Account Creation Overview](#account-creation-overview)
+- [Creating User Accounts](#creating-user-accounts)
+- [Setting Up the First Administrator](#setting-up-the-first-administrator)
 - [Accessing the Supabase Dashboard](#accessing-the-supabase-dashboard)
 - [User Management](#user-management)
 - [Role Management](#role-management)
@@ -11,6 +16,189 @@ This guide explains how to manage users, roles, and authentication settings usin
 - [Database Management](#database-management)
 - [Security Best Practices](#security-best-practices)
 - [Troubleshooting](#troubleshooting)
+
+---
+
+## Account Creation Overview
+
+FloorIA uses a **secure, admin-only** account creation system. This means:
+
+- ✅ **Administrators** create accounts via Supabase dashboard
+- ❌ **Public registration** is disabled (no signup button in the app)
+- 🔒 **Users** can only log in with existing accounts
+- 👥 **Account requests** must go through administrators
+
+### Why This Approach?
+
+1. **Security**: Prevents unauthorized access to architectural analysis tools
+2. **Control**: Administrators decide who gets access
+3. **Compliance**: Meets enterprise security requirements
+4. **Quality**: Ensures only legitimate users access the system
+
+---
+
+## Creating User Accounts
+
+### Step-by-Step Account Creation
+
+**Prerequisites:**
+- Access to the Supabase dashboard
+- Administrator privileges on the FloorIA project
+
+**Steps:**
+
+1. **Login to Supabase Dashboard**
+   - Go to [https://app.supabase.com](https://app.supabase.com)
+   - Sign in with your administrator account
+   - Select the FloorIA project
+
+2. **Navigate to Authentication**
+   - Click **"Authentication"** in the left sidebar
+   - Click **"Users"** to see the user management interface
+
+3. **Create New User**
+   - Click the **"Add user"** button (top right)
+   - Fill in the user information:
+
+   ```
+   Email: user@company.com
+   Password: [Generate secure password]
+   Auto Confirm User: ✅ (Check this box)
+   ```
+
+4. **Set User Metadata**
+   - In the **"User Metadata"** section, add:
+   ```json
+   {
+     "full_name": "John Doe",
+     "role": "user"
+   }
+   ```
+   - For admin users, use `"role": "admin"`
+
+5. **Create the Account**
+   - Click **"Create user"**
+   - The user account is immediately active
+
+6. **Provide Credentials to User**
+   - Send the email and temporary password securely
+   - Instruct user to change password on first login
+
+### User Account Types
+
+**Regular User Account:**
+```json
+{
+  "full_name": "Jane Smith",
+  "role": "user"
+}
+```
+- Can log in to FloorIA
+- Can analyze architectural images
+- Can export analysis results
+- Cannot access admin functions
+
+**Administrator Account:**
+```json
+{
+  "full_name": "Admin User",
+  "role": "admin"
+}
+```
+- All user permissions
+- Can access Supabase dashboard
+- Can create/manage other users
+- Can modify system settings
+
+---
+
+## Setting Up the First Administrator
+
+### Initial Setup Process
+
+When setting up FloorIA for the first time, you need to create the first administrator account:
+
+**Method 1: Through Supabase Dashboard (Recommended)**
+
+1. **Access Your Supabase Project**
+   - Login to [https://app.supabase.com](https://app.supabase.com)
+   - Open your FloorIA project
+
+2. **Create Admin User**
+   - Go to **Authentication > Users**
+   - Click **"Add user"**
+   - Set up the admin account:
+   ```
+   Email: admin@yourcompany.com
+   Password: [Strong password]
+   Auto Confirm User: ✅
+   User Metadata:
+   {
+     "full_name": "System Administrator",
+     "role": "admin"
+   }
+   ```
+
+3. **Verify Admin Access**
+   - Test login through FloorIA application
+   - Confirm admin can access all features
+
+**Method 2: SQL Command (Advanced)**
+
+If you prefer using SQL, you can create the admin user directly:
+
+```sql
+-- Insert into auth.users (this creates the authentication record)
+INSERT INTO auth.users (
+  id,
+  email,
+  encrypted_password,
+  email_confirmed_at,
+  created_at,
+  updated_at,
+  raw_user_meta_data
+) VALUES (
+  gen_random_uuid(),
+  'admin@yourcompany.com',
+  crypt('your_secure_password', gen_salt('bf')),
+  NOW(),
+  NOW(),
+  NOW(),
+  '{"full_name": "System Administrator", "role": "admin"}'
+);
+
+-- Insert into profiles table
+INSERT INTO profiles (
+  id,
+  email,
+  full_name,
+  role,
+  created_at,
+  updated_at
+) VALUES (
+  (SELECT id FROM auth.users WHERE email = 'admin@yourcompany.com'),
+  'admin@yourcompany.com',
+  'System Administrator',
+  'admin',
+  NOW(),
+  NOW()
+);
+```
+
+### Admin Account Security
+
+**Password Requirements:**
+- Minimum 12 characters
+- Mix of uppercase, lowercase, numbers, symbols
+- Not based on dictionary words
+- Unique to this application
+
+**Security Best Practices:**
+- Enable 2FA if available
+- Use a password manager
+- Regular password rotation (every 90 days)
+- Monitor login activity
+- Limit admin accounts to necessary personnel only
 
 ---
 

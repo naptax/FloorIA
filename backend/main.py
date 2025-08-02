@@ -182,42 +182,14 @@ async def health_check():
 @app.post("/auth/signup")
 async def signup(signup_data: SignupRequest):
     """
-    Register a new user with Supabase
+    Public signup is disabled for security reasons.
+    Users must be created by administrators through the Supabase dashboard.
+    See SUPABASE_ADMIN.md for account creation procedures.
     """
-    try:
-        response = supabase_auth.client.auth.sign_up({
-            "email": signup_data.email,
-            "password": signup_data.password,
-            "options": {
-                "data": {
-                    "full_name": signup_data.full_name
-                }
-            }
-        })
-        
-        if response.user:
-            # Create user profile
-            profile_created = supabase_auth.create_user_profile(
-                response.user.id,
-                response.user.email,
-                {"full_name": signup_data.full_name}
-            )
-            
-            return {
-                "status": "success",
-                "message": "User created successfully. Please check your email for verification.",
-                "user": {
-                    "id": response.user.id,
-                    "email": response.user.email,
-                    "email_confirmed_at": response.user.email_confirmed_at
-                }
-            }
-        else:
-            raise HTTPException(status_code=400, detail="Failed to create user")
-            
-    except Exception as e:
-        print(f"Signup error: {e}")
-        raise HTTPException(status_code=400, detail=str(e))
+    raise HTTPException(
+        status_code=403, 
+        detail="Public registration is disabled. Contact your administrator to create an account."
+    )
 
 @app.post("/auth/login")
 async def login(login_data: LoginRequest):
