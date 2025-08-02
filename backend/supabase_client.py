@@ -15,16 +15,24 @@ class SupabaseAuth:
     
     def __init__(self):
         self.url = os.getenv("SUPABASE_URL")
-        self.key = os.getenv("SUPABASE_TOKEN")
+        self.anon_key = os.getenv("SUPABASE_APIKEY")  # For client-side operations and token verification
+        self.service_key = os.getenv("SUPABASE_TOKEN")  # For admin operations
         
-        if not self.url or not self.key:
-            raise ValueError("SUPABASE_URL and SUPABASE_TOKEN must be set in environment variables")
+        if not self.url or not self.anon_key:
+            raise ValueError("SUPABASE_URL and SUPABASE_APIKEY must be set in environment variables")
         
-        self.client: Client = create_client(self.url, self.key)
+        # Use anon key for client operations (token verification)
+        self.client: Client = create_client(self.url, self.anon_key)
+        
+        # Create admin client for admin operations if service key is available
+        if self.service_key:
+            self.admin_client: Client = create_client(self.url, self.service_key)
+        else:
+            self.admin_client = None
     
     def verify_token(self, token: str) -> Optional[Dict[str, Any]]:
         """
-        Verify a JWT token from Supabase and return user information.
+        Verify a JWT token and return user information.
         
         Args:
             token: JWT token from the frontend
@@ -33,24 +41,34 @@ class SupabaseAuth:
             User information if token is valid, None otherwise
         """
         try:
+            print(f"🔍 Debug - Verifying token: {token[:20] if token else 'NO TOKEN'}...")
+            
             # Remove 'Bearer ' prefix if present
             if token.startswith('Bearer '):
                 token = token[7:]
+                print(f"🔍 Debug - Removed Bearer prefix, token now: {token[:20]}...")
             
             # Verify the token with Supabase
+            print(f"🔍 Debug - Calling Supabase auth.get_user()")
             response = self.client.auth.get_user(token)
+            print(f"🔍 Debug - Supabase response: {response}")
             
             if response.user:
-                return {
+                user_info = {
                     'id': response.user.id,
                     'email': response.user.email,
                     'user_metadata': response.user.user_metadata,
                     'app_metadata': response.user.app_metadata
                 }
+                print(f"✅ Debug - Token valid, user: {user_info['email']}")
+                return user_info
+            
+            print(f"❌ Debug - No user found in response")
             return None
             
         except Exception as e:
-            print(f"Token verification error: {e}")
+            print(f"❌ Token verification error: {e}")
+            print(f"❌ Token verification error type: {type(e)}")
             return None
     
     def get_user_by_id(self, user_id: str) -> Optional[Dict[str, Any]]:
@@ -64,7 +82,9 @@ class SupabaseAuth:
             User information if found, None otherwise
         """
         try:
-            response = self.client.auth.admin.get_user_by_id(user_id)
+            # Use admin client for admin operations
+            client = self.admin_client if self.admin_client else self.client
+            response = client.auth.admin.get_user_by_id(user_id)
             if response.user:
                 return {
                     'id': response.user.id,
@@ -148,7 +168,9 @@ class SupabaseAuth:
         Create an admin user (system function)
         """
         try:
-            response = self.client.auth.sign_up({
+            # Use admin client for admin operations
+            client = self.admin_client if self.admin_client else self.client
+            response = client.auth.sign_up({
                 "email": email,
                 "password": password,
                 "options": {

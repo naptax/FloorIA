@@ -34,11 +34,19 @@ export class ApiClient {
     formData.append('image', file);
 
     const token = this.authManager.getAuthToken();
+    console.log('🔍 Debug - Auth token:', token ? `${token.substring(0, 20)}...` : 'NO TOKEN');
+    console.log('🔍 Debug - User authenticated:', this.authManager.isAuthenticated());
+    console.log('🔍 Debug - Current user:', this.authManager.getCurrentUser());
+    
     const headers: HeadersInit = {};
     if (token) {
       headers['Authorization'] = `Bearer ${token}`;
+      console.log('🔍 Debug - Authorization header set');
+    } else {
+      console.error('❌ No auth token available!');
     }
 
+    console.log('🔍 Debug - Making request to:', `${this.baseUrl}/analyze`);
     const response = await fetch(`${this.baseUrl}/analyze`, {
       method: 'POST',
       headers,
