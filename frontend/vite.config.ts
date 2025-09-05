@@ -35,4 +35,9 @@ export default defineConfig({
     outDir: 'dist',
     sourcemap: true,
   },
+  preview: {
+    host: true,
+    port: 3000,
+    allowedHosts: ['flooria-front.onrender.com']
+  },
 })

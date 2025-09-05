@@ -35,7 +35,7 @@ SUPABASE_APIKEY=your_supabase_anon_key
 1. **New Static Site** → **Connect Repository**
 2. Select `naptax/FloorIA`
 3. **Root Directory**: `frontend`
-4. **Build Command**: `npm ci && npm run build`
+4. **Build Command**: `npm install --include=dev && npm run build`
 5. **Publish Directory**: `dist`
 
 #### Environment Variables
