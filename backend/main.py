@@ -53,7 +53,11 @@ app = FastAPI(title="FloorIA Backend", version="1.0.0")
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:3001"],  # Frontend URLs
+    allow_origins=[
+        "http://localhost:3000", 
+        "http://localhost:3001",
+        "https://flooria-aenm.onrender.com"  # Production frontend URL
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -112,18 +116,25 @@ async def analyze_image(image: UploadFile = File(...), user: Dict[str, Any] = De
     Analyze an uploaded image using Roboflow API and process geometries with Shapely
     """
     try:
+        print(f"🔍 ANALYZE REQUEST START - User: {user['email']} (ID: {user['id']})")
+        print(f"🔍 Image filename: {image.filename}, content_type: {image.content_type}")
+        
         # Validate file type
         if not image.content_type.startswith('image/'):
+            print(f"❌ Invalid content type: {image.content_type}")
             raise HTTPException(status_code=400, detail="File must be an image")
         
         # Read image data
         image_data = await image.read()
+        print(f"🔍 Image data size: {len(image_data)} bytes")
         
         # Validate image can be opened
         try:
             pil_image = Image.open(io.BytesIO(image_data))
             image_width, image_height = pil_image.size
+            print(f"🔍 Image dimensions: {image_width}x{image_height}")
         except Exception as e:
+            print(f"❌ Invalid image file: {str(e)}")
             raise HTTPException(status_code=400, detail=f"Invalid image file: {str(e)}")
         
         # Save temporary file for Roboflow API
@@ -131,20 +142,26 @@ async def analyze_image(image: UploadFile = File(...), user: Dict[str, Any] = De
             temp_file.write(image_data)
             temp_file_path = temp_file.name
         
+        print(f"🔍 Temporary file created: {temp_file_path}")
+        
         try:
             # Call Roboflow API
-            print(f"User {user['email']} (ID: {user['id']}) analyzing image: {temp_file_path}")
+            print(f"🤖 Calling Roboflow API...")
+            print(f"🔍 Roboflow client initialized: {roboflow_client.initialized}")
+            print(f"🔍 Roboflow model available: {roboflow_client.model is not None}")
+            
             roboflow_response = await roboflow_client.infer_image(temp_file_path)
-            print(f"Roboflow response received: {type(roboflow_response)}")
+            print(f"✅ Roboflow response received: {type(roboflow_response)}")
+            print(f"🔍 Response keys: {list(roboflow_response.keys()) if isinstance(roboflow_response, dict) else 'Not a dict'}")
             
             # Process geometries with Shapely
-            print(f"Processing detections with Shapely...")
+            print(f"⚙️ Processing detections with Shapely...")
             processed_detections = geometry_processor.process_detections(
                 roboflow_response, 
                 image_width, 
                 image_height
             )
-            print(f"Processed {len(processed_detections)} detections")
+            print(f"✅ Processed {len(processed_detections)} detections")
             
             # Prepare response
             response_data = {
@@ -157,12 +174,16 @@ async def analyze_image(image: UploadFile = File(...), user: Dict[str, Any] = De
                 "raw_roboflow_response": roboflow_response
             }
             
+            print(f"🎉 ANALYZE REQUEST SUCCESS - Returning {len(processed_detections)} detections")
             return JSONResponse(content=response_data)
             
         except Exception as roboflow_error:
             # Handle Roboflow-specific errors with clear user messages
             error_message = str(roboflow_error)
-            print(f"Roboflow error: {error_message}")
+            print(f"❌ Roboflow error: {error_message}")
+            print(f"❌ Error type: {type(roboflow_error)}")
+            import traceback
+            print(f"❌ Error traceback: {traceback.format_exc()}")
             
             # Return a structured error response for the frontend
             error_response = {
@@ -176,20 +197,22 @@ async def analyze_image(image: UploadFile = File(...), user: Dict[str, Any] = De
                 "detections": []
             }
             
+            print(f"💥 ANALYZE REQUEST FAILED - Returning error response")
             return JSONResponse(content=error_response, status_code=422)
             
         finally:
             # Clean up temporary file
             if os.path.exists(temp_file_path):
                 os.unlink(temp_file_path)
+                print(f"🗑️ Temporary file cleaned up: {temp_file_path}")
                 
     except HTTPException:
         raise
     except Exception as e:
-        print(f"ERROR in analyze_image: {str(e)}")
-        print(f"ERROR type: {type(e)}")
+        print(f"💥 CRITICAL ERROR in analyze_image: {str(e)}")
+        print(f"💥 ERROR type: {type(e)}")
         import traceback
-        print(f"ERROR traceback: {traceback.format_exc()}")
+        print(f"💥 ERROR traceback: {traceback.format_exc()}")
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 @app.get("/health")
