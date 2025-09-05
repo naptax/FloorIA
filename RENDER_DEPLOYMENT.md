@@ -39,11 +39,13 @@ SUPABASE_APIKEY=your_supabase_anon_key
 5. **Publish Directory**: `dist`
 
 #### Environment Variables
-```
-VITE_SUPABASE_URL=https://zyhrkukwhlxenfivkyxs.supabase.co
-VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-VITE_API_BASE_URL=https://flooria.onrender.com
-```
+**⚠️ IMPORTANT**: Avec le nouveau système d'environnements, les variables sont automatiquement chargées depuis `.env.production`. Vous n'avez **PAS BESOIN** de configurer ces variables dans l'interface Render :
+
+- ✅ `VITE_SUPABASE_URL` → Chargé depuis `.env.production`
+- ✅ `VITE_SUPABASE_ANON_KEY` → Chargé depuis `.env.production`  
+- ✅ `VITE_API_BASE_URL` → Chargé depuis `.env.production`
+
+**Render utilisera automatiquement le fichier `.env.production` lors du build.**
 
 ## 🌐 URLs
 - **Backend API**: `https://flooria.onrender.com`
@@ -53,15 +55,29 @@ VITE_API_BASE_URL=https://flooria.onrender.com
 
 ### Step 1: Deploy Backend First
 1. Create the backend Web Service
-2. Configure environment variables
+2. Configure environment variables (voir section Backend Variables)
 3. Deploy and wait for completion
 4. Verify API is accessible at `https://flooria.onrender.com/health`
 
 ### Step 2: Deploy Frontend
 1. Create the frontend Static Site
-2. Set `VITE_API_BASE_URL=https://flooria.onrender.com`
-3. Configure other environment variables
-4. Deploy and test the complete application
+2. **AUCUNE variable d'environnement à configurer** - tout est dans `.env.production`
+3. Deploy directement - Render utilisera automatiquement le bon fichier .env
+4. Test the complete application
+
+## 🌍 Système d'environnements
+
+### Fichiers d'environnement
+```
+frontend/
+├── .env.local      # 🏠 Développement local (localhost:8000)
+├── .env.production # 🚀 Production Render (flooria.onrender.com)
+└── .env.example    # 📄 Template de documentation
+```
+
+### Sélection automatique
+- **Développement** : `npm run dev` → Utilise `.env.local`
+- **Production Render** : `npm run build` → Utilise `.env.production`
 
 ## 🔍 Health Checks
 
