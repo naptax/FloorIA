@@ -22,6 +22,9 @@ export interface Detection {
 }
 
 export interface AnalysisResult {
+  status?: string;
+  message?: string;
+  error_type?: string;
   detections: Detection[];
   image_size: {
     width: number;

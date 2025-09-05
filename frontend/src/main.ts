@@ -141,6 +141,11 @@ class FloorIAApp {
       // Send to backend for analysis
       const analysisResult = await apiClient.analyzeImage(file);
 
+      // Check if the response contains an error
+      if (analysisResult.status === 'error') {
+        throw new Error(analysisResult.message || 'Erreur lors de l\'analyse');
+      }
+
       // Display results
       this.canvas.setAnalysisData(analysisResult);
       this.detectionPanel.setDetections(analysisResult.detections);

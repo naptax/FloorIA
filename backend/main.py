@@ -159,6 +159,25 @@ async def analyze_image(image: UploadFile = File(...), user: Dict[str, Any] = De
             
             return JSONResponse(content=response_data)
             
+        except Exception as roboflow_error:
+            # Handle Roboflow-specific errors with clear user messages
+            error_message = str(roboflow_error)
+            print(f"Roboflow error: {error_message}")
+            
+            # Return a structured error response for the frontend
+            error_response = {
+                "status": "error",
+                "error_type": "roboflow_api_error",
+                "message": error_message,
+                "image_dimensions": {
+                    "width": image_width,
+                    "height": image_height
+                },
+                "detections": []
+            }
+            
+            return JSONResponse(content=error_response, status_code=422)
+            
         finally:
             # Clean up temporary file
             if os.path.exists(temp_file_path):

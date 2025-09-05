@@ -48,8 +48,11 @@ class RoboflowClient:
         
         # Check if Roboflow client was initialized successfully
         if not self.initialized or self.model is None:
-            print("Roboflow client not initialized, using mock data")
-            return self._get_mock_response()
+            raise Exception(
+                "Configuration Roboflow manquante ou invalide. "
+                "Vérifiez que ROBOFLOW_API_KEY est défini dans le fichier .env "
+                "et que votre compte Roboflow est actif."
+            )
         
         try:
             # Use the roboflow package to call the API
@@ -71,9 +74,25 @@ class RoboflowClient:
             
         except Exception as e:
             print(f"Error calling Roboflow API: {e}")
-            print(f"Falling back to mock data for testing")
-            # Return mock data as fallback for testing
-            return self._get_mock_response()
+            # Instead of falling back to mock data, raise a clear error
+            if "403" in str(e) or "Forbidden" in str(e):
+                raise Exception(
+                    "Erreur d'authentification Roboflow (403 Forbidden). "
+                    "Vérifiez votre clé API Roboflow, les permissions du projet, "
+                    "ou le quota de votre compte sur roboflow.com"
+                )
+            elif "401" in str(e) or "Unauthorized" in str(e):
+                raise Exception(
+                    "Clé API Roboflow invalide (401 Unauthorized). "
+                    "Vérifiez votre ROBOFLOW_API_KEY dans le fichier .env"
+                )
+            elif "404" in str(e) or "Not Found" in str(e):
+                raise Exception(
+                    "Projet Roboflow introuvable (404 Not Found). "
+                    "Vérifiez le nom du projet et de l'espace de travail dans le fichier .env"
+                )
+            else:
+                raise Exception(f"Erreur de l'API Roboflow: {str(e)}")
     
     def _get_mock_response(self) -> Dict[Any, Any]:
         """
