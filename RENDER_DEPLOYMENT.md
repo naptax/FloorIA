@@ -63,7 +63,28 @@ SUPABASE_APIKEY=your_supabase_anon_key
 1. Create the frontend Static Site
 2. **AUCUNE variable d'environnement à configurer** - tout est dans `.env.production`
 3. Deploy directement - Render utilisera automatiquement le bon fichier .env
-4. Test the complete application
+4. **⚠️ IMPORTANT**: Noter l'URL finale du frontend (ex: `https://flooria-aenm.onrender.com`)
+
+### Step 3: ⚠️ CRITIQUE - Mise à jour CORS
+**OBLIGATOIRE après chaque changement d'URL frontend :**
+
+1. **Identifier l'URL finale du frontend** après déploiement
+2. **Mettre à jour le backend** dans `backend/main.py` :
+```python
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:3000", 
+        "http://localhost:3001",
+        "https://VOTRE-URL-FRONTEND.onrender.com"  # ⚠️ AJOUTER ICI
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+```
+3. **Commit et redéployer le backend**
+4. **Tester l'analyse d'image** sur la version production
 
 ## 🌍 Système d'environnements
 
