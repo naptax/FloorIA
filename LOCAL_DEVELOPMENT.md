@@ -51,6 +51,20 @@ SUPABASE_APIKEY=votre_anon_key
 
 ### 3️⃣ **Démarrage des services**
 
+#### **Méthode 1 : Scripts automatisés (Recommandé)**
+
+**Backend :**
+```bash
+./start-backend.sh
+```
+
+**Frontend :**
+```bash
+./start-frontend.sh
+```
+
+#### **Méthode 2 : Commandes manuelles**
+
 **Terminal 1 - Backend :**
 ```bash
 source backend/venv/bin/activate
@@ -115,9 +129,94 @@ curl http://localhost:8000/health
 - Vérifier que l'authentification fonctionne
 - Tester l'upload d'image
 
+## 🛑 Arrêt des services
+
+### **Arrêter le backend**
+
+**Méthode 1 : Par nom de processus (Recommandé)**
+```bash
+pkill -f "uvicorn main:app"
+```
+
+**Méthode 2 : Par port**
+```bash
+sudo lsof -t -i:8000 | xargs kill -9
+```
+
+**Méthode 3 : Vérifier puis tuer manuellement**
+```bash
+# 1. Lister les processus
+ps aux | grep -E "(uvicorn|python.*main)" | grep -v grep
+
+# 2. Tuer par PID (remplacer XXXX par le PID)
+kill -9 XXXX
+```
+
+### **Arrêter le frontend**
+```bash
+# Dans le terminal du frontend, simplement :
+Ctrl+C
+```
+
+### **Arrêter tout d'un coup**
+```bash
+# Script pour nettoyer complètement
+pkill -f "uvicorn main:app" 2>/dev/null
+pkill -f "vite" 2>/dev/null
+sudo lsof -t -i:8000 | xargs kill -9 2>/dev/null
+echo "✅ Tous les services arrêtés"
+```
+
+## 📋 Référence rapide des commandes
+
+### **Lancement**
+```bash
+# Backend (méthode script)
+./start-backend.sh
+
+# Backend (méthode manuelle)
+source backend/venv/bin/activate && cd backend && python -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+# Frontend (méthode script)  
+./start-frontend.sh
+
+# Frontend (méthode manuelle)
+source backend/venv/bin/activate && cd frontend && npm run dev
+```
+
+### **Arrêt**
+```bash
+# Arrêter le backend
+pkill -f "uvicorn main:app"
+
+# Arrêter le frontend
+Ctrl+C (dans le terminal)
+
+# Vérifier qu'aucun processus ne tourne
+ps aux | grep -E "(uvicorn|python.*main)" | grep -v grep
+```
+
+### **Vérification**
+```bash
+# Backend health check
+curl http://localhost:8000/health
+
+# Vérifier les ports utilisés
+lsof -i:8000  # Backend
+lsof -i:3001  # Frontend (ou 3000, 3002...)
+```
+
 ## 🐛 Dépannage
 
-### Port déjà utilisé
+### **Erreur "Address already in use"**
+```bash
+# Le backend tourne déjà, l'arrêter d'abord
+pkill -f "uvicorn main:app"
+# Puis relancer
+./start-backend.sh
+```
+
+### Port déjà utilisé (Frontend)
 Si le port 3000 est occupé, Vite utilisera automatiquement 3001, 3002, etc.
 
 ### Erreurs d'authentification
