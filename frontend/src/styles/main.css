@@ -437,6 +437,35 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 8px;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.detection-visibility {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    order: -1;
+    width: 100%;
+    margin-bottom: 4px;
+}
+
+.visibility-checkbox {
+    width: 16px;
+    height: 16px;
+    accent-color: #007acc;
+    cursor: pointer;
+}
+
+.visibility-label {
+    font-size: 0.75rem;
+    color: #cccccc;
+    cursor: pointer;
+    user-select: none;
+}
+
+.detection-card.selected .visibility-label {
+    color: rgba(255,255,255,0.9);
 }
 
 .detection-id {

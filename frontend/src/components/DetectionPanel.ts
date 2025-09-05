@@ -11,6 +11,7 @@ export class DetectionPanel {
   private originalDetections: Detection[] = [];
   private sortColumn: SortKey | null = null;
   private sortDirection: 'asc' | 'desc' = 'asc';
+  private visibleDetections: Set<string> = new Set(); // Track which detections are visible
 
   constructor(container: HTMLElement, eventHandlers: ComponentEventHandlers = {}) {
     this.eventHandlers = eventHandlers;
@@ -96,6 +97,13 @@ export class DetectionPanel {
     // Enhance detections with permanent IDs and short names
     this.detections = enhanceDetections(detections);
     this.originalDetections = this.detections;
+    
+    // Initialize all detections as visible by default
+    this.visibleDetections.clear();
+    this.detections.forEach(detection => {
+      this.visibleDetections.add(detection.id);
+    });
+    
     this.populateDetectionList();
   }
 
@@ -120,14 +128,18 @@ export class DetectionPanel {
   private createDetectionCard(detection: Detection, index: number): HTMLElement {
     const { id, shortName, bbox, label, confidence, geometry } = detection;
     const elementColor = getElementTypeColor(label);
+    const isVisible = this.visibleDetections.has(id);
     
     const card = document.createElement('div');
     card.className = 'detection-card';
     card.dataset.index = index.toString();
     card.dataset.id = id;
     
-    // Add click event for card selection
-    card.addEventListener('click', () => {
+    // Add click event for card selection (but not on checkbox)
+    card.addEventListener('click', (e) => {
+      // Don't trigger selection if clicking on checkbox
+      if ((e.target as HTMLInputElement).type === 'checkbox') return;
+      
       this.selectDetection(index);
       if (this.eventHandlers.onDetectionSelect) {
         this.eventHandlers.onDetectionSelect(index);
@@ -136,6 +148,10 @@ export class DetectionPanel {
     
     card.innerHTML = `
       <div class="detection-card-header">
+        <div class="detection-visibility">
+          <input type="checkbox" id="visibility-${id}" ${isVisible ? 'checked' : ''} class="visibility-checkbox">
+          <label for="visibility-${id}" class="visibility-label">Afficher</label>
+        </div>
         <div class="detection-id" style="background-color: ${elementColor}; color: #ffffff;">${shortName}</div>
         <div class="detection-type">${label}</div>
       </div>
@@ -171,7 +187,35 @@ export class DetectionPanel {
       </div>
     `;
     
+    // Add checkbox event listener after creating the card
+    const checkbox = card.querySelector('.visibility-checkbox') as HTMLInputElement;
+    if (checkbox) {
+      checkbox.addEventListener('change', (e) => {
+        e.stopPropagation(); // Prevent card selection
+        this.toggleDetectionVisibility(id, checkbox.checked);
+      });
+    }
+    
     return card;
+  }
+
+  /**
+   * Toggle detection visibility
+   */
+  private toggleDetectionVisibility(detectionId: string, isVisible: boolean): void {
+    if (isVisible) {
+      this.visibleDetections.add(detectionId);
+    } else {
+      this.visibleDetections.delete(detectionId);
+    }
+    
+    // Notify canvas to update display
+    if (this.eventHandlers.onVisibilityChange) {
+      this.eventHandlers.onVisibilityChange(Array.from(this.visibleDetections));
+    }
+    
+    console.log(`🔄 Detection ${detectionId} visibility: ${isVisible ? 'shown' : 'hidden'}`);
+    console.log(`📊 Visible detections: ${this.visibleDetections.size}/${this.detections.length}`);
   }
 
   /**

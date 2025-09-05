@@ -51,7 +51,8 @@ class FloorIAApp {
       onFileUpload: this.handleFileUpload.bind(this),
       onDetectionSelect: this.handleDetectionSelect.bind(this),
       onOpacityChange: this.handleOpacityChange.bind(this),
-      onReset: this.handleReset.bind(this)
+      onReset: this.handleReset.bind(this),
+      onVisibilityChange: this.handleVisibilityChange.bind(this)
     };
 
     // Initialize components but keep them hidden initially
@@ -194,6 +195,13 @@ class FloorIAApp {
    */
   private handleOpacityChange(opacity: number): void {
     this.canvas.setBackgroundOpacity(opacity);
+  }
+
+  /**
+   * Handle visibility change from detection panel
+   */
+  private handleVisibilityChange(visibleDetectionIds: string[]): void {
+    this.canvas.updateVisibleDetections(visibleDetectionIds);
   }
 
   /**

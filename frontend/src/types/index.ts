@@ -76,4 +76,5 @@ export interface ComponentEventHandlers {
   onOpacityChange?: (opacity: number) => void;
   onReset?: () => void;
   onSort?: (key: SortKey, direction: 'asc' | 'desc') => void;
+  onVisibilityChange?: (visibleDetectionIds: string[]) => void;
 }

@@ -14,6 +14,7 @@ export class Canvas {
   private analysisData: AnalysisResult | null = null;
   private backgroundOpacity: number = 0.7;
   private selectedDetectionIndex: number = -1;
+  private visibleDetectionIds: Set<string> = new Set(); // Track which detections should be visible
   
   // Transform state
   private transform: CanvasTransform = {
@@ -107,6 +108,15 @@ export class Canvas {
    */
   setAnalysisData(data: AnalysisResult): void {
     this.analysisData = data;
+    
+    // Initialize all detections as visible by default
+    this.visibleDetectionIds.clear();
+    if (data.detections) {
+      data.detections.forEach(detection => {
+        this.visibleDetectionIds.add(detection.id);
+      });
+    }
+    
     this.drawAnalysis();
     
     // Show visualization section
@@ -147,8 +157,13 @@ export class Canvas {
     this.ctx.drawImage(this.originalImage, 0, 0, this.canvas.width, this.canvas.height);
     this.ctx.globalAlpha = 1.0;
     
-    // Draw bounding boxes
-    CanvasUtils.drawBoundingBoxes(this.ctx, this.analysisData.detections, this.selectedDetectionIndex);
+    // Filter detections to only show visible ones
+    const visibleDetections = this.analysisData.detections.filter(detection => 
+      this.visibleDetectionIds.has(detection.id)
+    );
+    
+    // Draw bounding boxes only for visible detections
+    CanvasUtils.drawBoundingBoxes(this.ctx, visibleDetections, this.selectedDetectionIndex);
     
     // Restore context
     this.ctx.restore();
@@ -414,6 +429,15 @@ export class Canvas {
   }
 
   /**
+   * Update visible detections from detection panel
+   */
+  updateVisibleDetections(visibleDetectionIds: string[]): void {
+    this.visibleDetectionIds = new Set(visibleDetectionIds);
+    this.redrawCanvas();
+    console.log(`🎨 Canvas updated - showing ${visibleDetectionIds.length} detections`);
+  }
+
+  /**
    * Reset canvas state
    */
   reset(): void {
@@ -422,6 +446,7 @@ export class Canvas {
     this.selectedDetectionIndex = -1;
     this.backgroundOpacity = 0.7;
     this.transform = { scale: 1, translateX: 0, translateY: 0 };
+    this.visibleDetectionIds.clear();
     
     // Clear the canvas completely
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
