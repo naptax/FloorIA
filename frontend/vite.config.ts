@@ -33,11 +33,7 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
-    sourcemap: true,
-  },
-  preview: {
-    host: true,
-    port: 3000,
-    allowedHosts: true
+    sourcemap: false,
+    minify: true,
   },
 })
