@@ -55,9 +55,11 @@ fi
 echo "✅ Environnement virtuel activé: $VIRTUAL_ENV"
 
 # Démarrer le serveur de développement Vue.js
-echo "🌟 Démarrage du serveur Vue.js sur http://localhost:3000"
+echo "🌟 Démarrage du serveur Vue.js (port automatique: 3001+)"
 echo "   Interface Vue.js 3 avec Composition API"
-echo "   Mode test disponible avec: http://localhost:3000?modetest"
+echo "   Environnement: DEVELOPMENT (.env.local)"
+echo "   Backend: http://localhost:8000"
+echo "   Mode test disponible avec: ?modetest"
 echo "   Appuyez sur Ctrl+C pour arrêter le serveur"
 echo ""
 

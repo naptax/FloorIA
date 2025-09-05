@@ -72,10 +72,12 @@ fi
 echo "✅ Environnement virtuel activé: $VIRTUAL_ENV"
 echo "✅ Python utilisé: $(which python)"
 
-# Démarrer le serveur
+# Démarrer le serveur avec uvicorn et hot reload
 echo "🌟 Démarrage du serveur backend sur http://localhost:8000"
 echo "   API Documentation: http://localhost:8000/docs"
+echo "   Health Check: http://localhost:8000/health"
+echo "   Hot reload activé pour le développement"
 echo "   Appuyez sur Ctrl+C pour arrêter le serveur"
 echo ""
 
-python main.py
+python -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload
