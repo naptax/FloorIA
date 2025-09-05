@@ -423,13 +423,24 @@ export class Canvas {
     this.backgroundOpacity = 0.7;
     this.transform = { scale: 1, translateX: 0, translateY: 0 };
     
+    // Clear the canvas completely
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    
+    // Reset canvas dimensions to default
+    this.canvas.width = 800;
+    this.canvas.height = 600;
     
     // Hide visualization section
     const visualizationSection = this.element.querySelector('#visualizationSection') as HTMLElement;
     if (visualizationSection) {
       visualizationSection.style.display = 'none';
     }
+    
+    // Remove any highlight overlays
+    const highlightOverlays = this.element.querySelectorAll('canvas:not(#imageCanvas)');
+    highlightOverlays.forEach(overlay => overlay.remove());
+    
+    console.log('🧹 Canvas completely reset - image and analysis data cleared');
   }
 
   /**
