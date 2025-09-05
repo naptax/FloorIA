@@ -197,6 +197,39 @@ async def health_check():
     """Health check endpoint"""
     return {"status": "healthy", "service": "vectorizator-backend"}
 
+@app.get("/debug/roboflow")
+async def debug_roboflow():
+    """Debug endpoint to check Roboflow configuration"""
+    try:
+        # Check environment variables
+        api_key = os.getenv("ROBOFLOW_API_KEY")
+        workspace = os.getenv("ROBOFLOW_WORKSPACE", "cubicasa5k-2-qpmsa-tppfc")
+        project = os.getenv("ROBOFLOW_PROJECT", "cubicasa5k-2-qpmsa-tppfc")
+        version = os.getenv("ROBOFLOW_VERSION", "1")
+        
+        # Check if Roboflow client is initialized
+        roboflow_status = {
+            "api_key_present": bool(api_key),
+            "api_key_length": len(api_key) if api_key else 0,
+            "workspace": workspace,
+            "project": project,
+            "version": version,
+            "client_initialized": roboflow_client.initialized,
+            "model_available": roboflow_client.model is not None
+        }
+        
+        return {
+            "status": "debug_info",
+            "roboflow": roboflow_status,
+            "environment": "production" if os.getenv("NODE_ENV") == "production" else "development"
+        }
+    except Exception as e:
+        return {
+            "status": "error",
+            "error": str(e),
+            "roboflow_initialized": False
+        }
+
 # Authentication endpoints
 @app.post("/auth/signup")
 async def signup(signup_data: SignupRequest):
