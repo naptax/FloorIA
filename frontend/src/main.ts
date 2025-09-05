@@ -129,6 +129,11 @@ class FloorIAApp {
       this.currentImageFilename = file.name;
       console.log('📁 Image filename stored:', this.currentImageFilename);
       
+      // ✅ CRITICAL: Clear previous analysis data before loading new image
+      this.canvas.reset();
+      this.detectionPanel.clear();
+      console.log('🧹 Previous analysis data cleared');
+      
       this.header.updateStatus('Analyse en cours...');
       this.detectionPanel.hideError();
       
