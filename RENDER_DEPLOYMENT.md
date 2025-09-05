@@ -49,7 +49,7 @@ SUPABASE_APIKEY=your_supabase_anon_key
 
 ## 🌐 URLs
 - **Backend API**: `https://flooria.onrender.com`
-- **Frontend App**: `https://flooria-frontend.onrender.com` (or your custom domain)
+- **Frontend App**: `https://flooria-aenm.onrender.com`
 
 ## 🔄 Deployment Process
 
