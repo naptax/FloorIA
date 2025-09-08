@@ -10,6 +10,8 @@ from PIL import Image
 import io
 import base64
 from typing import Optional, Dict, Any
+from pdf2image import convert_from_path
+import mimetypes
 
 from roboflow_client import RoboflowClient
 from geometry_processor import GeometryProcessor
@@ -119,28 +121,65 @@ async def analyze_image(image: UploadFile = File(...), user: Dict[str, Any] = De
         print(f"🔍 ANALYZE REQUEST START - User: {user['email']} (ID: {user['id']})")
         print(f"🔍 Image filename: {image.filename}, content_type: {image.content_type}")
         
-        # Validate file type
-        if not image.content_type.startswith('image/'):
+        # Validate file type (accept images and PDFs)
+        accepted_types = ['image/', 'application/pdf']
+        if not any(image.content_type.startswith(t) for t in accepted_types):
             print(f"❌ Invalid content type: {image.content_type}")
-            raise HTTPException(status_code=400, detail="File must be an image")
+            raise HTTPException(status_code=400, detail="File must be an image or PDF")
         
-        # Read image data
-        image_data = await image.read()
-        print(f"🔍 Image data size: {len(image_data)} bytes")
+        # Read file data
+        file_data = await image.read()
+        print(f"🔍 File data size: {len(file_data)} bytes")
         
-        # Validate image can be opened
-        try:
-            pil_image = Image.open(io.BytesIO(image_data))
-            image_width, image_height = pil_image.size
-            print(f"🔍 Image dimensions: {image_width}x{image_height}")
-        except Exception as e:
-            print(f"❌ Invalid image file: {str(e)}")
-            raise HTTPException(status_code=400, detail=f"Invalid image file: {str(e)}")
-        
-        # Save temporary file for Roboflow API
-        with tempfile.NamedTemporaryFile(delete=False, suffix='.jpg') as temp_file:
-            temp_file.write(image_data)
-            temp_file_path = temp_file.name
+        # Handle PDF conversion or direct image processing
+        if image.content_type == 'application/pdf' or image.filename.lower().endswith('.pdf'):
+            print(f"📄 Processing PDF file...")
+            try:
+                # Save PDF to temporary file
+                with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as pdf_temp:
+                    pdf_temp.write(file_data)
+                    pdf_temp_path = pdf_temp.name
+                
+                # Convert PDF to images (take first page)
+                print(f"🔄 Converting PDF to image...")
+                images = convert_from_path(pdf_temp_path, first_page=1, last_page=1, dpi=200)
+                
+                if not images:
+                    raise HTTPException(status_code=400, detail="Could not convert PDF to image")
+                
+                # Get the first page as PIL Image
+                pil_image = images[0]
+                image_width, image_height = pil_image.size
+                print(f"🔍 PDF converted to image dimensions: {image_width}x{image_height}")
+                
+                # Save converted image to temporary file
+                with tempfile.NamedTemporaryFile(delete=False, suffix='.jpg') as temp_file:
+                    pil_image.save(temp_file, format='JPEG', quality=95)
+                    temp_file_path = temp_file.name
+                
+                # Clean up PDF temp file
+                os.unlink(pdf_temp_path)
+                
+            except Exception as e:
+                print(f"❌ PDF conversion error: {str(e)}")
+                if 'pdf_temp_path' in locals() and os.path.exists(pdf_temp_path):
+                    os.unlink(pdf_temp_path)
+                raise HTTPException(status_code=400, detail=f"Failed to process PDF: {str(e)}")
+        else:
+            print(f"🖼️ Processing image file...")
+            # Validate image can be opened
+            try:
+                pil_image = Image.open(io.BytesIO(file_data))
+                image_width, image_height = pil_image.size
+                print(f"🔍 Image dimensions: {image_width}x{image_height}")
+            except Exception as e:
+                print(f"❌ Invalid image file: {str(e)}")
+                raise HTTPException(status_code=400, detail=f"Invalid image file: {str(e)}")
+            
+            # Save image to temporary file for Roboflow API
+            with tempfile.NamedTemporaryFile(delete=False, suffix='.jpg') as temp_file:
+                temp_file.write(file_data)
+                temp_file_path = temp_file.name
         
         print(f"🔍 Temporary file created: {temp_file_path}")
         

@@ -8,7 +8,7 @@
         <input
           ref="fileInput"
           type="file"
-          accept="image/*"
+          accept="image/*,.pdf,application/pdf"
           @change="handleFileChange"
           class="file-input"
           id="file-input"
