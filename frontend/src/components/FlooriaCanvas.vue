@@ -151,19 +151,26 @@ const setupCanvas = (width: number, height: number) => {
   const container = canvasContainer.value
   const containerRect = container.getBoundingClientRect()
   
-  // Calculate scale to fit image in container
-  const scaleX = (containerRect.width - 40) / width
-  const scaleY = (containerRect.height - 40) / height
-  const initialScale = Math.min(scaleX, scaleY, 1)
+  // Calculate scale to fit image in container with padding
+  const padding = 40
+  const availableWidth = containerRect.width - padding
+  const availableHeight = containerRect.height - padding
+  
+  const scaleX = availableWidth / width
+  const scaleY = availableHeight / height
+  const initialScale = Math.min(scaleX, scaleY)
   
   canvas.value.width = width
   canvas.value.height = height
   
-  // Reset transform and center
+  // Calculate centered position
+  const scaledWidth = width * initialScale
+  const scaledHeight = height * initialScale
+  
   transform.value = {
     scale: initialScale,
-    translateX: (containerRect.width - width * initialScale) / 2,
-    translateY: (containerRect.height - height * initialScale) / 2
+    translateX: (containerRect.width - scaledWidth) / 2,
+    translateY: (containerRect.height - scaledHeight) / 2
   }
   
   updateCanvasTransform()
@@ -194,25 +201,26 @@ const drawCanvas = () => {
   drawDetections(context)
 }
 
-// Draw detection bounding boxes
+// Draw detection bounding boxes - only show selected detection
 const drawDetections = (context: CanvasRenderingContext2D) => {
-  props.detections.forEach((detection, index) => {
-    const isSelected = props.selectedDetection?.id === detection.id
+  // Only draw the selected detection if one is selected
+  if (props.selectedDetection) {
+    const detection = props.selectedDetection
     const color = elementColors[detection.class] || '#64748b'
     
     // Convert hex to RGB for transparency
     const rgb = hexToRgb(color)
     
-    // Draw bounding box
+    // Draw bounding box (always selected style)
     context.strokeStyle = color
-    context.lineWidth = isSelected ? 3 : 2
-    context.setLineDash(isSelected ? [] : [5, 5])
+    context.lineWidth = 3
+    context.setLineDash([])
     
     context.strokeRect(detection.x, detection.y, detection.width, detection.height)
     
     // Draw fill with transparency
     if (rgb) {
-      context.fillStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${isSelected ? 0.3 : 0.1})`
+      context.fillStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.3)`
       context.fillRect(detection.x, detection.y, detection.width, detection.height)
     }
     
@@ -223,10 +231,7 @@ const drawDetections = (context: CanvasRenderingContext2D) => {
     context.fillStyle = color
     context.font = '14px -apple-system, BlinkMacSystemFont, sans-serif'
     context.fillText(label, detection.x, labelY)
-    
-    // Reset line dash
-    context.setLineDash([])
-  })
+  }
 }
 
 // Convert hex color to RGB
@@ -326,14 +331,23 @@ const fitToWindow = () => {
   const container = canvasContainer.value
   const containerRect = container.getBoundingClientRect()
   
-  const scaleX = (containerRect.width - 40) / image.value.width
-  const scaleY = (containerRect.height - 40) / image.value.height
-  const newScale = Math.min(scaleX, scaleY, 1)
+  // Calculate scale to fit image in container with padding
+  const padding = 40
+  const availableWidth = containerRect.width - padding
+  const availableHeight = containerRect.height - padding
+  
+  const scaleX = availableWidth / image.value.width
+  const scaleY = availableHeight / image.value.height
+  const newScale = Math.min(scaleX, scaleY)
+  
+  // Calculate centered position
+  const scaledWidth = image.value.width * newScale
+  const scaledHeight = image.value.height * newScale
   
   transform.value = {
     scale: newScale,
-    translateX: (containerRect.width - image.value.width * newScale) / 2,
-    translateY: (containerRect.height - image.value.height * newScale) / 2
+    translateX: (containerRect.width - scaledWidth) / 2,
+    translateY: (containerRect.height - scaledHeight) / 2
   }
   
   updateCanvasTransform()

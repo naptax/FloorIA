@@ -123,9 +123,9 @@ const emit = defineEmits<{
   'detection-select': [detection: Detection | null]
 }>()
 
-// Sorting state
-const sortField = ref<keyof Detection>('class')
-const sortDirection = ref<'asc' | 'desc'>('asc')
+// Sorting state - default sort by confidence descending
+const sortField = ref<keyof Detection>('confidence')
+const sortDirection = ref<'asc' | 'desc'>('desc')
 
 // Element type colors - Tokyo Night palette with high contrast
 const elementColors: Record<string, string> = {
