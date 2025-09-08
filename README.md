@@ -14,16 +14,23 @@ FloorIA est une application web moderne qui utilise l'intelligence artificielle 
 ## 🏗️ Architecture
 
 ### Frontend
-- **Vue.js 3** avec Composition API et TypeScript
-- **Vite** pour le développement et le build
-- **Canvas HTML5** pour la visualisation interactive
+- **Vue.js 3.5+** avec Composition API et TypeScript 5.2+
+- **Vite 5.4+** pour le développement et le build optimisé
+- **Canvas HTML5** pour la visualisation interactive des plans
+- **Axios** pour les requêtes HTTP vers l'API
+- **Supabase JS Client** pour l'authentification côté client
 - **Design Tokyo Night** avec polices Slack (Lato)
 
 ### Backend
-- **Python/FastAPI** pour l'API REST
-- **Roboflow** pour l'analyse IA des plans
-- **Supabase** pour l'authentification et la base de données
-- **Uvicorn** comme serveur ASGI
+- **Python 3.8+** avec FastAPI 0.100+ pour l'API REST haute performance
+- **Uvicorn** comme serveur ASGI avec support hot reload
+- **Roboflow 1.0+** pour l'analyse IA des plans architecturaux
+- **Supabase 2.0+** pour l'authentification JWT et base de données PostgreSQL
+- **Shapely 2.0+** pour le traitement géométrique des détections
+- **Pillow 9.0+** pour le traitement d'images
+- **pdf2image 1.16+** + **Poppler** pour la conversion PDF vers image
+- **python-multipart** pour l'upload de fichiers
+- **PyJWT 2.8+** pour la validation des tokens d'authentification
 
 ## 📋 Prérequis
 
