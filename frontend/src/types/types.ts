@@ -34,15 +34,9 @@ export interface AuthState {
   loading: boolean
 }
 
-export interface CalibrationData {
-  scale: number
-  unit: string
-  reference_length: number
-}
 
 export interface ExportData {
   image: string
   timestamp: string
   detections: Detection[]
-  calibration?: CalibrationData
 }

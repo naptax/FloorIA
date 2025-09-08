@@ -152,8 +152,10 @@ export class DetectionPanel {
           <input type="checkbox" id="visibility-${id}" ${isVisible ? 'checked' : ''} class="visibility-checkbox">
           <label for="visibility-${id}" class="visibility-label">Afficher</label>
         </div>
-        <div class="detection-id" style="background-color: ${elementColor}; color: #ffffff;">${shortName}</div>
-        <div class="detection-type">${label}</div>
+        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+          <div class="detection-id" style="background-color: ${elementColor}; color: #ffffff;">${shortName}</div>
+          <div class="detection-type">${label}</div>
+        </div>
       </div>
       
       <div class="confidence-section">

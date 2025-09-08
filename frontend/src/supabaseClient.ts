@@ -212,6 +212,26 @@ export class AuthManager {
     public getAuthToken(): string | null {
         return this.currentSession?.access_token || localStorage.getItem('supabase_token');
     }
+
+    public async refreshSession(): Promise<void> {
+        try {
+            const { data, error } = await supabase.auth.refreshSession();
+            
+            if (error) {
+                console.error('Session refresh error:', error);
+                throw error;
+            }
+
+            if (data.session) {
+                this.setSession(data.session);
+                console.log('✅ Session refreshed successfully');
+            }
+        } catch (error) {
+            console.error('Failed to refresh session:', error);
+            this.clearSession();
+            throw error;
+        }
+    }
 }
 
 // Instance globale

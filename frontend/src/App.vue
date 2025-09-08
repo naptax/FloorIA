@@ -54,7 +54,6 @@
             @file-selected="handleFileSelected"
             @analyze="handleAnalyze"
             @export="handleExport"
-            @calibrate="handleCalibrate"
           />
           
           <!-- Progress Gauge -->
@@ -94,12 +93,6 @@
             @canvas-ready="handleCanvasReady"
           />
           
-          <!-- Scale Calibrator -->
-          <FlooriaScaleCalibrator 
-            v-if="showCalibrator"
-            @calibration-complete="handleCalibrationComplete"
-            @close="showCalibrator = false"
-          />
         </div>
       </div>
       
@@ -132,7 +125,6 @@ import FlooriaToolbar from './components/FlooriaToolbar.vue'
 import FlooriaCanvas from './components/FlooriaCanvas.vue'
 import FlooriaDetectionPanel from './components/FlooriaDetectionPanel.vue'
 import FlooriaProgressGauge from './components/FlooriaProgressGauge.vue'
-import FlooriaScaleCalibrator from './components/FlooriaScaleCalibrator.vue'
 import FlooriaFooter from './components/FlooriaFooter.vue'
 import FlooriaAuthModal from './components/FlooriaAuthModal.vue'
 import TechnicalTestPage from './components/TechnicalTestPage.vue'
@@ -154,8 +146,7 @@ const detections = ref<Detection[]>([])
 const selectedDetection = ref<Detection | null>(null)
 const isAnalyzing = ref(false)
 const analysisProgress = ref(0)
-const showCalibrator = ref(false)
-const canvasRef = ref()
+const canvasRef = ref<any>(null)
 
 // Auth methods
 const showAuthModal = () => {
@@ -327,15 +318,6 @@ const handleDetectionSelect = (detection: Detection | null) => {
   selectedDetection.value = detection
 }
 
-// Calibration
-const handleCalibrate = () => {
-  showCalibrator.value = true
-}
-
-const handleCalibrationComplete = (scale: number) => {
-  console.log('Calibration complete:', scale)
-  showCalibrator.value = false
-}
 
 // Canvas events
 const handleCanvasReady = () => {

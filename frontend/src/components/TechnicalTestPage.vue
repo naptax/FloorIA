@@ -128,7 +128,6 @@
             @file-selected="handleTestFileSelected"
             @analyze="handleTestAnalyze"
             @export="handleTestExport"
-            @calibrate="showCalibrator = true"
           />
         </div>
       </div>
@@ -174,11 +173,6 @@
       @login-success="handleTestLoginSuccess"
     />
     
-    <FlooriaScaleCalibrator 
-      v-if="showCalibrator"
-      @calibration-complete="handleTestCalibration"
-      @close="showCalibrator = false"
-    />
   </div>
 </template>
 
@@ -189,14 +183,12 @@ import FlooriaDetectionPanel from './FlooriaDetectionPanel.vue'
 import FlooriaProgressGauge from './FlooriaProgressGauge.vue'
 import FlooriaToolbar from './FlooriaToolbar.vue'
 import FlooriaAuthModal from './FlooriaAuthModal.vue'
-import FlooriaScaleCalibrator from './FlooriaScaleCalibrator.vue'
 import { authManager, type AuthUser } from '../supabaseClient'
 import type { Detection } from '../types/types'
 
 // Test state
 const isRunningTests = ref(false)
 const showAuthModal = ref(false)
-const showCalibrator = ref(false)
 
 // Test results
 const testResults = reactive({
@@ -409,10 +401,6 @@ const handleTestLoginSuccess = (user: AuthUser) => {
   showAuthModal.value = false
 }
 
-const handleTestCalibration = (scale: number) => {
-  addLog(`Calibrage: ${scale}`, 'success')
-  showCalibrator.value = false
-}
 
 const onCanvasReady = () => {
   addLog('Canvas prêt', 'success')

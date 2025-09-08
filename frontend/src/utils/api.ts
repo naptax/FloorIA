@@ -55,6 +55,30 @@ export class ApiClient {
 
     if (!response.ok) {
       if (response.status === 401) {
+        console.error('❌ Authentication failed - token may be expired');
+        // Try to refresh the session
+        try {
+          await this.authManager.refreshSession();
+          console.log('✅ Session refreshed, retrying request...');
+          
+          // Retry the request with new token
+          const newToken = this.authManager.getAuthToken();
+          if (newToken) {
+            headers['Authorization'] = `Bearer ${newToken}`;
+            const retryResponse = await fetch(`${this.baseUrl}/analyze`, {
+              method: 'POST',
+              headers,
+              body: formData
+            });
+            
+            if (retryResponse.ok) {
+              return await retryResponse.json();
+            }
+          }
+        } catch (refreshError) {
+          console.error('❌ Session refresh failed:', refreshError);
+        }
+        
         throw new Error('Authentication required. Please log in to analyze images.');
       }
       throw new Error(`HTTP error! status: ${response.status}`);

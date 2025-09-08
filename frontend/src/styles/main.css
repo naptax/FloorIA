@@ -435,9 +435,9 @@ body {
 .detection-card-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     margin-bottom: 8px;
-    flex-wrap: wrap;
+    flex-direction: column;
     gap: 8px;
 }
 
@@ -445,7 +445,6 @@ body {
     display: flex;
     align-items: center;
     gap: 6px;
-    order: -1;
     width: 100%;
     margin-bottom: 4px;
 }
