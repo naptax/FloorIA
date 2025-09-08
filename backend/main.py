@@ -202,7 +202,7 @@ async def analyze_image(image: UploadFile = File(...), user: Dict[str, Any] = De
             )
             print(f"✅ Processed {len(processed_detections)} detections")
             
-            # Prepare response
+            # Prepare response with image data for PDF files
             response_data = {
                 "status": "success",
                 "image_dimensions": {
@@ -212,6 +212,21 @@ async def analyze_image(image: UploadFile = File(...), user: Dict[str, Any] = De
                 "detections": processed_detections,
                 "raw_roboflow_response": roboflow_response
             }
+            
+            # For PDF files, include the converted image as base64
+            if image.content_type == 'application/pdf' or image.filename.lower().endswith('.pdf'):
+                print(f"📄 Adding converted image to response for PDF file...")
+                try:
+                    # Convert PIL image to base64
+                    img_buffer = io.BytesIO()
+                    pil_image.save(img_buffer, format='JPEG', quality=95)
+                    img_buffer.seek(0)
+                    img_base64 = base64.b64encode(img_buffer.getvalue()).decode('utf-8')
+                    response_data["converted_image"] = f"data:image/jpeg;base64,{img_base64}"
+                    print(f"✅ Converted image added to response (size: {len(img_base64)} chars)")
+                except Exception as e:
+                    print(f"⚠️ Failed to add converted image to response: {str(e)}")
+                    # Continue without the converted image
             
             print(f"🎉 ANALYZE REQUEST SUCCESS - Returning {len(processed_detections)} detections")
             return JSONResponse(content=response_data)

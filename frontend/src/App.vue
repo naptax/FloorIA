@@ -245,6 +245,12 @@ const handleAnalyze = async () => {
       console.log('🔍 Raw detections from backend:', result.detections)
       console.log('📊 Number of detections:', result.detections?.length || 0)
       
+      // Check if we have a converted image from PDF
+      if (result.converted_image) {
+        console.log('📄 PDF converted image received, updating canvas source')
+        currentImageSrc.value = result.converted_image
+      }
+      
       if (result.detections && result.detections.length > 0) {
         console.log('🔬 First detection sample:', result.detections[0])
         console.log('🏷️ Detection keys:', Object.keys(result.detections[0]))
