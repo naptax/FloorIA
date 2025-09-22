@@ -227,9 +227,10 @@ const handleAnalyze = async () => {
       headers['Authorization'] = `Bearer ${authToken}`
     }
     
-    // Bypass Vite proxy and call backend directly
-    const backendUrl = 'http://localhost:8000/analyze'
-    console.log('🎯 Calling backend directly:', backendUrl)
+    // Use API_BASE_URL from environment variables
+    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
+    const backendUrl = `${API_BASE_URL}/analyze`
+    console.log('🎯 Calling backend:', backendUrl)
     
     const response = await fetch(backendUrl, {
       method: 'POST',
