@@ -492,6 +492,7 @@ body {
 
 .canvas-container {
   flex: 1;
+  max-width: 50%;
   position: relative;
   background: #1a1b26;
   display: flex;
@@ -501,7 +502,9 @@ body {
 }
 
 .detection-panel-right {
-  width: 400px;
+  flex: 1;
+  max-width: 50%;
+  min-width: 500px;
   background: #24283b;
   border-left: 2px solid #bb9af7;
   overflow: auto;
@@ -623,15 +626,9 @@ body {
 }
 
 /* Responsive design */
-@media (max-width: 1200px) {
-  .detection-panel-right {
-    width: 350px;
-  }
-}
-
 @media (max-width: 1024px) {
   .detection-panel-right {
-    width: 320px;
+    min-width: 450px;
   }
 }
 
@@ -653,12 +650,14 @@ body {
   }
   
   .canvas-container {
+    max-width: 100%;
     height: 300px;
     min-height: 300px;
   }
   
   .detection-panel-right {
-    width: 100%;
+    max-width: 100%;
+    min-width: 100%;
     height: 300px;
     border-left: none;
     border-top: 2px solid #bb9af7;
