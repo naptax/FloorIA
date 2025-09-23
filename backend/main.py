@@ -164,7 +164,19 @@ async def analyze_image(image: UploadFile = File(...), user: Dict[str, Any] = De
                 print(f"❌ PDF conversion error: {str(e)}")
                 if 'pdf_temp_path' in locals() and os.path.exists(pdf_temp_path):
                     os.unlink(pdf_temp_path)
-                raise HTTPException(status_code=400, detail=f"Failed to process PDF: {str(e)}")
+                
+                # Provide user-friendly error messages
+                error_msg = str(e).lower()
+                if "poppler" in error_msg or "pdftoppm" in error_msg:
+                    detail = "PDF conversion failed: poppler-utils not installed on server. Please contact administrator."
+                elif "permission" in error_msg:
+                    detail = "PDF conversion failed: file permission error. Please try a different PDF."
+                elif "corrupt" in error_msg or "invalid" in error_msg:
+                    detail = "PDF conversion failed: file appears to be corrupted or invalid. Please try a different PDF."
+                else:
+                    detail = f"PDF conversion failed: {str(e)}. Please try with a PNG/JPG image instead."
+                
+                raise HTTPException(status_code=400, detail=detail)
         else:
             print(f"🖼️ Processing image file...")
             # Validate image can be opened

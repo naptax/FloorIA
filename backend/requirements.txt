@@ -9,4 +9,5 @@ roboflow>=1.0.0
 supabase>=2.0.0
 pyjwt>=2.8.0
 pdf2image>=1.16.0
-poppler-utils>=0.1.0
+# poppler-utils is a system package, not a Python package
+# Install with: sudo apt-get install poppler-utils

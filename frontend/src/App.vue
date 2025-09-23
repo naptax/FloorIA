@@ -250,6 +250,8 @@ const handleAnalyze = async () => {
       if (result.converted_image) {
         console.log('📄 PDF converted image received, updating canvas source')
         currentImageSrc.value = result.converted_image
+        // Show success message for PDF conversion
+        console.log('✅ PDF converti avec succès en image pour l\'analyse')
       }
       
       if (result.detections && result.detections.length > 0) {
