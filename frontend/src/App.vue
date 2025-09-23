@@ -43,8 +43,8 @@
     
     <!-- Main Content - Only if authenticated -->
     <div v-else-if="isAuthenticated" class="main-container">
-      <!-- Top Section: Sidebar + Canvas -->
-      <div class="top-section">
+      <!-- Main Section: Sidebar + Canvas + Detection Table -->
+      <div class="main-section">
         <!-- Sidebar -->
         <div class="sidebar">
           <!-- Toolbar -->
@@ -82,27 +82,29 @@
           </div>
         </div>
         
-        <!-- Canvas Area -->
-        <div class="canvas-container">
-          <FlooriaCanvas 
-            ref="canvasRef"
-            :image-src="currentImageSrc"
-            :detections="detections"
-            :selected-detection="selectedDetection"
-            @detection-select="handleDetectionSelect"
-            @canvas-ready="handleCanvasReady"
-          />
+        <!-- Content Area: Canvas + Detection Table -->
+        <div class="content-area">
+          <!-- Canvas Area -->
+          <div class="canvas-container">
+            <FlooriaCanvas 
+              ref="canvasRef"
+              :image-src="currentImageSrc"
+              :detections="detections"
+              :selected-detection="selectedDetection"
+              @detection-select="handleDetectionSelect"
+              @canvas-ready="handleCanvasReady"
+            />
+          </div>
           
+          <!-- Detection Table (Right Panel) -->
+          <div v-if="detections.length > 0" class="detection-panel-right">
+            <FlooriaDetectionPanel 
+              :detections="detections"
+              :selected-detection="selectedDetection"
+              @detection-select="handleDetectionSelect"
+            />
+          </div>
         </div>
-      </div>
-      
-      <!-- Bottom Section: Detection Table -->
-      <div v-if="detections.length > 0" class="detection-table-section">
-        <FlooriaDetectionPanel 
-          :detections="detections"
-          :selected-detection="selectedDetection"
-          @detection-select="handleDetectionSelect"
-        />
       </div>
     </div>
     
@@ -328,6 +330,7 @@ const handleDetectionSelect = (detection: Detection | null) => {
 }
 
 
+
 // Canvas events
 const handleCanvasReady = () => {
   console.log('Canvas is ready')
@@ -465,7 +468,7 @@ body {
   height: calc(100vh - 120px); /* Account for header and footer */
 }
 
-.top-section {
+.main-section {
   display: flex;
   flex: 1;
   min-height: 0; /* Allow flex shrinking */
@@ -481,6 +484,12 @@ body {
   box-shadow: 2px 0 4px rgba(26, 27, 38, 0.3);
 }
 
+.content-area {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+
 .canvas-container {
   flex: 1;
   position: relative;
@@ -488,14 +497,17 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  min-width: 0; /* Allow flex shrinking */
 }
 
-.detection-table-section {
-  height: 520px;
+.detection-panel-right {
+  width: 400px;
   background: #24283b;
-  border-top: 2px solid #bb9af7;
+  border-left: 2px solid #bb9af7;
   overflow: auto;
-  box-shadow: 0 -4px 12px rgba(187, 154, 247, 0.2);
+  box-shadow: -4px 0 12px rgba(187, 154, 247, 0.2);
+  display: flex;
+  flex-direction: column;
 }
 
 /* Sidebar summary styles */
@@ -611,19 +623,46 @@ body {
 }
 
 /* Responsive design */
+@media (max-width: 1200px) {
+  .detection-panel-right {
+    width: 350px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .detection-panel-right {
+    width: 320px;
+  }
+}
+
 @media (max-width: 768px) {
-  .main-container {
+  .main-section {
     flex-direction: column;
   }
   
   .sidebar {
     width: 100%;
     height: auto;
-    max-height: 300px;
+    max-height: 200px;
+    border-right: none;
+    border-bottom: 1px solid #414868;
+  }
+  
+  .content-area {
+    flex-direction: column;
   }
   
   .canvas-container {
-    height: calc(100vh - 420px);
+    height: 300px;
+    min-height: 300px;
+  }
+  
+  .detection-panel-right {
+    width: 100%;
+    height: 300px;
+    border-left: none;
+    border-top: 2px solid #bb9af7;
+    box-shadow: 0 -4px 12px rgba(187, 154, 247, 0.2);
   }
 }
 </style>
