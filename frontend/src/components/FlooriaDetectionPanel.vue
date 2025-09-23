@@ -336,7 +336,7 @@ const getSortClass = (field: keyof Detection): string => {
 .detection-table-body {
   flex: 1;
   overflow-y: auto;
-  max-height: 450px;
+  /* Remove max-height to allow full height usage */
 }
 
 /* Remove old table styles - now using grid */

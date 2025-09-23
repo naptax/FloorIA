@@ -474,8 +474,9 @@ body {
 
 .main-section {
   display: flex;
-  flex: 1;
-  min-height: 0; /* Allow flex shrinking */
+  height: 100vh;
+  background: #1a1b26;
+  overflow: hidden;
 }
 
 .sidebar {
