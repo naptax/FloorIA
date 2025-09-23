@@ -49,8 +49,7 @@ defineEmits<{
 }
 
 .header-content {
-  max-width: 1200px;
-  margin: 0 auto;
+  width: 100%;
   padding: 0 2rem;
   display: flex;
   justify-content: space-between;
@@ -119,17 +118,73 @@ defineEmits<{
   transform: translateY(-1px);
 }
 
+/* Responsive design */
+@media (max-width: 1024px) {
+  .header-content {
+    padding: 0 1.5rem;
+  }
+  
+  .logo {
+    font-size: 1.6rem;
+  }
+  
+  .welcome {
+    font-size: 0.85rem;
+  }
+  
+  .version {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+  }
+}
+
 @media (max-width: 768px) {
   .header-content {
     padding: 0 1rem;
+    flex-wrap: nowrap;
   }
   
   .logo {
     font-size: 1.4rem;
   }
   
+  .logo-section {
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+  
+  .auth-section {
+    flex-shrink: 0;
+  }
+  
   .welcome {
     display: none;
+  }
+  
+  .btn-login,
+  .btn-logout {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-content {
+    padding: 0 0.75rem;
+  }
+  
+  .logo {
+    font-size: 1.2rem;
+  }
+  
+  .version {
+    display: none;
+  }
+  
+  .btn-login,
+  .btn-logout {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.8rem;
   }
 }
 </style>
