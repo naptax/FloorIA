@@ -179,6 +179,10 @@ const handleLogout = async () => {
 
 // File handling
 const handleFileSelected = (file: File) => {
+  // Clear previous analysis data when loading new image
+  detections.value = []
+  selectedDetection.value = null
+  
   currentImageFilename.value = file.name
   const reader = new FileReader()
   reader.onload = (e) => {
